@@ -7,5 +7,5 @@ git clone --recurse-submodules git@github.com:learningmatter-mit/Perovskite-Orde
 
 To only update the submodules:
 ```
-git submodule update --recursive
+git submodule update --remote --merge
 ```
