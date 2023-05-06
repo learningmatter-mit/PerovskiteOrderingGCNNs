@@ -1,7 +1,9 @@
 import pandas as pd
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import RandomSampler
+import torch_geometric as tg
 
+from processing.datasets import build_e3nn_data
 from models.Perovskite-Ordering-CGCNNs-cgcnn.cgcnn.data import get_cgcnn_loader
 from models.Perovskite-Ordering-CGCNNs-painn.nff.data import Dataset, collate_dicts
 
@@ -53,7 +55,7 @@ def get_Painn_dataloaders(train_data,val_data,test_data,prop,batch_size):
     val_dataset = Dataset(val_props, units='eV', stack=True)
     test_dataset = Dataset(test_props, units='eV', stack=True)
 
-    f = open("atom_init.json")
+    f = open("processing/atom_init.json")
     atom_inits = json.load(f)
 
     for key, value in atom_inits.items():
@@ -71,8 +73,28 @@ def get_Painn_dataloaders(train_data,val_data,test_data,prop,batch_size):
     return train_loader, val_loader, test_loader
 
 def get_e3nn_dataloaders(train_data,val_data,test_data,batch_size):
+    r_max = 5.0
+    for dataframe in [train_data, val_data, test_data]:
+        dataframe['data'] = dataframe.progress_apply(lambda x: build_data(x, prop, r_max), axis=1)
+
+    train_loader = tg.loader.DataLoader(train_data['data'].values, batch_size=batch_size, shuffle=True)
+    val_loader = tg.loader.DataLoader(val_data['data'].values, batch_size=1)
+    test_loader = tg.loader.DataLoader(test_data['data'].values, batch_size=1)
+
+    return train_loader, val_loader, test_loader
 
 def get_e3nn_contrastive_dataloaders(train_data,val_data,test_data,batch_size):
+    r_max = 5.0
+    train_comp_data = construct_dataset(train_data,prop,r_max)
+    val_comp_data = construct_dataset(val_data,prop,r_max)
+    test_comp_data = construct_dataset(test_data,prop,r_max)
+
+    train_loader = CompDataLoader(train_comp_data, batch_size=batch_size, shuffle=True)
+    val_loader = CompDataLoader(val_comp_data, batch_size=1)
+    test_loader = CompDataLoader(test_comp_data, batch_size=1)
+
+    return train_loader, val_loader, test_loader
+
 
 
 def dataframe_to_props_painn(df, target_prop):   
