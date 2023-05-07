@@ -2,8 +2,9 @@ import pandas as pd
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import RandomSampler
 import torch_geometric as tg
+import pickle as pkl
 
-from processing.datasets import build_e3nn_data
+from processing.dataloader.build_data import build_e3nn_data, construct_contrastive_dataset
 from models.Perovskite-Ordering-CGCNNs-cgcnn.cgcnn.data import get_cgcnn_loader
 from models.Perovskite-Ordering-CGCNNs-painn.nff.data import Dataset, collate_dicts
 
@@ -75,7 +76,7 @@ def get_Painn_dataloaders(train_data,val_data,test_data,prop,batch_size):
 def get_e3nn_dataloaders(train_data,val_data,test_data,batch_size):
     r_max = 5.0
     for dataframe in [train_data, val_data, test_data]:
-        dataframe['data'] = dataframe.progress_apply(lambda x: build_data(x, prop, r_max), axis=1)
+        dataframe['data'] = dataframe.progress_apply(lambda x: build_e3nn_data(x, prop, r_max), axis=1)
 
     train_loader = tg.loader.DataLoader(train_data['data'].values, batch_size=batch_size, shuffle=True)
     val_loader = tg.loader.DataLoader(val_data['data'].values, batch_size=1)
@@ -85,9 +86,9 @@ def get_e3nn_dataloaders(train_data,val_data,test_data,batch_size):
 
 def get_e3nn_contrastive_dataloaders(train_data,val_data,test_data,batch_size):
     r_max = 5.0
-    train_comp_data = construct_dataset(train_data,prop,r_max)
-    val_comp_data = construct_dataset(val_data,prop,r_max)
-    test_comp_data = construct_dataset(test_data,prop,r_max)
+    train_comp_data = construct_contrastive_dataset(train_data,prop,r_max)
+    val_comp_data = construct_contrastive_dataset(val_data,prop,r_max)
+    test_comp_data = construct_contrastive_dataset(test_data,prop,r_max)
 
     train_loader = CompDataLoader(train_comp_data, batch_size=batch_size, shuffle=True)
     val_loader = CompDataLoader(val_comp_data, batch_size=1)
