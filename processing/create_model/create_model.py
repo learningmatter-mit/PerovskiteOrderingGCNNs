@@ -1,6 +1,6 @@
 from procssing.create_model.create_cgcnn_model import get_cgcnn_model
-from procssing.create_model.create_cgcnn_model import get_painn_model
-from procssing.create_model.create_cgcnn_model import get_e3nn_model
+from procssing.create_model.create_painn_model import get_painn_model
+from procssing.create_model.create_e3nn_model import get_e3nn_model
 
 
 def create_model(model_name, hyperparameters, train_loader):
