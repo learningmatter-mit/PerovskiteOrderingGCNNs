@@ -56,7 +56,7 @@ def get_Painn_dataloaders(train_data,val_data,test_data,prop,batch_size):
     val_dataset = Dataset(val_props, units='eV', stack=True)
     test_dataset = Dataset(test_props, units='eV', stack=True)
 
-    f = open("processing/atom_init.json")
+    f = open("processing/dataloader/atom_init.json")
     atom_inits = json.load(f)
 
     for key, value in atom_inits.items():

@@ -1,3 +1,5 @@
+import os
+
 def update_pure(df, props):
     for prop in props:       
         pure_dict_init = {}
@@ -17,6 +19,7 @@ def update_pure(df, props):
         for key in pure_dict_init:
             pure_dict[key[0] + '.' + key[1]] = pure_dict_init[key][0]
 
+        WORKDIR = os.getcwd()
         if not os.path.exists(WORKDIR + '/Pure_ref'):
             os.makedirs(WORKDIR + '/Pure_ref')
 
@@ -48,6 +51,7 @@ def filter_interpolation(df, prop, Interpolation, Difference):
     return df_out, interp_out, diff_out
 
 def interpolator(df, prop):
+    WORKDIR = os.getcwd()
     with open(WORKDIR + "/Pure_ref/" + prop + ".json") as json_file:
         Pure_ref = json.load(json_file)
 

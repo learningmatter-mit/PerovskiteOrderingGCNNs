@@ -17,7 +17,7 @@ def get_atom_encoding():
     atom_inits_atomic_mass = torch.diag(torch.tensor(specie_am))
 
     # CGCNN-type embedding
-    f = open("processing/atom_init.json")
+    f = open("processing/dataloader/atom_init.json")
     atom_inits = json.load(f)
 
     atom_inits_cgcnn = []
