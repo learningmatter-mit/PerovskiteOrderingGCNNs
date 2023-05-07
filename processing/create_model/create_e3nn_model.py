@@ -1,4 +1,4 @@
-from models.Perovskite-Ordering_GCNNs-cgcnn.cgcnn.min import Normalizer
+from models.Perovskite-Ordering-GCNNs-cgcnn.cgcnn.min import Normalizer
 from models.Perovskite-Ordering-CGNNs-e3nn.utils.utils_model import Network
 import torch_scatter
 
