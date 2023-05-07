@@ -1,7 +1,7 @@
 import pandas as pd
 
 def filter_data_by_properties(df,props):
-    if isintance(props,str):
+    if isinstance(props,str):
         props = [props]
     return df.dropna(subset=props)
 
