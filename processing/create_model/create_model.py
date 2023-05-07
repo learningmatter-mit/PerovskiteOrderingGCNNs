@@ -12,7 +12,7 @@ def create_model(model_name, hyperparameters, train_loader, prop="energy_above_h
     elif model_name == "e3nn":
         return get_e3nn_model(hyperparameters, train_loader)
     elif model_name == "e3nn_contrastive":
-        return get_e3nn_model(hyperparameters, train_loader)
+        return get_e3nn_model(hyperparameters, train_loader,is_contrastive=True)
     else:
         print("Model Type Not Supported")
 
