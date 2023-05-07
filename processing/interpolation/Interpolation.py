@@ -21,10 +21,10 @@ def update_pure(df, props):
             pure_dict[key[0] + '.' + key[1]] = pure_dict_init[key][0]
 
         WORKDIR = os.getcwd()
-        if not os.path.exists(WORKDIR + '/Pure_ref'):
-            os.makedirs(WORKDIR + '/Pure_ref')
+        if not os.path.exists(WORKDIR + '/processing/interpolation/Pure_ref'):
+            os.makedirs(WORKDIR + '/processing/interpolation/Pure_ref')
 
-        with open(WORKDIR + "/Pure_ref/" + prop + ".json", "w") as outfile:
+        with open(WORKDIR + "/processing/interpolation/Pure_ref/" + prop + ".json", "w") as outfile:
             json.dump(pure_dict, outfile)
 
 def filter_alloys(df):
@@ -53,7 +53,7 @@ def filter_interpolation(df, prop, Interpolation, Difference):
 
 def interpolator(df, prop):
     WORKDIR = os.getcwd()
-    with open(WORKDIR + "/Pure_ref/" + prop + ".json") as json_file:
+    with open(WORKDIR + "/processing/interpolation/Pure_ref/" + prop + ".json") as json_file:
         Pure_ref = json.load(json_file)
 
     Interpolation = []
