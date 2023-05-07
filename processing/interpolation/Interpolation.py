@@ -1,4 +1,5 @@
 import os
+import json
 
 def update_pure(df, props):
     for prop in props:       
