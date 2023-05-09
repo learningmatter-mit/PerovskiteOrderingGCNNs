@@ -3,15 +3,23 @@ from torch.utils.data import DataLoader
 from torch.utils.data.sampler import RandomSampler
 import torch_geometric as tg
 import pickle as pkl
+from tqdm import tqdm
+import copy
+from pymatgen.io.ase import AseAtomsAdaptor
+
 
 from processing.dataloader.build_data import build_e3nn_data, construct_contrastive_dataset
-from models.Perovskite-Ordering-CGCNNs-cgcnn.cgcnn.data import get_cgcnn_loader
-from models.Perovskite-Ordering-CGCNNs-painn.nff.data import Dataset, collate_dicts
+from models.PerovskiteOrderingGCNNs_cgcnn.cgcnn.data import get_cgcnn_loader
 
-def get_dataloaders(df, prop, model_type, batch_size)
+import sys
+sys.path.append('models/PerovskiteOrderingGCNNs_painn/')
+from nff.data import Dataset, collate_dicts
+
+def get_dataloaders(df, prop, model_type, batch_size):
+    tqdm.pandas()
     pd.options.mode.chained_assignment = None # Disable the SettingWithCopy warning (due to pandas.apply as new column)
     df['ase_structure'] = df.progress_apply(lambda x: AseAtomsAdaptor.get_atoms(x['structure']), axis=1)
-    df['idx'] = df_interp.index
+    df['idx'] = df.index
 
     df_all_multi = copy.deepcopy(df)
 
