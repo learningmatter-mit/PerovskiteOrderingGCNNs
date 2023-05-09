@@ -1,8 +1,13 @@
 import torch_geometric as tg
 import torch
+import json
+import numpy as np
 from ase import Atom, Atoms
 from ase.neighborlist import neighbor_list
 
+from processing.dataloader.contrastive_data import CompData
+
+default_dtype = torch.float64
 
 def get_atom_encoding():
     # one-hot encoding atom type and mass (from Mingda Li, et al. Adv. Sci. 2021, 8, 2004214)
@@ -23,7 +28,6 @@ def get_atom_encoding():
     atom_inits_cgcnn = []
     for i in range(1, 101):
         atom_inits_cgcnn.append(atom_inits[str(i)])
-
     atom_inits_cgcnn = torch.tensor(atom_inits_cgcnn, dtype=default_dtype)
 
     return type_encoding, atom_inits_cgcnn, atom_inits_atomic_mass
@@ -50,6 +54,7 @@ def build_e3nn_data(entry, prop, r_max):
         
     data = tg.data.Data(
         pos=positions, lattice=lattice, symbol=symbols,
+        comp = entry["formula"],
         x=atom_inits_atomic_mass[[type_encoding[specie] for specie in symbols]], # AM-type embedding (node feature)
         z=atom_inits_cgcnn[[type_encoding[specie] for specie in symbols]], # CGCNN-type embedding (node attribute)
         edge_index=torch.stack([torch.LongTensor(edge_src), torch.LongTensor(edge_dst)], dim=0),
