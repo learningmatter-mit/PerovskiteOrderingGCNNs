@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import RandomSampler
 import torch_geometric as tg
@@ -9,6 +10,7 @@ from pymatgen.io.ase import AseAtomsAdaptor
 
 
 from processing.dataloader.build_data import build_e3nn_data, construct_contrastive_dataset
+from processing.dataloader.contrastive_data import CompDataLoader
 from models.PerovskiteOrderingGCNNs_cgcnn.cgcnn.data import get_cgcnn_loader
 
 import sys
@@ -81,7 +83,7 @@ def get_Painn_dataloaders(train_data,val_data,test_data,prop,batch_size):
 
     return train_loader, val_loader, test_loader
 
-def get_e3nn_dataloaders(train_data,val_data,test_data,batch_size):
+def get_e3nn_dataloaders(train_data,val_data,test_data,prop,batch_size):
     r_max = 5.0
     for dataframe in [train_data, val_data, test_data]:
         dataframe['data'] = dataframe.progress_apply(lambda x: build_e3nn_data(x, prop, r_max), axis=1)
@@ -92,7 +94,7 @@ def get_e3nn_dataloaders(train_data,val_data,test_data,batch_size):
 
     return train_loader, val_loader, test_loader
 
-def get_e3nn_contrastive_dataloaders(train_data,val_data,test_data,batch_size):
+def get_e3nn_contrastive_dataloaders(train_data,val_data,test_data,prop,batch_size):
     r_max = 5.0
     train_comp_data = construct_contrastive_dataset(train_data,prop,r_max)
     val_comp_data = construct_contrastive_dataset(val_data,prop,r_max)

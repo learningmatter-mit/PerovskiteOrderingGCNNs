@@ -7,6 +7,8 @@ from torch.utils.data.dataloader import default_collate
 from torch_geometric.data import Dataset, Data
 from torch_geometric.data.data import BaseData
 
+from processing.dataloader.contrastive_batch import CompBatch
+
 
 class CompData():
     def __init__(self, data_arr):

@@ -16,3 +16,4 @@
 [submodule "models/PerovskiteOrderingGCNNs_e3nn"]
 	path = models/PerovskiteOrderingGCNNs_e3nn
 	url = git@github.com:learningmatter-mit/PerovskiteOrderingGCNNs_e3nn.git
+	branch = main
