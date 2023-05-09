@@ -1,4 +1,4 @@
-from models.Perovskite-Ordering-CGNNS-painn.nff.train import get_model
+from models.PerovskiteOrderingGCNNS_painn.nff.train import get_model
 import numpy as np
 
 def get_painn_model(hyperparameters,train_loader,prop):

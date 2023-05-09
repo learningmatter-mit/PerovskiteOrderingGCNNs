@@ -1,5 +1,5 @@
-from models.Perovskite-Ordering-GCNNs-cgcnn.cgcnn.min import Normalizer
-from models.Perovskite-Ordering-CGNNs-e3nn.utils.utils_model import Network
+from models.PerovskiteOrderingGCNNs_cgcnn.cgcnn.min import Normalizer
+from models.PerovskiteOrderingGCNNs_e3nn.utils.utils_model import Network
 import torch_scatter
 
 class PeriodicNetwork(Network):
