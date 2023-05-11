@@ -1,6 +1,10 @@
-from models.PerovskiteOrderingGCNNs_cgcnn.cgcnn.min import Normalizer
+from typing import Union, Dict
+from models.PerovskiteOrderingGCNNs_cgcnn.cgcnn.model import Normalizer
 from models.PerovskiteOrderingGCNNs_e3nn.utils.utils_model import Network
+from training.hyperparameters.default import get_default_e3nn_hyperparameters
 import torch_scatter
+import torch
+import torch_geometric as tg
 
 class PeriodicNetwork(Network):
     #### TAKEN FROM https://github.com/ninarina12/phononDoS_tutorial/blob/main/phononDoS.ipynb
@@ -32,6 +36,10 @@ class PeriodicNetwork(Network):
         return output
 
 def get_e3nn_model(hyperparameters, train_loader, is_contrastive = False):
+
+    if hyperparameters = "default":
+        hyperparameters = get_default_e3nn_hyperparameters()
+
     in_dim = 92
     em_dim = hyperparameters['len_embedding_feature_vector']
     out_dim = hyperparameters['num_hidden_feature']

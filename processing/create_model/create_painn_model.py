@@ -1,7 +1,11 @@
-from models.PerovskiteOrderingGCNNS_painn.nff.train import get_model
+from models.PerovskiteOrderingGCNNs_painn.nff.train import get_model
+from training.hyperparameters.default import get_default_painn_hyperparameters
 import numpy as np
 
 def get_painn_model(hyperparameters,train_loader,prop):
+
+    if hyperparameters = "default":
+        hyperparameters = get_default_painn_hyperparameters()
 
     prop_name = prop+ "_diff"
 
