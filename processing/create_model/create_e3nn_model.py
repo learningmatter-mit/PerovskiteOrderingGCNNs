@@ -7,8 +7,7 @@ import torch
 import torch_geometric as tg
 
 class PeriodicNetwork(Network):
-    #### TAKEN FROM https://github.com/ninarina12/phononDoS_tutorial/blob/main/phononDoS.ipynb
-    def __init__(self, in_dim, em_dim, **kwargs):            
+    def __init__(self, in_dim, em_dim, out_dim, hid_dim, n_hid, **kwargs):            
         # override the `reduce_output` keyword to instead perform an averge over atom contributions    
         self.pool = False
         if kwargs['reduce_output'] == True:
@@ -20,18 +19,33 @@ class PeriodicNetwork(Network):
         # embed the mass-weighted one-hot encoding
         self.em = nn.Linear(in_dim, em_dim)
 
+        if n_hid > 0:
+            self.conv_to_fc = torch.nn.Linear(out_dim, hid_dim)
+            self.conv_to_fc_relu = torch.nn.ReLU()
+            
+            if n_hid > 1:
+                self.fcs = torch.nn.ModuleList([torch.nn.Linear(hid_dim, hid_dim) for _ in range(n_hid-1)])
+                self.relus = torch.nn.ModuleList([torch.nn.ReLU() for _ in range(n_hid-1)])
+        
+            self.fc_out = torch.nn.Linear(hid_dim, 1)
+        
+        else:
+            self.fc_out = torch.nn.Linear(out_dim, 1)
+
     def forward(self, data: Union[tg.data.Data, Dict[str, torch.Tensor]]) -> torch.Tensor:
         data.x = F.relu(self.em(data.x))
         data.z = F.relu(self.em(data.z))
-        output = super().forward(data)
-        output = torch.relu(output)
+        assert self.pool == True
+        crys_fea = torch_scatter.scatter_mean(atom_fea, data.batch, dim=0)       
+               
+        if hasattr(self, 'conv_to_fc') and hasattr(self, 'conv_to_fc_relu'):
+            crys_fea = self.conv_to_fc_relu(self.conv_to_fc(crys_fea))
+            
+            if hasattr(self, 'fcs') and hasattr(self, 'relus'):
+                for fc, relu in zip(self.fcs, self.relus):
+                    crys_fea = relu(fc(crys_fea))        
         
-        # if pool_nodes was set to True, use scatter_mean to aggregate
-        if self.pool == True:
-            output = torch_scatter.scatter_mean(output, data.batch, dim=0)  # take mean over atoms per example
-        
-        maxima, _ = torch.max(output, dim=1)
-        output = output.div(maxima.unsqueeze(1))
+        output =  self.fc_out(crys_fea)
         
         return output
 
