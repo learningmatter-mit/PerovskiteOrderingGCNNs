@@ -1,5 +1,4 @@
-from models.PerovskiteOrderingGCNNs_cgcnn.cgcnn.model import CrystalGraphConvNet
-from models.PerovskiteOrderingGCNNs_cgcnn.cgcnn.min import Normalizer
+from models.PerovskiteOrderingGCNNs_cgcnn.cgcnn.model import CrystalGraphConvNet, Normalizer
 
 def get_cgcnn_model(hyperparameters,train_loader):
 
