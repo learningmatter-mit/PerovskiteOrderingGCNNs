@@ -1,9 +1,11 @@
 from models.PerovskiteOrderingGCNNs_cgcnn.cgcnn.model import CrystalGraphConvNet, Normalizer
 from training.hyperparameters.default import get_default_cgcnn_hyperparameters
+import numpy as np
+import torch
 
 def get_cgcnn_model(hyperparameters,train_loader):
 
-    if hyperparameters = "default":
+    if hyperparameters == "default":
         hyperparameters = get_default_cgcnn_hyperparameters()
 
     training_labels = []
