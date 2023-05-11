@@ -4,7 +4,7 @@ import numpy as np
 
 def get_painn_model(hyperparameters,train_loader,prop):
 
-    if hyperparameters = "default":
+    if hyperparameters == "default":
         hyperparameters = get_default_painn_hyperparameters()
 
     prop_name = prop+ "_diff"

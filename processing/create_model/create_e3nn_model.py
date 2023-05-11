@@ -4,6 +4,8 @@ from models.PerovskiteOrderingGCNNs_e3nn.utils.utils_model import Network
 from training.hyperparameters.default import get_default_e3nn_hyperparameters
 import torch_scatter
 import torch
+import torch.nn as nn
+import numpy as np
 import torch_geometric as tg
 
 class PeriodicNetwork(Network):
@@ -51,14 +53,15 @@ class PeriodicNetwork(Network):
 
 def get_e3nn_model(hyperparameters, train_loader, is_contrastive = False):
 
-    if hyperparameters = "default":
+    if hyperparameters == "default":
         hyperparameters = get_default_e3nn_hyperparameters()
 
     in_dim = 92
+    r_max = 5.0
     em_dim = hyperparameters['len_embedding_feature_vector']
     out_dim = hyperparameters['num_hidden_feature']
 
-    n_train_mean = get_neighbors(train_loader, is_contrastive)
+    n_train_mean = get_neighbors(train_loader)
     
     model = PeriodicNetwork(
         in_dim=in_dim,                                       # dimension of one-hot encoding of atom type
@@ -88,24 +91,13 @@ def get_e3nn_model(hyperparameters, train_loader, is_contrastive = False):
     return model, Normalizer
 
 
-def get_neighbors(train_loader, is_contrastive):
+def get_neighbors(train_loader):
     # https://github.com/ninarina12/phononDoS_tutorial/blob/main/phononDoS.ipynb
     n = []
 
-    if is_contrastive:
-        for i, batch in enumerate(train_loader):
-            for Compentry in batch:
-                for data in CompEntry:
-                    N = data.pos.shape[0]
-                    for i in range(N):
-                        n.append(len((data.edge_index[0] == i).nonzero()))
-
-    else:
-
-        for i, batch in enumerate(train_loader):
-            for data in batch:
-                N = data.pos.shape[0]
-                for i in range(N):
-                    n.append(len((data.edge_index[0] == i).nonzero()))
+    for i, batch in enumerate(train_loader):
+        N = batch.pos.shape[0]
+        for i in range(N):
+            n.append(len((batch.edge_index[0] == i).nonzero()))
 
     return np.array(n).mean()
