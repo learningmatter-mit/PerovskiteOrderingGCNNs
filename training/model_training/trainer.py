@@ -1,16 +1,20 @@
 from models.PerovskiteOrderingGCNNs_painn.nff.train import Trainer, get_trainer, get_model, load_model, loss, hooks, metrics, evaluate
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from training.loss import contrastive_loss
 import torch
+from torch.autograd import Variable
+import time
 
 def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
     if model_type == "Painn":
         best_model = train_painn(model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num)
     else:
         if contrastive in "model_type":
-            loss_fn = get_contrastive_loss()      
+            loss_fn = contrastive_loss 
         else:
             loss_fn = torch.nn.L1Loss()
 
-        best_model = 
+        best_model = train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num)
 
     return best_model
 
@@ -65,11 +69,98 @@ def train_painn(model,model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_n
 
     return T.get_best_model()
 
-def train_CGCNN_e3nn():
+def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
+### Adapted from https://github.com/ninarina12/phononDoS_tutorial/blob/main/utils/utils_model.py
+    device_name = "cuda:" + gpu_num
+    device = torch.device(device_name)
+    
+    best_validation_error = 99999999
+    model.to(device)
+
+    optimizer = torch.optim.Adam(model.parameters(), lr=hyperparameters["lr"])
+    max_epochs = hyperparameters['MaxEpochs']
+    scheduler = ReduceLROnPlateau(
+            optimizer,
+            patience=hyperparameters["reduceLR_patience"],
+            factor=0.5, 
+            min_lr=1e-7, 
+            window_length=1, 
+            stop_after_min=True
+        )
+
+    results = {}
+    history = []
+    
+    for epoch in range(max_epochs):
+        model.train()
+        
+        for j, d in tqdm(enumerate(train_loader), total=len(train_loader)):
+
+            if model_type == "CGCNN":
+                input_struct = d[0]
+                target = d[1]
+                input_var = (Variable(input_struct[0].cuda(non_blocking=True)),
+                             Variable(input_struct[1].cuda(non_blocking=True)),
+                             input_struct[2].cuda(non_blocking=True),
+                             [crys_idx.cuda(non_blocking=True) for crys_idx in input_struct[3]])
+                output = model(*input_var)
+            else:
+                d.to(device)
+                output = model(d)
+
+            if model_type == "CGCNN":
+                loss = loss_fn(normalizer.denorm(output), target)
+            elif model_type == "e3nn_contrastive":
+                loss = loss_fn(normalizer.denorm(output), d.target, d.comp)
+            else:
+                loss = loss_fn(normalizer.denorm(output), d.target)
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        end_time = time.time()
+        wall = end_time - start_time    
+    
+        model.eval()
+        valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, device)
+        train_avg_loss = evaluate_model(model, normalizer, model_type, train_loader, loss_fn, device)
+
+        history.append({
+            'step': step,
+            'wall': wall,
+            'valid': {
+                'loss': valid_avg_loss,
+            },
+            'train': {
+                'loss': train_avg_loss,
+            },
+        })
+
+        results = {
+            'history': history,
+            'state': model.state_dict()
+        }
+
+        print(f"{step+1:4d} ," +
+              f"lr = {optimizer.param_groups[0]['lr']:8.8f}  " + 
+              f"train loss = {train_avg_loss:8.8f}  " +
+              f"val loss = {valid_avg_loss:8.8f}  " + 
+              f"time = {time.strftime('%H:%M:%S', time.gmtime(wall))}")
+
+        if valid_avg_loss < best_validation_error:
+            best_validation_error = valid_avg_loss
+            with open(OUTDIR + '/best_model.torch', 'wb') as f:
+                torch.save(results, f)
+
+        if scheduler is not None:
+            scheduler.step(valid_avg_loss)
+
+    with open(OUTDIR + '/final_model.torch', 'wb') as f:
+            torch.save(results, f)
 
 
 
 
-def get_contrastive_loss():
 
 
