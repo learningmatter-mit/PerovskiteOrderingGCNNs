@@ -78,7 +78,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
     best_validation_error = 99999999
     model.to(device)
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=hyperparameters["lr"])
+    optimizer = torch.optim.Adam(model.parameters(), lr=10**hyperparameters["log_lr"])
     max_epochs = hyperparameters['MaxEpochs']
     scheduler = ReduceLROnPlateau(
             optimizer,
