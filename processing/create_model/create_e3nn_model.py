@@ -37,7 +37,7 @@ class PeriodicNetwork(Network):
     def forward(self, data: Union[tg.data.Data, Dict[str, torch.Tensor]]) -> torch.Tensor:
         data.x = F.relu(self.em(data.x))
         data.z = F.relu(self.em(data.z))
-        assert self.pool == True
+        #assert self.pool == True
         crys_fea = torch_scatter.scatter_mean(atom_fea, data.batch, dim=0)       
                
         if hasattr(self, 'conv_to_fc') and hasattr(self, 'conv_to_fc_relu'):

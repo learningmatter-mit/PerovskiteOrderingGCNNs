@@ -7,17 +7,17 @@ from torch.autograd import Variable
 import time
 
 def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
+    if contrastive in "model_type":
+        loss_fn = contrastive_loss 
+    else:
+        loss_fn = torch.nn.L1Loss()
+    
     if model_type == "Painn":
         best_model = train_painn(model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num)
     else:
-        if contrastive in "model_type":
-            loss_fn = contrastive_loss 
-        else:
-            loss_fn = torch.nn.L1Loss()
-
         best_model = train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num)
 
-    return best_model
+    return best_model, loss_fn
 
 
 def train_painn(model,model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
