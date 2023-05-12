@@ -1,6 +1,7 @@
 from models.PerovskiteOrderingGCNNs_painn.nff.train import Trainer, get_trainer, get_model, load_model, loss, hooks, metrics, evaluate
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from training.loss import contrastive_loss
+from training.evaluate import evaluate_model
 import torch
 from torch.autograd import Variable
 import time
@@ -123,8 +124,8 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
         wall = end_time - start_time    
     
         model.eval()
-        valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, device)
-        train_avg_loss = evaluate_model(model, normalizer, model_type, train_loader, loss_fn, device)
+        results, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, gpu_num)
+        results, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_loader, loss_fn, gpu_num)
 
         history.append({
             'step': step,
@@ -157,8 +158,11 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
             scheduler.step(valid_avg_loss)
 
     with open(OUTDIR + '/final_model.torch', 'wb') as f:
-            torch.save(results, f)
+        torch.save(results, f)
 
+    model_state = torch.load(OUTDIR + '/best_model.torch', map_location=device)['state']
+    model.load_state_dict(model_state)
+    return model
 
 
 
