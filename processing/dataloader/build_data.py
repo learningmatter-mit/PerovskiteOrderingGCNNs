@@ -55,7 +55,7 @@ def build_e3nn_data(entry, prop, r_max):
     data = tg.data.Data(
         pos=positions, lattice=lattice, symbol=symbols,
         comp = entry["formula"],
-        x=atom_inits_atomic_mass[[type_encoding[specie] for specie in symbols]], # AM-type embedding (node feature)
+        x=atom_inits_cgcnn[[type_encoding[specie] for specie in symbols]], # AM-type embedding (node feature)
         z=atom_inits_cgcnn[[type_encoding[specie] for specie in symbols]], # CGCNN-type embedding (node attribute)
         edge_index=torch.stack([torch.LongTensor(edge_src), torch.LongTensor(edge_dst)], dim=0),
         edge_shift=torch.tensor(edge_shift, dtype=default_dtype),
