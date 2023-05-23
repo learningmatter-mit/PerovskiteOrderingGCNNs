@@ -1,7 +1,9 @@
 import os
+import pandas as pd
 import json
 
-def update_pure(df, props):
+def update_pure(props):
+    df = pd.read_json("data/edge_dataset.json")
     for prop in props:       
         pure_dict_init = {}
         for index, row in df.iterrows():
@@ -99,7 +101,7 @@ def interpolator(df, prop):
     return Interpolation, Difference
 
 def apply_interpolation(df, prop):
-    update_pure(df, [prop])
+    update_pure([prop])
     df_interp = filter_alloys(df)
     interp, diff = interpolator(df_interp, prop)
     df_interp, interp_filter, diff_filter = filter_interpolation(df_interp, prop, interp, diff)
