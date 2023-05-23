@@ -1,4 +1,5 @@
 import pandas as pd
+from pymatgen.core import Structure
 
 def filter_data_by_properties(df,props):
     if isinstance(props,str):
@@ -8,7 +9,7 @@ def filter_data_by_properties(df,props):
 
 def select_structures(df,structure_type):
     if structure_type == "unrelaxed":
-        df["structure"] = df['unrelaxed_struct']
+        df["structure"] = Structure.from_dict(df['unrelaxed_struct'])
     else:
-        df["structure"] = df["opt_struct"]
+        df["structure"] = Structure.from_dict(df["opt_struct"])
     return df
