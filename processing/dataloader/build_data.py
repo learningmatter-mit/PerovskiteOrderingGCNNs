@@ -2,6 +2,7 @@ import torch_geometric as tg
 import torch
 import json
 import numpy as np
+import random
 from ase import Atom, Atoms
 from ase.neighborlist import neighbor_list
 
@@ -82,8 +83,10 @@ def construct_contrastive_dataset(df,prop,r_max):
         else:
             comp_to_data[row.formula] = [curr_data]
             
+    
     stored_data = []
     for formula in comp_to_data:
+        random.Random(0).shuffle(comp_to_data[formula])
         curr_arr = []
         for datapoint in comp_to_data[formula]:
             
