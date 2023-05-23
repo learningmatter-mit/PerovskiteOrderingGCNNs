@@ -34,6 +34,7 @@ def get_atom_encoding():
 
 def build_e3nn_data(entry, prop, r_max):
     #### TAKEN FROM https://github.com/ninarina12/phononDoS_tutorial/blob/main/phononDoS.ipynb
+    torch.set_default_dtype(default_dtype)
     type_encoding, atom_inits_cgcnn, atom_inits_atomic_mass = get_atom_encoding()
     symbols = list(entry['ase_structure'].symbols).copy()
     positions = torch.from_numpy(entry['ase_structure'].positions.copy())

@@ -4,6 +4,7 @@ from models.PerovskiteOrderingGCNNs_e3nn.utils.utils_model import Network
 from training.hyperparameters.default import get_default_e3nn_hyperparameters
 import torch_scatter
 import torch
+import torch.nn.functional as F
 import torch.nn as nn
 import numpy as np
 import torch_geometric as tg
@@ -37,6 +38,7 @@ class PeriodicNetwork(Network):
     def forward(self, data: Union[tg.data.Data, Dict[str, torch.Tensor]]) -> torch.Tensor:
         data.x = F.relu(self.em(data.x))
         data.z = F.relu(self.em(data.z))
+        atom_fea = torch.nn.functional.relu(super().forward(data))
         #assert self.pool == True
         crys_fea = torch_scatter.scatter_mean(atom_fea, data.batch, dim=0)       
                
@@ -88,7 +90,8 @@ def get_e3nn_model(hyperparameters, train_loader, is_contrastive = False):
     sample_target = np.concatenate(sample_target).ravel()
     normalizer = Normalizer(torch.tensor(sample_target))
 
-    return model, Normalizer
+    model.pool = True
+    return model, normalizer
 
 
 def get_neighbors(train_loader):
