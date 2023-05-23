@@ -24,7 +24,7 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num):
                              Variable(input_struct[1].cuda(non_blocking=True)),
                              input_struct[2].cuda(non_blocking=True),
                              [crys_idx.cuda(non_blocking=True) for crys_idx in input_struct[3]])
-                output = model(*input_var)
+                output = model(*input_var).view(-1)
                 target = Variable(target.cuda(non_blocking=True))
             else:
                 d.to(device)
