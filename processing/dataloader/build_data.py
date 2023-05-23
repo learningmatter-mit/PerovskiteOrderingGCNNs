@@ -2,6 +2,7 @@ import torch_geometric as tg
 import torch
 import json
 import numpy as np
+import random
 from ase import Atom, Atoms
 from ase.neighborlist import neighbor_list
 
@@ -34,6 +35,7 @@ def get_atom_encoding():
 
 def build_e3nn_data(entry, prop, r_max):
     #### TAKEN FROM https://github.com/ninarina12/phononDoS_tutorial/blob/main/phononDoS.ipynb
+    torch.set_default_dtype(default_dtype)
     type_encoding, atom_inits_cgcnn, atom_inits_atomic_mass = get_atom_encoding()
     symbols = list(entry['ase_structure'].symbols).copy()
     positions = torch.from_numpy(entry['ase_structure'].positions.copy())
@@ -81,8 +83,10 @@ def construct_contrastive_dataset(df,prop,r_max):
         else:
             comp_to_data[row.formula] = [curr_data]
             
+    
     stored_data = []
     for formula in comp_to_data:
+        random.Random(0).shuffle(comp_to_data[formula])
         curr_arr = []
         for datapoint in comp_to_data[formula]:
             

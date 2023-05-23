@@ -26,6 +26,27 @@ def pairwise_probs(output, target):
     output_matrix = output_norm - output_clone
 
     return torch.mean(torch.abs(output_matrix-target_matrix))
+
+def pairwise_energies(output, target):
+    ##### Get probabilities
+    output_ref = output - torch.min(output)
+    target_ref = target - torch.min(target)
+
+    #### Get matrices
+    output_clone = output_ref.clone()
+    target_clone = target_ref.clone()
+    size = target.shape[0]
+    
+    target_ref= target_ref.view(-1,1).expand(size,size)
+    target_clone = target_clone.view(1,-1).expand(size,size)
+    
+    output_ref = output_ref.view(-1,1).expand(size,size)
+    output_clone = output_clone.view(1,-1).expand(size,size)
+    
+    target_matrix = target_ref - target_clone
+    output_matrix = output_ref - output_clone
+
+    return torch.mean(torch.abs(output_matrix-target_matrix))
     
 
 def contrastive_loss(output,target,comp):
@@ -36,7 +57,8 @@ def contrastive_loss(output,target,comp):
     for i in range(len(comp)):
         curr_comp = comp[i]
         if curr_comp != stored_comp:
-            ordering += pairwise_probs(output[last_index:i],target[last_index:i])
+            #ordering += pairwise_probs(output[last_index:i],target[last_index:i])
+            ordering += pairwise_energies(output[last_index:i],target[last_index:i])
             last_index = i
             stored_comp = comp[i]
     
