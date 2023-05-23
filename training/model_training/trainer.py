@@ -1,13 +1,15 @@
 from models.PerovskiteOrderingGCNNs_painn.nff.train import Trainer, get_trainer, get_model, load_model, loss, hooks, metrics, evaluate
 from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.optim import Adam
 from training.loss import contrastive_loss
 from training.evaluate import evaluate_model
 import torch
 from torch.autograd import Variable
+from tqdm import tqdm
 import time
 
 def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
-    if contrastive in "model_type":
+    if "contrastive" in "model_type":
         loss_fn = contrastive_loss 
     else:
         loss_fn = torch.nn.L1Loss()
@@ -20,7 +22,7 @@ def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,
     return best_model, loss_fn
 
 
-def train_painn(model,model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
+def train_painn(model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
 
     prop_names = model.output_keys
     loss_fn = loss.build_mae_loss(loss_coef = {prop: 1.0 for prop in prop_names})
@@ -30,8 +32,8 @@ def train_painn(model,model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_n
     #train_metrics = [metrics.MeanSquaredError(prop) for prop in prop_names]
 
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())
-    optimizer = Adam(trainable_params, lr=10**hyperparameters["log10_lr"])
-    num_epochs = hyperparameters["epochs"]
+    optimizer = Adam(trainable_params, lr=10**hyperparameters["log_lr"])
+    num_epochs = hyperparameters["MaxEpochs"]
     
     train_hooks = [
         hooks.MaxEpochHook(num_epochs),
@@ -72,7 +74,7 @@ def train_painn(model,model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_n
 
 def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
 ### Adapted from https://github.com/ninarina12/phononDoS_tutorial/blob/main/utils/utils_model.py
-    device_name = "cuda:" + gpu_num
+    device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
     
     best_validation_error = 99999999
@@ -85,8 +87,6 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
             patience=hyperparameters["reduceLR_patience"],
             factor=0.5, 
             min_lr=1e-7, 
-            window_length=1, 
-            stop_after_min=True
         )
 
     results = {}
@@ -94,6 +94,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
     
     for epoch in range(max_epochs):
         model.train()
+        start_time = time.time()
         
         for j, d in tqdm(enumerate(train_loader), total=len(train_loader)):
 
@@ -104,10 +105,13 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
                              Variable(input_struct[1].cuda(non_blocking=True)),
                              input_struct[2].cuda(non_blocking=True),
                              [crys_idx.cuda(non_blocking=True) for crys_idx in input_struct[3]])
-                output = model(*input_var)
+                output = model(*input_var).view(-1)
+                target = Variable(target.cuda(non_blocking=True))
+
             else:
                 d.to(device)
                 output = model(d)
+
 
             if model_type == "CGCNN":
                 loss = loss_fn(normalizer.denorm(output), target)
@@ -128,7 +132,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
         results, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_loader, loss_fn, gpu_num)
 
         history.append({
-            'step': step,
+            'step': epoch,
             'wall': wall,
             'valid': {
                 'loss': valid_avg_loss,
@@ -143,7 +147,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
             'state': model.state_dict()
         }
 
-        print(f"{step+1:4d} ," +
+        print(f"{epoch+1:4d} ," +
               f"lr = {optimizer.param_groups[0]['lr']:8.8f}  " + 
               f"train loss = {train_avg_loss:8.8f}  " +
               f"val loss = {valid_avg_loss:8.8f}  " + 
