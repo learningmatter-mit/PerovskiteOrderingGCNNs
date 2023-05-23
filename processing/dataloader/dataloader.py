@@ -18,31 +18,27 @@ import sys
 sys.path.append('models/PerovskiteOrderingGCNNs_painn/')
 from nff.data import Dataset, collate_dicts
 
-def get_dataloaders(df, prop, model_type, batch_size):
+def get_dataloaders(prop, model_type, batch_size):
     tqdm.pandas()
     pd.options.mode.chained_assignment = None # Disable the SettingWithCopy warning (due to pandas.apply as new column)
-    df['ase_structure'] = df.progress_apply(lambda x: AseAtomsAdaptor.get_atoms(x['structure']), axis=1)
-    df['idx'] = df.index
+    training_data = pd.read_json("data/training_set.json")
+    validation_data = pd.read_json("data/validation_set.json")
+    test_data = pd.read_json("data_test_set.json")
 
-    df_all_multi = copy.deepcopy(df)
-
-    split_seed = 0
-    train_ids = df_all_multi.sample(frac=0.6,random_state=split_seed).index.tolist()
-    val_ids = df_all_multi[~df_all_multi.index.isin(train_ids)].sample(frac=0.5,random_state=split_seed).index.tolist()
-    test_ids = df_all_multi[(~df_all_multi.index.isin(train_ids))&(~df_all_multi.index.isin(val_ids))].index.tolist()
-
-    train_data = df[df.index.isin(train_ids)].copy()
-    val_data = df[df.index.isin(val_ids)].copy()
-    test_data = df[df.index.isin(test_ids)].copy()
+    dfs = [training_data, validation_data, test_data]
+    
+    for df in dfs:
+        df['ase_structure'] = df.progress_apply(lambda x: AseAtomsAdaptor.get_atoms(x['structure']), axis=1)
+        df['idx'] = df.index
 
     if model_type == "CGCNN":
-        train_loader, val_loader, test_loader = get_CGCNN_dataloaders(train_data,val_data,test_data,prop,batch_size)
+        train_loader, val_loader, test_loader = get_CGCNN_dataloaders(training_data,validation_data,test_data,prop,batch_size)
     elif model_type == "Painn":
-        train_loader, val_loader, test_loader = get_Painn_dataloaders(train_data,val_data,test_data,prop,batch_size)
+        train_loader, val_loader, test_loader = get_Painn_dataloaders(training_data,validation_data,test_data,prop,batch_size)
     elif model_type == "e3nn":
-        train_loader, val_loader, test_loader = get_e3nn_dataloaders(train_data,val_data,test_data,prop,batch_size)
+        train_loader, val_loader, test_loader = get_e3nn_dataloaders(training_data,validation_data,test_data,prop,batch_size)
     elif model_type == "e3nn_contrastive":
-        train_loader, val_loader, test_loader = get_e3nn_contrastive_dataloaders(train_data,val_data,test_data,prop,batch_size)
+        train_loader, val_loader, test_loader = get_e3nn_contrastive_dataloaders(training_data,validation_data,test_data,prop,batch_size)
     else:
         print("Model Type Not Supported")
         return None
