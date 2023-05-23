@@ -13,5 +13,5 @@ git submodule update --remote --merge
 The required `conda` environment can be installed using the environment.yml file:
 ```
 conda env create -f environment.yml
-conda activate pvsk_order_des
+conda activate Perovskite_ML_Environment
 ```
