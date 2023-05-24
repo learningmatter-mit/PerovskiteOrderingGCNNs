@@ -1,5 +1,4 @@
 import copy
-import pandas as pd
 from pymatgen.core import Structure
 
 
