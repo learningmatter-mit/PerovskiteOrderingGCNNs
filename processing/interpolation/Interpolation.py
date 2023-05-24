@@ -5,7 +5,7 @@ def update_pure(props):
     df = pd.read_json("data/edge_dataset.json")
     for prop in props:       
         pure_dict_init = {}
-        for index, row in df.iterrows():
+        for _, row in df.iterrows():
             if len(row["composition"]["sites"]["A"]) == 1 and len(row["composition"]["sites"]["B"]) == 1:
                 A_site = row["composition"]["sites"]["A"][0]
                 B_site = row["composition"]["sites"]["B"][0]
@@ -34,7 +34,6 @@ def filter_alloys(df):
              raise Warning("A binary composition exists in the examined dataset")
     if len(filt) == 0:
         raise ValueError("All binary compositions")
-        return None
     filt_structs = df.loc[filt]
 
     return filt_structs

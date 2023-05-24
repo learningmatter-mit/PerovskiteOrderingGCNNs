@@ -13,6 +13,7 @@ from torch_geometric.data.batch import Batch
 
 from processing.dataloader.contrastive_collate import comp_collate
 
+
 class CompBatch(Batch):
 
     @classmethod
