@@ -4,6 +4,11 @@ To clone this repo and all submodules:
 ```
 git clone --recurse-submodules git@github.com:learningmatter-mit/PerovskiteOrderingGCNNs.git
 ```
+or
+```
+git clone git@github.com:learningmatter-mit/PerovskiteOrderingGCNNs.git
+git submodule update --init
+```
 
 To only update the submodules:
 ```
