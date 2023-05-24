@@ -4,9 +4,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data.sampler import RandomSampler
 import torch_geometric as tg
 import json
-import pickle as pkl
 from tqdm import tqdm
-import copy
 from pymatgen.io.ase import AseAtomsAdaptor
 from processing.dataloader.build_data import build_e3nn_data, construct_contrastive_dataset
 from processing.dataloader.contrastive_data import CompDataLoader
@@ -16,9 +14,7 @@ sys.path.append('models/PerovskiteOrderingGCNNs_painn/')
 from nff.data import Dataset, collate_dicts
 
 
-
-
-def get_dataloader(data, prop = "dft_e_hull", model_type = "CGCNN", batch_size = 1, interpolation = True):
+def get_dataloader(data, prop="dft_e_hull", model_type="cgcnn", batch_size=10, interpolation=True):
     tqdm.pandas()
     pd.options.mode.chained_assignment = None # Disable the SettingWithCopy warning (due to pandas.apply as new column)
     
@@ -28,25 +24,24 @@ def get_dataloader(data, prop = "dft_e_hull", model_type = "CGCNN", batch_size =
     if interpolation:
         prop += "_diff"
 
-    if model_type == "CGCNN":
-        data_loader = get_cgcnn_dataloader(data,prop,batch_size)
-    elif model_type == "Painn":
-        data_loader = get_Painn_dataloader(data,prop,batch_size)
+    if model_type == "cgcnn":
+        data_loader = get_cgcnn_loader(data,prop,batch_size)
+    elif model_type == "painn":
+        data_loader = get_painn_dataloader(data,prop,batch_size)
     elif model_type == "e3nn":
         data_loader = get_e3nn_dataloader(data,prop,batch_size)
     elif model_type == "e3nn_contrastive":
         data_loader = get_e3nn_contrastive_dataloader(data,prop,batch_size)
     else:
-        print("Model Type Not Supported")
-        return None
+        raise ValueError("Model Type Not Supported")
+
     return data_loader
 
-def get_Painn_dataloaders(data,prop,batch_size):
+
+def get_painn_dataloader(data,prop,batch_size):
 
     data_props = dataframe_to_props_painn(data, prop)
-
     dataset = Dataset(data_props, units='eV', stack=True)
-
     f = open("processing/dataloader/atom_init.json")
     atom_inits = json.load(f)
 
@@ -55,29 +50,23 @@ def get_Painn_dataloaders(data,prop,batch_size):
 
     dataset.generate_neighbor_list(cutoff=5.0, undirected=False)
     dataset.generate_atom_initializations(atom_inits)
-
-    data_loader = DataLoader(dataset, batch_size=batch_size, collate_fn=collate_dicts, 
-                          sampler=RandomSampler(dataset))
+    data_loader = DataLoader(dataset, batch_size=batch_size, collate_fn=collate_dicts, sampler=RandomSampler(dataset))
 
     return data_loader
 
-def get_e3nn_dataloaders(data,prop,batch_size):
-    r_max = 5.0
 
-    data['datapoint'] = data.progress_apply(lambda x: build_e3nn_data(x, prop, r_max), axis=1)
-
+def get_e3nn_dataloader(data,prop,batch_size):
+    data['datapoint'] = data.progress_apply(lambda x: build_e3nn_data(x, prop, r_max=5.0), axis=1)
     data_loader = tg.loader.DataLoader(data['datapoint'].values, batch_size=batch_size, shuffle=True)
 
     return data_loader
 
-def get_e3nn_contrastive_dataloaders(data,prop,batch_size):
-    r_max = 5.0
-    comp_data = construct_contrastive_dataset(data,prop,r_max)
 
+def get_e3nn_contrastive_dataloader(data,prop,batch_size):
+    comp_data = construct_contrastive_dataset(data,prop,r_max=5.0)
     data_loader = CompDataLoader(comp_data, batch_size=batch_size, shuffle=True)
 
     return data_loader
-
 
 
 def dataframe_to_props_painn(df, target_prop):   

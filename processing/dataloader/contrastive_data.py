@@ -13,7 +13,8 @@ from processing.dataloader.contrastive_batch import CompBatch
 class CompData():
     def __init__(self, data_arr):
         self.structures = data_arr
-    
+
+
 ### Copied from Pytorch Geometric apart from new collator
 class CompCollater:
     def __init__(self, follow_batch, exclude_keys):
@@ -45,6 +46,7 @@ class CompCollater:
         # TODO Deprecated, remove soon.
         return self(batch)
 
+
 ### Copied from Pytorch Geometric apart from new collator
 class CompDataLoader(torch.utils.data.DataLoader):
     def __init__(
@@ -71,5 +73,3 @@ class CompDataLoader(torch.utils.data.DataLoader):
             collate_fn=CompCollater(follow_batch, exclude_keys),
             **kwargs,
         )
-        
-
