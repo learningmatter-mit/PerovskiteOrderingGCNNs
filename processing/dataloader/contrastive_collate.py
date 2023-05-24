@@ -9,6 +9,7 @@ from torch_geometric.data.data import BaseData
 from torch_geometric.data.storage import BaseStorage, NodeStorage
 from torch_geometric.typing import SparseTensor
 
+
 def comp_collate(
     cls,
     data_list: List[BaseData],
