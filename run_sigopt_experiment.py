@@ -95,7 +95,7 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
     model, normalizer = create_model(model_type,train_loader)
     
     sigopt_name = build_sigopt_name(target_prop,is_relaxed,interpolation,model_type)
-    model_save_dir = '/saved_models/'+ model_type + '/' + sigopt_name + '/' + experiment_id + '/observ_' + str(observation_count)
+    model_save_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + experiment_id + '/observ_' + str(observation_count)
     if not os.path.exists(model_save_dir):
         os.makedirs(model_save_dir) 
 

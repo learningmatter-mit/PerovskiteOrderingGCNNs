@@ -3,6 +3,7 @@ import torch
 import json
 import numpy as np
 import random
+from tqdm import tqdm
 from ase import Atom
 from ase.neighborlist import neighbor_list
 
@@ -83,7 +84,7 @@ def build_e3nn_data(entry, prop, r_max):
 
 def construct_contrastive_dataset(df,prop,r_max):   
     comp_to_data = {}
-    for _,row in df.iterrows():     
+    for _,row in tqdm(df.iterrows(), total=df.shape[0]):     
         curr_data = build_e3nn_data(row, prop, r_max)
         
         if row.formula in comp_to_data:
