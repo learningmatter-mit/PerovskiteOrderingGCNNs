@@ -9,7 +9,7 @@ from tqdm import tqdm
 import time
 
 def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
-    if "contrastive" in "model_type":
+    if "contrastive" in model_type:
         loss_fn = contrastive_loss 
     else:
         loss_fn = torch.nn.L1Loss()
