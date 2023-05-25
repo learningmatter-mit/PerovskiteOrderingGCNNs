@@ -53,7 +53,7 @@ class PeriodicNetwork(Network):
         
         return output
 
-def get_e3nn_model(hyperparameters, train_loader, is_contrastive = False):
+def get_e3nn_model(hyperparameters, train_loader):
 
     if hyperparameters == "default":
         hyperparameters = get_default_e3nn_hyperparameters()
