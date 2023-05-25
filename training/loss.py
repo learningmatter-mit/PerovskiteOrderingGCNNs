@@ -28,7 +28,7 @@ def pairwise_probs(output, target):
     return torch.mean(torch.abs(output_matrix-target_matrix))
 
 def pairwise_energies(output, target):
-    ##### Get probabilities
+    ##### Get energies
     output_ref = output - torch.min(output)
     target_ref = target - torch.min(target)
 
