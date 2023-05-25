@@ -11,7 +11,6 @@ def get_cgcnn_model(hyperparameters,train_loader):
     training_labels = []
     
     for i, (struct, target, _) in enumerate(train_loader):
-        
         training_labels.append(target.view(-1,1))
         
     training_labels = np.concatenate(training_labels).ravel()
