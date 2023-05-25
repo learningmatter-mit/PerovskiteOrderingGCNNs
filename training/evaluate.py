@@ -12,7 +12,7 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num):
 
     model.eval()
     loss_cumulative = 0.    
-    results = []
+    predictions = []
     targets = []
     total_count = 0
     with torch.no_grad():
@@ -31,16 +31,26 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num):
                 output = model(d)
                 target = d.target
                 
-            result = normalizer.denorm(output)
-            results.append(result)
+            prediction = normalizer.denorm(output)
+            predictions.append(predictions)
             targets.append(target)
             if model_type == "CGCNN":
                 loss = loss_fn(normalizer.denorm(output), target)
+                loss_cumulative = loss_cumulative + loss.detach().item()*target.shape[0]
             elif model_type == "e3nn_contrastive":
-                loss = loss_fn(normalizer.denorm(output), d.target, d.comp)
+                loss, direct_loss, contrastive_loss = loss_fn(normalizer.denorm(output), d.target, d.comp)
+                loss_cumulative = loss_cumulative + loss.detach().item()*target.shape[0]
+                loss_direct_cumulative = loss_direct_cumulative + direct_loss.detach().item()*target.shape[0]
+                loss_contrastive_cumulative = loss_contrastive_cumulative + contrastive_loss.detach().item()*target.shape[0]
             else:
                 loss = loss_fn(normalizer.denorm(output), d.target)
-            loss_cumulative = loss_cumulative + loss.detach().item()*target.shape[0]
+                loss_cumulative = loss_cumulative + loss.detach().item()*target.shape[0]
+            
             total_count += target.shape[0]
+        
+        if model_type == "e3nn_contrastive":
+            loss_output = (loss_cumulative/total_count,loss_direct_cumulative,loss_contrastive_cumulative)
+        else:
+            loss_output = (loss_cumulative/total_count)
     
-    return torch.cat(results), torch.cat(targets), loss_cumulative/total_count
+    return torch.cat(predictions), torch.cat(targets), loss_output

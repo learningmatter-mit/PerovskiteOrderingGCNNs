@@ -116,7 +116,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
             if model_type == "CGCNN":
                 loss = loss_fn(normalizer.denorm(output), target)
             elif model_type == "e3nn_contrastive":
-                loss = loss_fn(normalizer.denorm(output), d.target, d.comp)
+                loss, direct_loss, contrastive_loss = loss_fn(normalizer.denorm(output), d.target, d.comp)
             else:
                 loss = loss_fn(normalizer.denorm(output), d.target)
 
@@ -128,38 +128,19 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
         wall = end_time - start_time    
     
         model.eval()
-        results, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, gpu_num)
-        results, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_loader, loss_fn, gpu_num)
+        predictions, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, gpu_num)
+        predictions, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_loader, loss_fn, gpu_num)
 
-        history.append({
-            'step': epoch,
-            'wall': wall,
-            'valid': {
-                'loss': valid_avg_loss,
-            },
-            'train': {
-                'loss': train_avg_loss,
-            },
-        })
+        validation_loss = valid_avg_loss[0]
+        results = record_keep(history,results,epoch,wall,valid_avg_loss,train_avg_loss,model,model_type)
 
-        results = {
-            'history': history,
-            'state': model.state_dict()
-        }
-
-        print(f"{epoch+1:4d} ," +
-              f"lr = {optimizer.param_groups[0]['lr']:8.8f}  " + 
-              f"train loss = {train_avg_loss:8.8f}  " +
-              f"val loss = {valid_avg_loss:8.8f}  " + 
-              f"time = {time.strftime('%H:%M:%S', time.gmtime(wall))}")
-
-        if valid_avg_loss < best_validation_error:
-            best_validation_error = valid_avg_loss
+        if validation_loss < best_validation_error:
+            best_validation_error = validation_loss
             with open(OUTDIR + '/best_model.torch', 'wb') as f:
                 torch.save(results, f)
 
         if scheduler is not None:
-            scheduler.step(valid_avg_loss)
+            scheduler.step(validation_loss)
 
     with open(OUTDIR + '/final_model.torch', 'wb') as f:
         torch.save(results, f)
@@ -171,4 +152,59 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
 
 
 
+def record_keep(history,results,epoch,wall,valid_avg_loss,train_avg_loss,model,model_type):
+    if "contrastive" in model_type:
+        history.append({
+            'step': epoch,
+            'wall': wall,
+            'valid': {
+                'loss': valid_avg_loss[0],
+                'direct': valid_avg_loss[1],
+                'contrastive': valid_avg_loss[2],
+            },
+            'train': {
+                'loss': train_avg_loss[0],
+                'direct': train_avg_loss[1],
+                'contrastive': train_avg_loss[2],
+            },
+        })
 
+        results = {
+            'history': history,
+            'state': model.state_dict()
+        }
+
+        print(f"{epoch+1:4d} ," +
+            f"lr = {optimizer.param_groups[0]['lr']:8.8f}  " + 
+            f"train loss = {train_avg_loss[0]:8.8f}  " +
+            f"train direct = {train_avg_loss[1]:8.8f}  " +
+            f"train contrastive = {train_avg_loss[2]:8.8f}  " +
+            f"val loss = {valid_avg_loss[0]:8.8f}  " + 
+            f"val direct = {valid_avg_loss[1]:8.8f}  " + 
+            f"val contrastive = {valid_avg_loss[2]:8.8f}  " + 
+            f"time = {time.strftime('%H:%M:%S', time.gmtime(wall))}")
+
+    else:
+        history.append({
+            'step': epoch,
+            'wall': wall,
+            'valid': {
+                'loss': valid_avg_loss[0],
+            },
+            'train': {
+                'loss': train_avg_loss[0],
+            },
+        })
+
+        results = {
+            'history': history,
+            'state': model.state_dict()
+        }
+
+        print(f"{epoch+1:4d} ," +
+            f"lr = {optimizer.param_groups[0]['lr']:8.8f}  " + 
+            f"train loss = {train_avg_loss[0]:8.8f}  " +
+            f"val loss = {valid_avg_loss[0]:8.8f}  " + 
+            f"time = {time.strftime('%H:%M:%S', time.gmtime(wall))}")
+
+    return results
