@@ -14,7 +14,7 @@ sys.path.append('models/PerovskiteOrderingGCNNs_painn/')
 from nff.data import Dataset, collate_dicts
 
 
-def get_dataloader(data, prop="dft_e_hull", model_type="Painn", batch_size=10, interpolation=True):
+def get_dataloader(data, prop="dft_e_hull", model_type="CGCNN", batch_size=10, interpolation=True):
     tqdm.pandas()
     pd.options.mode.chained_assignment = None # Disable the SettingWithCopy warning (due to pandas.apply as new column)
     

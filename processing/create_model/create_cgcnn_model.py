@@ -1,6 +1,7 @@
 from models.PerovskiteOrderingGCNNs_cgcnn.cgcnn.model import CrystalGraphConvNet, Normalizer
 from training.hyperparameters.default import get_default_cgcnn_hyperparameters
 import numpy as np
+from tqdm import tqdm
 import torch
 
 def get_cgcnn_model(hyperparameters,train_loader):
@@ -10,7 +11,7 @@ def get_cgcnn_model(hyperparameters,train_loader):
 
     training_labels = []
     
-    for i, (struct, target, _) in enumerate(train_loader):
+    for i, (struct, target, _) in enumerate(tqdm(train_loader)):
         training_labels.append(target.view(-1,1))
         
     training_labels = np.concatenate(training_labels).ravel()
