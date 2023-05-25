@@ -11,6 +11,8 @@ import time
 
 def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
     
+    hyperparameters["MaxEpochs"] = 100 
+    
     if not os.path.exists(OUTDIR):
         os.makedirs(OUTDIR)
 

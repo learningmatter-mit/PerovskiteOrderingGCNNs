@@ -1,6 +1,6 @@
 def get_painn_hyperparameter_range():
     parameters=[
-        dict(name='MaxEpochs', bounds=dict(min=100, max=100), type="int"), 
+        # dict(name='MaxEpochs', bounds=dict(min=100, max=100), type="int"), 
         dict(name="batch_size", bounds=dict(min=4, max=16), type="int"),
         dict(name="log_lr", bounds=dict(min=-5, max=-2), type="int"), 
         dict(name="reduceLR_patience", bounds=dict(min=10, max=30), type="int"), 
@@ -9,12 +9,12 @@ def get_painn_hyperparameter_range():
         dict(name="activation", categorical_values=["swish", "learnable_swish", "ReLU", "LeakyReLU"], type="categorical"),
         dict(name="num_conv", bounds=dict(min=1, max=6), type="int"), 
      ]
-     return parameters
+    return parameters
 
 def get_cgcnn_hyperparameter_range():
     parameters=[
 
-        dict(name='MaxEpochs', bounds=dict(min=100, max=100), type="int"), 
+        # dict(name='MaxEpochs', bounds=dict(min=100, max=100), type="int"), 
         dict(name="batch_size", bounds=dict(min=4, max=16), type="int"),
         dict(name="log_lr", bounds=dict(min=-5, max=-2), type="int"), 
         dict(name="milestone", bounds=dict(min=10, max=30), type="int"), 
@@ -31,7 +31,7 @@ def get_cgcnn_hyperparameter_range():
 def get_e3nn_hyperparameter_range():
     parameters=[
 
-        dict(name='MaxEpochs', bounds=dict(min=100, max=100), type="int"), 
+        # dict(name='MaxEpochs', bounds=dict(min=100, max=100), type="int"), 
         dict(name="batch_size", bounds=dict(min=4, max=12), type="int"),
         dict(name="log_lr", bounds=dict(min=-5, max=-2), type="int"), 
         dict(name="reduceLR_patience", bounds=dict(min=10, max=30), type="int"), 

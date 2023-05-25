@@ -1,3 +1,5 @@
+import sys
+sys.path.append('models/PerovskiteOrderingGCNNs_painn/')
 from nff.train import evaluate
 import torch
 from torch.autograd import Variable
