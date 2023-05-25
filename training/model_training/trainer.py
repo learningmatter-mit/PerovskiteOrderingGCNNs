@@ -138,7 +138,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
         predictions, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_loader, loss_fn, gpu_num)
 
         validation_loss = valid_avg_loss[0]
-        results = record_keep(history,results,epoch,wall,valid_avg_loss,train_avg_loss,model,model_type)
+        results = record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,model_type)
 
         if validation_loss < best_validation_error:
             best_validation_error = validation_loss
@@ -158,7 +158,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
 
 
 
-def record_keep(history,results,epoch,wall,valid_avg_loss,train_avg_loss,model,model_type):
+def record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,model_type):
     if "contrastive" in model_type:
         history.append({
             'step': epoch,
