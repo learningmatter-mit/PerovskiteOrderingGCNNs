@@ -11,7 +11,9 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num):
         return evaluate(model, dataloader, loss_fn, device=gpu_num)
 
     model.eval()
-    loss_cumulative = 0.    
+    loss_cumulative = 0.   
+    loss_direct_cumulative = 0.
+    loss_contrastive_cumulative = 0.
     predictions = []
     targets = []
     total_count = 0
@@ -32,7 +34,7 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num):
                 target = d.target
                 
             prediction = normalizer.denorm(output)
-            predictions.append(predictions)
+            predictions.append(prediction)
             targets.append(target)
             if model_type == "CGCNN":
                 loss = loss_fn(normalizer.denorm(output), target)
@@ -40,8 +42,8 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num):
             elif model_type == "e3nn_contrastive":
                 loss, direct_loss, contrastive_loss = loss_fn(normalizer.denorm(output), d.target, d.comp)
                 loss_cumulative = loss_cumulative + loss.detach().item()*target.shape[0]
-                loss_direct_cumulative = loss_direct_cumulative + direct_loss.detach().item()*target.shape[0]
-                loss_contrastive_cumulative = loss_contrastive_cumulative + contrastive_loss.detach().item()*target.shape[0]
+                loss_direct_cumulative = loss_direct_cumulative + direct_loss.detach().item()
+                loss_contrastive_cumulative = loss_contrastive_cumulative + contrastive_loss.detach().item()
             else:
                 loss = loss_fn(normalizer.denorm(output), d.target)
                 loss_cumulative = loss_cumulative + loss.detach().item()*target.shape[0]
@@ -49,8 +51,8 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num):
             total_count += target.shape[0]
         
         if model_type == "e3nn_contrastive":
-            loss_output = (loss_cumulative/total_count,loss_direct_cumulative,loss_contrastive_cumulative)
+            loss_output = [loss_cumulative/total_count,loss_direct_cumulative,loss_contrastive_cumulative]
         else:
-            loss_output = (loss_cumulative/total_count)
+            loss_output = [loss_cumulative/total_count]
     
     return torch.cat(predictions), torch.cat(targets), loss_output
