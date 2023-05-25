@@ -62,7 +62,7 @@ def contrastive_loss(output,target,comp):
             last_index = i
             stored_comp = comp[i]
     
-    ordering += pairwise_probs(output[last_index:],target[last_index:])
+    ordering += pairwise_energies(output[last_index:],target[last_index:])
     
-    return MAE + ordering
+    return MAE + ordering, MAE, ordering
 
