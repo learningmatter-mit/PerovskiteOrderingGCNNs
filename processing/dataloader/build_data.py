@@ -8,7 +8,7 @@ from ase.neighborlist import neighbor_list
 
 from processing.dataloader.contrastive_data import CompData
 
-default_dtype = torch.float64
+default_dtype = torch.float32
 
 
 def get_atom_encoding():
@@ -39,18 +39,28 @@ def build_e3nn_data(entry, prop, r_max):
     torch.set_default_dtype(default_dtype)
     type_encoding, atom_inits_cgcnn, atom_inits_atomic_mass = get_atom_encoding()
     symbols = list(entry['ase_structure'].symbols).copy()
-    positions = torch.from_numpy(entry['ase_structure'].positions.copy())
-    lattice = torch.from_numpy(entry['ase_structure'].cell.array.copy()).unsqueeze(0)
+    positions = torch.from_numpy(entry['ase_structure'].positions.copy()).float()
+    lattice = torch.from_numpy(entry['ase_structure'].cell.array.copy()).float().unsqueeze(0)
         
     # edge_src and edge_dst are the indices of the central and neighboring atom, respectively
     # edge_shift indicates whether the neighbors are in different images or copies of the unit cell
     edge_src, edge_dst, edge_shift = neighbor_list("ijS", a=entry['ase_structure'], cutoff=r_max, self_interaction=True)
-    
+    #print(edge_src)
+    #print(edge_dst)
+    #print(edge_shift)
+
     # compute the relative distances and unit cell shifts from periodic boundaries
     edge_batch = positions.new_zeros(positions.shape[0], dtype=torch.long)[torch.from_numpy(edge_src)]
+    #print(edge_batch)
+    #print(positions[torch.from_numpy(edge_dst)].type())
+    #print(torch.tensor(edge_shift).type())
+    #print(lattice[edge_batch].type())
     edge_vec = (positions[torch.from_numpy(edge_dst)]
                 - positions[torch.from_numpy(edge_src)]
-                + torch.einsum('ni,nij->nj', torch.tensor(edge_shift, dtype=default_dtype), lattice[edge_batch]))
+                + torch.einsum('ni,nij->nj', torch.tensor(edge_shift, dtype = default_dtype), lattice[edge_batch]))
+
+    #print(edge_vec)
+    #print(edge_vec.type())
     
     # compute edge lengths (rounded only for plotting purposes)
     edge_len = np.around(edge_vec.norm(dim=1).numpy(), decimals=2)
