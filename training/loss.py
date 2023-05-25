@@ -25,7 +25,7 @@ def pairwise_probs(output, target):
     target_matrix = target_norm - target_clone
     output_matrix = output_norm - output_clone
 
-    return torch.mean(torch.abs(output_matrix-target_matrix))
+    return torch.sum(torch.abs(output_matrix-target_matrix))
 
 def pairwise_energies(output, target):
     ##### Get energies
@@ -46,23 +46,29 @@ def pairwise_energies(output, target):
     target_matrix = target_ref - target_clone
     output_matrix = output_ref - output_clone
 
-    return torch.mean(torch.abs(output_matrix-target_matrix))
+    return torch.sum(torch.abs(output_matrix-target_matrix))
     
 
 def contrastive_loss(output,target,comp):
     MAE = torch.mean(torch.abs(output-target))
     ordering = 0
     last_index = 0
+    ordering_count = 0
     stored_comp = comp[0]
     for i in range(len(comp)):
         curr_comp = comp[i]
         if curr_comp != stored_comp:
             #ordering += pairwise_probs(output[last_index:i],target[last_index:i])
             ordering += pairwise_energies(output[last_index:i],target[last_index:i])
+            ordering_count += (output[last_index:i].shape[0])**2 - output[last_index:i].shape[0]
             last_index = i
             stored_comp = comp[i]
     
     ordering += pairwise_energies(output[last_index:],target[last_index:])
+    ordering_count += (output[last_index:].shape[0])**2 - output[last_index:].shape[0]
+
+    if ordering_count != 0:
+        ordering /= ordering_count
     
     return MAE + ordering, MAE, ordering
 
