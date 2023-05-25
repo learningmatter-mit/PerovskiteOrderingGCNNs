@@ -1,3 +1,4 @@
+import os
 from models.PerovskiteOrderingGCNNs_painn.nff.train import Trainer, get_trainer, get_model, load_model, loss, hooks, metrics, evaluate
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.optim import Adam
@@ -9,6 +10,10 @@ from tqdm import tqdm
 import time
 
 def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
+    
+    if not os.path.exists(OUTDIR):
+        os.makedirs(OUTDIR)
+
     if "contrastive" in model_type:
         loss_fn = contrastive_loss 
     else:
@@ -76,7 +81,8 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
 ### Adapted from https://github.com/ninarina12/phononDoS_tutorial/blob/main/utils/utils_model.py
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
-    
+    torch.cuda.set_device(device)
+
     best_validation_error = 99999999
     model.to(device)
 
