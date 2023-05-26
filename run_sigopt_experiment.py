@@ -68,9 +68,6 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
         observation_id = experiment.progress.observation_count - 1
 
         model_save_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + experiment_id + '/observ_' + str(observation_id)
-        if not os.path.exists(model_save_dir):
-            os.makedirs(model_save_dir)
-
         model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + experiment_id + '/tmp'
 
         ### Copy contents of tmp file
