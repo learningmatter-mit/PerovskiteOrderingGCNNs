@@ -1,6 +1,6 @@
 import sys
 sys.path.append('models/PerovskiteOrderingGCNNs_painn/')
-from nff.train import evaluate
+from nff.train import evaluate, loss
 import torch
 from torch.autograd import Variable
 
@@ -10,6 +10,8 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num):
     device = torch.device(device_name)
 
     if model_type == "Painn":
+        prop_names = model.output_keys
+        loss_fn = loss.build_mae_loss(loss_coef = {prop: 1.0 for prop in prop_names})
         return evaluate(model, dataloader, loss_fn, device=gpu_num)
 
     model.eval()
@@ -58,7 +60,7 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num):
         if model_type == "e3nn_contrastive":
             loss_output = [loss_cumulative/len(dataloader),loss_direct_cumulative/total_count,loss_contrastive_cumulative/contrastive_term_count]
         else:
-            loss_output = [loss_cumulative/total_count]
+            loss_output = loss_cumulative/total_count
     
     return torch.cat(predictions), torch.cat(targets), loss_output
 
