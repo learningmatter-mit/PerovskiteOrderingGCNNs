@@ -104,7 +104,7 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
 
     best_model,loss_fn = trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,model_save_dir,gpu_num)
     
-    best_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, gpu_num)
+    _, _, best_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, gpu_num)
 
     return best_loss
 
