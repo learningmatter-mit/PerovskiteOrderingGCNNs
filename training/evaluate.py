@@ -61,7 +61,7 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num):
         if model_type == "e3nn_contrastive":
             loss_output = [loss_cumulative/len(dataloader),loss_direct_cumulative/total_count,loss_contrastive_cumulative/contrastive_term_count]
         else:
-            loss_output = loss_cumulative/total_count
+            loss_output = [loss_cumulative/total_count]
     
     return torch.cat(predictions), torch.cat(targets), loss_output
 
