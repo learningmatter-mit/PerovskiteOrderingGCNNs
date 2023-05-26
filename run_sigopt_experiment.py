@@ -3,6 +3,7 @@ import sys
 import pandas as pd
 import argparse
 import pickle as pkl
+import torch
 from processing.utils import filter_data_by_properties,select_structures
 from processing.interpolation.Interpolation import *
 from processing.dataloader.dataloader import get_dataloader
@@ -164,3 +165,4 @@ if __name__ == '__main__':
         experiment_id = args.id
         sigopt_settings = None
     run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,gpu_num,experiment_id,sigopt_settings)
+    torch.cuda.empty_cache()
