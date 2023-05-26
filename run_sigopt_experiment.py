@@ -117,10 +117,10 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
     
     _, _, best_loss = evaluate_model(best_model, normalizer, model_type, val_loader, loss_fn, gpu_num)
 
-    if model_type == "e3nn_contrastive":
-        return best_loss[0]
-    else:
+    if model_type == "Painn":
         return best_loss
+    else:
+        return best_loss[0]
 
 
 def create_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,sigopt_settings,conn):
