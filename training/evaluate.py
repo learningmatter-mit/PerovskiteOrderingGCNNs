@@ -1,6 +1,6 @@
 import sys
 sys.path.append('models/PerovskiteOrderingGCNNs_painn/')
-from nff.train import evaluate, loss
+from nff.train import evaluate, build_mae_loss
 import torch
 from torch.autograd import Variable
 
@@ -11,8 +11,8 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num):
 
     if model_type == "Painn":
         prop_names = model.output_keys
-        loss_fn = loss.build_mae_loss(loss_coef = {prop: 1.0 for prop in prop_names})
-        return evaluate(model, dataloader, loss_fn, device=gpu_num)
+        loss_fn_painn = build_mae_loss(loss_coef = {prop: 1.0 for prop in prop_names})
+        return evaluate(model, dataloader, loss_fn_painn, device=gpu_num)
 
     model.eval()
     loss_cumulative = 0.   
