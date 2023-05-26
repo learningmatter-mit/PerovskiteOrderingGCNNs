@@ -106,7 +106,7 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
     
     _, _, best_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, gpu_num)
 
-    return best_loss
+    return best_loss[0]
 
 
 def create_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,sigopt_settings,conn):
