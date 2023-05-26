@@ -170,8 +170,6 @@ if __name__ == '__main__':
         interpolation = False
     else:
         raise ValueError('interpolation needs to be yes or no')    
-
-    print(is_relaxed, interpolation)
         
     if args.id == -1:
         experiment_id = None
@@ -181,4 +179,5 @@ if __name__ == '__main__':
     else:
         experiment_id = args.id
         sigopt_settings = None
+    
     run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,gpu_num,experiment_id,sigopt_settings)
