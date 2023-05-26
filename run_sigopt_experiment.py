@@ -63,6 +63,8 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
             value=value,
         )
         
+        torch.cuda.empty_cache()
+        
         experiment = conn.experiments(experiment.id).fetch()
 
 
@@ -165,4 +167,3 @@ if __name__ == '__main__':
         experiment_id = args.id
         sigopt_settings = None
     run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,gpu_num,experiment_id,sigopt_settings)
-    torch.cuda.empty_cache()
