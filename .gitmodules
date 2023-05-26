@@ -1,12 +1,3 @@
-[submodule "models/Perovskite-Ordering-GCNNs-cgcnn"]
-	path = models/Perovskite-Ordering-GCNNs-cgcnn
-	url = git@github.com:learningmatter-mit/Perovskite-Ordering-GCNNs-cgcnn.git
-[submodule "Perovskite-Ordering-GCNNs-e3nn"]
-	path = models/Perovskite-Ordering-GCNNs-e3nn
-	url = git@github.com:learningmatter-mit/Perovskite-Ordering-GCNNs-e3nn.git
-[submodule "Perovskite-Ordering-GCNNs-painn"]
-	path = models/Perovskite-Ordering-GCNNs-painn
-	url = git@github.com:learningmatter-mit/Perovskite-Ordering-GCNNs-painn.git
 [submodule "models/PerovskiteOrderingGCNNs_cgcnn"]
 	path = models/PerovskiteOrderingGCNNs_cgcnn
 	url = git@github.com:learningmatter-mit/PerovskiteOrderingGCNNs_cgcnn.git
