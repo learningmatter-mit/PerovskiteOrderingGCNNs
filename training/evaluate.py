@@ -1,6 +1,7 @@
 import sys
 sys.path.append('models/PerovskiteOrderingGCNNs_painn/')
-from nff.train import evaluate, build_mae_loss
+from nff.train.loss import build_mae_loss
+from nff.train.evaluate import evaluate
 import torch
 from torch.autograd import Variable
 
