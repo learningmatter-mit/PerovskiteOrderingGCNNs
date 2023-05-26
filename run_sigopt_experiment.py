@@ -4,6 +4,7 @@ import pandas as pd
 import argparse
 import pickle as pkl
 import torch
+import shutil
 from processing.utils import filter_data_by_properties,select_structures
 from processing.interpolation.Interpolation import *
 from processing.dataloader.dataloader import get_dataloader
@@ -62,10 +63,23 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
             suggestion=suggestion.id,
             value=value,
         )
-        
+
+        experiment = conn.experiments(experiment.id).fetch()
+        observation_id = experiment.progress.observation_count - 1
+
+        model_save_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + experiment_id + '/observ_' + str(observation_id)
+        if not os.path.exists(model_save_dir):
+            os.makedirs(model_save_dir)
+
+        model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + experiment_id + '/tmp'
+
+        ### Copy contents of tmp file
+        shutil.copytree(model_tmp_dir,model_save_dir)
+        ### Empty tmp file
+        shutil.rmtree(model_tmp_dir)
+
         torch.cuda.empty_cache()
         
-        experiment = conn.experiments(experiment.id).fetch()
 
 
 def build_sigopt_name(target_prop,is_relaxed,interpolation,model_type):
@@ -98,11 +112,11 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
     model, normalizer = create_model(model_type,train_loader)
     
     sigopt_name = build_sigopt_name(target_prop,is_relaxed,interpolation,model_type)
-    model_save_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + experiment_id + '/observ_' + str(observation_count)
-    if not os.path.exists(model_save_dir):
-        os.makedirs(model_save_dir) 
+    model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + experiment_id + '/tmp'
+    if not os.path.exists(model_tmp_dir):
+        os.makedirs(model_tmp_dir) 
 
-    best_model,loss_fn = trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,model_save_dir,gpu_num)
+    best_model,loss_fn = trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,model_tmp_dir,gpu_num)
     
     _, _, best_loss = evaluate_model(best_model, normalizer, model_type, val_loader, loss_fn, gpu_num)
 
