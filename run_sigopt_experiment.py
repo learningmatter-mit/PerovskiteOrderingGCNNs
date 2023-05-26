@@ -67,11 +67,18 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
         experiment = conn.experiments(experiment.id).fetch()
         observation_id = experiment.progress.observation_count - 1
 
-        model_save_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + experiment_id + '/observ_' + str(observation_id)
-        model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + experiment_id + '/tmp'
+        model_save_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment.id) + '/observ_' + str(observation_id)
+        model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment.id) + '/tmp'
+
+        if not os.path.exists(model_save_dir):
+            os.makedirs(model_save_dir)
 
         ### Copy contents of tmp file
-        shutil.copytree(model_tmp_dir,model_save_dir)
+        possible_file_names = ["best_model", "best_model.pth.tar", "best_model.torch"]
+        for file_name in possible_file_names:
+            if os.path.isfile(model_tmp_dir + "/" + file_name):
+                shutil.move(model_tmp_dir + "/" + file_name, model_save_dir + "/" + file_name)
+        
         ### Empty tmp file
         shutil.rmtree(model_tmp_dir)
 
@@ -109,7 +116,7 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
     model, normalizer = create_model(model_type,train_loader)
     
     sigopt_name = build_sigopt_name(target_prop,is_relaxed,interpolation,model_type)
-    model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + experiment_id + '/tmp'
+    model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/tmp'
     if not os.path.exists(model_tmp_dir):
         os.makedirs(model_tmp_dir) 
 
