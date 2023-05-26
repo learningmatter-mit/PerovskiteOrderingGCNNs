@@ -135,13 +135,13 @@ if __name__ == '__main__':
     # parser.add_argument('--path', default = "data/", type=str, metavar='path',
     #                     help="the path to data (default: 'data/')")
     parser.add_argument('--prop', default = "dft_e_hull", type=str, metavar='name',
-                        help="the property to predict (default: 'dft_e_hull')")
-    parser.add_argument('--relaxed', default = False, type=bool, metavar='representation',
-                        help="using DFT-relaxed structure representation (default: False)")
-    parser.add_argument('--interpolation', default = True, type=bool, metavar='representation',
-                        help="using interpolation (default: True)")
+                        help="the property to predict (default: dft_e_hull)")
+    parser.add_argument('--relaxed', default = False, type=str, metavar='representation',
+                        help="using DFT-relaxed structure representation (default: no)")
+    parser.add_argument('--interpolation', default = True, type=str, metavar='representation',
+                        help="using interpolation (default: yes)")
     parser.add_argument('--model', default = "CGCNN", type=str, metavar='model',
-                        help="the neural network to use (default: 'CGCNN'; other options: 'Painn', 'e3nn', 'e3nn_contrastive')")
+                        help="the neural network to use (default: CGCNN; other options: Painn, e3nn, e3nn_contrastive)")
     parser.add_argument('--gpu', default = 0, type=int, metavar='device',
                         help="the gpu to use (default: 0)")
     parser.add_argument('--id', default = -1, type=int, metavar='sigopt_props',
@@ -154,10 +154,25 @@ if __name__ == '__main__':
 
     data_name = "data/"
     target_prop = args.prop
-    is_relaxed = args.relaxed
-    interpolation = args.interpolation
     model_type = args.model
     gpu_num = args.gpu
+    
+    if args.relaxed == 'yes':
+        is_relaxed = True
+    elif args.relaxed == 'no':
+        is_relaxed = False
+    else:
+        raise ValueError('relaxed needs to be yes or no')
+    
+    if args.interpolation == 'yes':
+        interpolation = True
+    elif args.interpolation == 'no':
+        interpolation = False
+    else:
+        raise ValueError('interpolation needs to be yes or no')    
+
+    print(is_relaxed, interpolation)
+        
     if args.id == -1:
         experiment_id = None
         sigopt_settings = {}
