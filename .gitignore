@@ -1,3 +1,10 @@
+# Do not sync local tmp folders
+tmp0/
+tmp1/
+tmp2/
+tmp3/
+tmp/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -81,12 +88,6 @@ target/
 # IPython
 profile_default/
 ipython_config.py
-
-/tmp0
-/tmp1
-/tmp2
-/tmp3
-/tmp
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
