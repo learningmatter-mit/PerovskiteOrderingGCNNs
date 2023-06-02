@@ -4,7 +4,7 @@ import pandas as pd
 import argparse
 import pickle as pkl
 import torch
-import numpy 
+import numpy as np
 import random
 import shutil
 from processing.utils import filter_data_by_properties,select_structures
