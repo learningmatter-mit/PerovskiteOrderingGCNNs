@@ -66,3 +66,72 @@ def get_experiment_id(model_params):
 
     else:
         raise ValueError('These model parameters have not been studied')
+
+
+if __name__ == '__main__':
+
+    prop = "dft_e_hull"
+
+    model_settings = {
+        "model_type": "CGCNN",
+        "relaxed": True,
+        "interpolation": True,
+    }
+    parse_sigopt(prop,model_settings,num_of_models = 3)
+    model_settings = {
+        "model_type": "CGCNN",
+        "relaxed": True,
+        "interpolation": False,
+    }
+    parse_sigopt(prop,model_settings,num_of_models = 3)
+    model_settings = {
+        "model_type": "CGCNN",
+        "relaxed": False,
+        "interpolation": True,
+    }
+    parse_sigopt(prop,model_settings,num_of_models = 3)
+    model_settings = {
+        "model_type": "CGCNN",
+        "relaxed": False,
+        "interpolation": False,
+    }
+    parse_sigopt(prop,model_settings,num_of_models = 3)
+
+    model_settings = {
+        "model_type": "Painn",
+        "relaxed": True,
+        "interpolation": True,
+    }
+    parse_sigopt(prop,model_settings,num_of_models = 3)
+    model_settings = {
+        "model_type": "Painn",
+        "relaxed": False,
+        "interpolation": True,
+    }
+    parse_sigopt(prop,model_settings,num_of_models = 3)
+
+    model_settings = {
+        "model_type": "e3nn",
+        "relaxed": True,
+        "interpolation": True,
+    }
+    parse_sigopt(prop,model_settings,num_of_models = 3)
+    model_settings = {
+        "model_type": "e3nn",
+        "relaxed": False,
+        "interpolation": True,
+    }
+    parse_sigopt(prop,model_settings,num_of_models = 3)
+
+    model_settings = {
+        "model_type": "e3nn_contrastive",
+        "relaxed": True,
+        "interpolation": True,
+    }
+    parse_sigopt(prop,model_settings,num_of_models = 3)
+    model_settings = {
+        "model_type": "e3nn_contrastive",
+        "relaxed": False,
+        "interpolation": True,
+    }
+    parse_sigopt(prop,model_settings,num_of_models = 3)

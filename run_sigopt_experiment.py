@@ -4,6 +4,8 @@ import pandas as pd
 import argparse
 import pickle as pkl
 import torch
+import numpy 
+import random
 import shutil
 from processing.utils import filter_data_by_properties,select_structures
 from processing.interpolation.Interpolation import *
@@ -14,6 +16,10 @@ from training.model_training.trainer import *
 from training.evaluate import *
 
 def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,gpu_num,experiment_id=None,sigopt_settings=None):
+
+    torch.manual_seed(0)
+    random.seed(0)
+    np.random.seed(0)
 
     training_data = pd.read_json(data_name + 'training_set.json')
     validation_data = pd.read_json(data_name + 'validation_set.json')
@@ -68,7 +74,7 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
         observation_id = experiment.progress.observation_count - 1
 
         model_save_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment.id) + '/observ_' + str(observation_id)
-        model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment.id) + '/tmp'
+        model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment.id) + '/tmp' + str(gpu_num)
 
         if not os.path.exists(model_save_dir):
             os.makedirs(model_save_dir)
@@ -113,10 +119,10 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
     train_loader = get_dataloader(train_data,target_prop,model_type,hyperparameters["batch_size"],interpolation)
     val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation)
     
-    model, normalizer = create_model(model_type,train_loader)
+    model, normalizer = create_model(model_type,train_loader,hyperparameters)
     
     sigopt_name = build_sigopt_name(target_prop,is_relaxed,interpolation,model_type)
-    model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/tmp'
+    model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/tmp' + str(gpu_num)
     if not os.path.exists(model_tmp_dir):
         os.makedirs(model_tmp_dir) 
 
