@@ -1,17 +1,17 @@
+import os
+import shutil
+import json
+import sigopt
+import math
+import torch
+import pandas as pd
 from processing.dataloader.dataloader import get_dataloader
 from processing.utils import filter_data_by_properties,select_structures
 from training.evaluate import evaluate_model
 from processing.interpolation.Interpolation import *
-import pandas as pd
-import torch
 from training.loss import contrastive_loss
 from training.sigopt_utils import build_sigopt_name
 from processing.create_model.create_model import create_model
-import sigopt
-import math
-import os
-import shutil
-import json
 
 
 def get_experiment_id(model_params):
@@ -149,7 +149,7 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
     reverify_sigopt_models_results.to_csv(save_directory + "/reverify_sigopt_models_results.csv")
 
 
-def keep_the_best_few_models(model_params, target_prop, num_of_models=3):
+def keep_the_best_few_models(model_params, target_prop, num_best_models=3):
     sigopt_name = build_sigopt_name(target_prop, model_params["relaxed"], model_params["interpolation"], model_params["model_type"])
     exp_id = get_experiment_id(model_params)
     old_directory_prefix = "./saved_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
@@ -161,7 +161,7 @@ def keep_the_best_few_models(model_params, target_prop, num_of_models=3):
         if not math.isclose(row['sigopt_loss'], row['reverified_loss'], rel_tol=1e-2):
             print("========\nSigopt model #" + str(index) + " has non-matching losses\n========")
     
-    for i in range(num_of_models):
+    for i in range(num_best_models):
         new_directory = new_directory_prefix + "/best_" + str(i)
         if not os.path.exists(new_directory):
             os.makedirs(new_directory)
