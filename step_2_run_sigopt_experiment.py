@@ -13,6 +13,7 @@ from processing.dataloader.dataloader import get_dataloader
 from processing.create_model.create_model import create_model
 from training.hyperparameters.sigopt_parameters import *
 from training.model_training.trainer import *
+from training.sigopt_utils import build_sigopt_name
 from training.evaluate import *
 
 def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,gpu_num,experiment_id=None,sigopt_settings=None):
@@ -89,25 +90,6 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
         shutil.rmtree(model_tmp_dir)
 
         torch.cuda.empty_cache()
-        
-
-
-def build_sigopt_name(target_prop,is_relaxed,interpolation,model_type):
-    sigopt_name = target_prop
-
-    if is_relaxed:
-        sigopt_name += "_" 
-        sigopt_name += "relaxed"
-    else:
-        sigopt_name += "_" 
-        sigopt_name += "unrelaxed"
-
-    if interpolation:
-        sigopt_name += "_" 
-        sigopt_name += "interpolation"
-
-    sigopt_name = sigopt_name + "_" + model_type
-    return sigopt_name
 
 
 def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,observation_count,gpu_num):
@@ -159,13 +141,11 @@ def create_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,mode
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Hyperparameter optimization for perovksite ordering GCNNs')
-    # parser.add_argument('--path', default = "data/", type=str, metavar='path',
-    #                     help="the path to data (default: 'data/')")
     parser.add_argument('--prop', default = "dft_e_hull", type=str, metavar='name',
                         help="the property to predict (default: dft_e_hull)")
-    parser.add_argument('--relaxed', default = False, type=str, metavar='representation',
+    parser.add_argument('--relaxed', default = 'no', type=str, metavar='yes/no',
                         help="using DFT-relaxed structure representation (default: no)")
-    parser.add_argument('--interpolation', default = True, type=str, metavar='representation',
+    parser.add_argument('--interpolation', default = 'yes', type=str, metavar='yes/no',
                         help="using interpolation (default: yes)")
     parser.add_argument('--model', default = "CGCNN", type=str, metavar='model',
                         help="the neural network to use (default: CGCNN; other options: Painn, e3nn, e3nn_contrastive)")

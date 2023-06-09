@@ -1,7 +1,7 @@
 import sigopt
 import numpy as np
 import json
-from run_sigopt_experiment import build_sigopt_name
+from training.sigopt_utils import build_sigopt_name
 
 def parse_sigopt(prop,model_settings,num_of_models = 3):
 
