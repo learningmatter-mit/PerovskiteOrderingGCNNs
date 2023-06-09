@@ -119,6 +119,7 @@ dependencies:
     - asttokens==2.2.1
     - backcall==0.2.0
     - backoff==1.11.1
+    - beautifulsoup4==4.12.2
     - click==8.1.3
     - comm==0.1.3
     - contourpy==1.0.7
@@ -129,8 +130,10 @@ dependencies:
     - e3nn==0.5.1
     - emmet-core==0.55.2
     - executing==1.2.0
+    - filelock==3.12.0
     - fonttools==4.39.4
     - future==0.18.3
+    - gdown==4.7.1
     - gitdb==4.0.10
     - gitpython==3.1.31
     - ipykernel==6.23.1
@@ -174,6 +177,7 @@ dependencies:
     - sigopt==8.8.0
     - smart-open==6.3.0
     - smmap==5.0.0
+    - soupsieve==2.4.1
     - spglib==2.0.2
     - stack-data==0.6.2
     - sympy==1.12
@@ -183,4 +187,4 @@ dependencies:
     - traitlets==5.9.0
     - uncertainties==3.1.7
     - wcwidth==0.2.6
-prefix: /home/jkdamewo/miniconda3/envs/Perovskite_ML_Environment
+prefix: /home/jypeng/miniconda3/envs/Perovskite_ML_Environment

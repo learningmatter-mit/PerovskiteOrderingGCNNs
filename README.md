@@ -36,6 +36,7 @@ torchaudio        0.13.1
 pyg               2.3.0
 e3nn              0.5.1
 sigopt            8.8.0
+gdown             4.7.1
 ```
 
 All these packages can be installed using the [environment.yml](environment.yml) file and `conda`:
