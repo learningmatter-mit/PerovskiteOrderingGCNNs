@@ -105,8 +105,9 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
     
     sigopt_name = build_sigopt_name(target_prop,is_relaxed,interpolation,model_type)
     model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/tmp' + str(gpu_num)
-    if not os.path.exists(model_tmp_dir):
-        os.makedirs(model_tmp_dir) 
+    if os.path.exists(model_tmp_dir):
+        shutil.rmtree(model_tmp_dir)
+    os.makedirs(model_tmp_dir) 
 
     best_model,loss_fn = trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,model_tmp_dir,gpu_num)
     
