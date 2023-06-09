@@ -68,7 +68,7 @@ def get_predictions(train_loader, infer_loader, model_params, prop, gpu_num, num
         model, normalizer = load_model(train_loader, model_params, prop, i)
         model = model.to(device)
 
-        curr_predictions = predict_from_ids(model,normalizer, model_params["model_type"],infer_loader,gpu_num)
+        curr_predictions = evaluate_model_ids(model,normalizer, model_params["model_type"],infer_loader,gpu_num)
 
         for idx in curr_predictions:
             if idx in predictions:
