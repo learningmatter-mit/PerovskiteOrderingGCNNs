@@ -5,6 +5,10 @@ tmp2/
 tmp3/
 tmp/
 
+# Do not track model files
+best_model
+best_model.torch
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
