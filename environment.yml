@@ -3,6 +3,7 @@ channels:
   - pyg
   - pytorch
   - nvidia
+  - conda-forge
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=main
@@ -12,8 +13,8 @@ dependencies:
   - bottleneck=1.3.5=py310ha9d4c09_0
   - brotlipy=0.7.0=py310h7f8727e_1002
   - bzip2=1.0.8=h7b6447c_0
-  - ca-certificates=2023.01.10=h06a4308_0
-  - certifi=2023.5.7=py310h06a4308_0
+  - ca-certificates=2023.5.7=hbcca054_0
+  - certifi=2023.5.7=pyhd8ed1ab_0
   - cffi=1.15.1=py310h5eee18b_3
   - charset-normalizer=2.0.4=pyhd3eb1b0_0
   - cryptography=39.0.1=py310h9ce1e76_0
@@ -67,6 +68,7 @@ dependencies:
   - mkl-service=2.4.0=py310h5eee18b_1
   - mkl_fft=1.3.6=py310h1128e8f_1
   - mkl_random=1.2.2=py310h1128e8f_1
+  - mscorefonts=0.0.1=3
   - ncurses=6.4=h6a678d5_0
   - nettle=3.7.3=hbbd107a_1
   - numexpr=2.8.4=py310h85018f9_1
