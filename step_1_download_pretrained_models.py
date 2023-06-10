@@ -6,7 +6,7 @@ import tarfile
 
 def download_models(download_type):
     if download_type == 'best_models':
-        url = 'https://drive.google.com/uc?id=1gRWin0BLPRDAAHjVI7h6DYOdSp2H8D2l'
+        url = 'https://drive.google.com/uc?id=1H-AM-_qb9KhhxZct5mhPVtcStOWykM8L'
     elif download_type == 'saved_models':
         url = 'https://drive.google.com/uc?id=1r-Xk80Na4EZ50XJJ9tzjqyUospRXwhbV'
     
