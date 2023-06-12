@@ -84,7 +84,7 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
         else:
             infer_data["predicted_"+target_prop] = sorted_prediction
 
-        return infer_data
+        infer_data.to_json(directory + '/' + test_set_type + "_predictions.json")
 
         
 def load_model(gpu_num, train_loader, model_params, directory):
