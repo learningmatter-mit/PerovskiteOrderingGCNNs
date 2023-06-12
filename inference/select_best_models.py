@@ -32,9 +32,9 @@ def get_experiment_id(model_params):
     elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == True and model_params["relaxed"] == True:
         return 596677
     elif model_params["model_type"] == "e3nn_contrastive" and model_params["interpolation"] == True and model_params["relaxed"] == False:
-        return 596672
+        return 597227
     elif model_params["model_type"] == "e3nn_contrastive" and model_params["interpolation"] == True and model_params["relaxed"] == True:
-        return 596673
+        return 597228
     else:
         raise ValueError('These model parameters have not been studied')
     
@@ -153,7 +153,7 @@ def keep_the_best_few_models(model_params, target_prop, num_best_models=3):
     sigopt_name = build_sigopt_name(target_prop, model_params["relaxed"], model_params["interpolation"], model_params["model_type"])
     exp_id = get_experiment_id(model_params)
     old_directory_prefix = "./saved_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
-    new_directory_prefix = "./best_models/" + model_params["model_type"] + "/"+ sigopt_name
+    new_directory_prefix = "./best_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
 
     reverify_sigopt_models_results = pd.read_csv(old_directory_prefix + '/reverify_sigopt_models_results.csv', index_col=0)
 
