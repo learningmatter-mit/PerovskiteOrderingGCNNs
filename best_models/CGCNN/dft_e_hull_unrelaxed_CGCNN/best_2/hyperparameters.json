@@ -1,0 +1,1 @@
+{"atom_fea_len": 68, "batch_size": 16, "h_fea_len": 90, "log_lr": -3, "n_conv": 3, "n_h": 1, "reduceLR_patience": 13}

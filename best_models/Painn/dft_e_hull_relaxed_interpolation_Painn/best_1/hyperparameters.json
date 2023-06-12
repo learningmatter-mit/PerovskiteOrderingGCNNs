@@ -1,0 +1,1 @@
+{"activation": "ReLU", "batch_size": 9, "log2_feat_dim": 9, "log_lr": -4, "num_conv": 4, "reduceLR_patience": 12}

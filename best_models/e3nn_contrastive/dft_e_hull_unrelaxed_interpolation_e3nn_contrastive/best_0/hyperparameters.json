@@ -1,0 +1,1 @@
+{"batch_size": 7, "len_embedding_feature_vector": 64, "log_lr": -3, "multiplicity_irreps": 32, "num_conv": 4, "num_hidden_feature": 32, "num_hidden_layer": 0, "num_radial_neurons": 64, "num_radical_basis": 20, "reduceLR_patience": 27}

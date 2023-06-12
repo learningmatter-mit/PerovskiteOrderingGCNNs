@@ -1,0 +1,1 @@
+{"activation": "LeakyReLU", "batch_size": 6, "log2_feat_dim": 8, "log_lr": -4, "num_conv": 5, "reduceLR_patience": 15}
