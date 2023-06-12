@@ -1,13 +1,6 @@
-# Do not sync local tmp folders
-tmp0/
-tmp1/
-tmp2/
-tmp3/
-tmp/
-
 # Do not track model files
-best_model
-best_model.torch
+saved_models/
+best_models/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

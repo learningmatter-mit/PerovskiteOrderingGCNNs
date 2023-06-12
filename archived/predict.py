@@ -1,10 +1,10 @@
 import torch
 import json
 import pandas as pd
-import numpy
+import numpy as np
 from processing.utils import filter_data_by_properties,select_structures
 from processing.interpolation.Interpolation import apply_interpolation
-from run_sigopt_experiment import build_sigopt_name
+from training.sigopt_utils import build_sigopt_name
 from processing.dataloader.dataloader import get_dataloader
 from processing.create_model.create_model import create_model
 from training.loss import contrastive_loss
@@ -39,8 +39,8 @@ def predict(data_name,model_params,prop,gpu_num=0,num_models=3):
     train_data = processed_data[0]
     infer_data = processed_data[1]
 
-    train_loader = get_dataloader(train_data, target_prop, model_type, 1, interpolation)
-    infer_loader = get_dataloader(infer_data, target_prop, model_type, 1, interpolation)
+    train_loader = get_dataloader(train_data, prop, model_type, 1, interpolation)
+    infer_loader = get_dataloader(infer_data, prop, model_type, 1, interpolation)
 
     predictions = get_predictions(train_loader, infer_loader, model_params, prop, gpu_num, num_models)
 
@@ -49,7 +49,7 @@ def predict(data_name,model_params,prop,gpu_num=0,num_models=3):
     for index, row in infer_data.iterrows():
         mean_predictions.append(np.mean(predictions[index]))
     
-    if interpolation
+    if interpolation:
         infer_data["predicted_diff_"+prop] = mean_predictions
         infer_data["predicted_" + prop] = infer_data["predicted_diff_"+prop] + infer_data[prop + '_interp']
     else:
@@ -68,7 +68,7 @@ def get_predictions(train_loader, infer_loader, model_params, prop, gpu_num, num
         model, normalizer = load_model(train_loader, model_params, prop, i)
         model = model.to(device)
 
-        curr_predictions = predict_from_ids(model,normalizer, model_params["model_type"],infer_loader,gpu_num)
+        curr_predictions = evaluate_model_ids(model,normalizer, model_params["model_type"],infer_loader,gpu_num)
 
         for idx in curr_predictions:
             if idx in predictions:
