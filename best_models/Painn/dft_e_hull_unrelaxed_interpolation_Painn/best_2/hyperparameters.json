@@ -1,1 +1,0 @@
-{"activation": "swish", "batch_size": 7, "log2_feat_dim": 6, "log_lr": -3, "num_conv": 4, "reduceLR_patience": 10}

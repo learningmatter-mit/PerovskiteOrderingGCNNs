@@ -1,1 +1,0 @@
-{"activation": "learnable_swish", "batch_size": 16, "log2_feat_dim": 7, "log_lr": -3, "num_conv": 4, "reduceLR_patience": 24}
