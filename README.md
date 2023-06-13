@@ -22,6 +22,7 @@ scipy             1.10.1
 numpy             1.24.3
 scikit-learn      1.2.2
 matplotlib        3.7.1
+seaborn           0.12.2
 pymatgen          2023.5.10
 ase               3.22.1
 rdkit             2023.3.1
