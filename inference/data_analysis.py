@@ -24,7 +24,7 @@ plt.rcParams['font.sans-serif'] = "Arial"
 plt.rcParams['mathtext.fontset'] = 'dejavusans'
 
 
-def plot_hex(true_values, pred_values, test_set_type, experimental_setting, sigopt_name, exp_id, pure_interp=False, comp_string='all', mae_mean=None, mae_std=None):
+def plot_hex(true_values, pred_values, test_set_type, experimental_setting, sigopt_name, exp_id, pure_interp=False, additional_string='all', mae_mean=None, mae_std=None):
     if test_set_type == "test_set":
         hex_xylim = [-0.1, 1.1]
         if experimental_setting["relaxed"]:
@@ -32,17 +32,28 @@ def plot_hex(true_values, pred_values, test_set_type, experimental_setting, sigo
         else:
             vmax = 75 #50
     elif test_set_type == "holdout_set_B_sites":
-        hex_xylim = [-0.1, 0.6]
-        if experimental_setting["relaxed"]:
-            vmax = 13
-        else:
-            vmax = 13 #12
-    else:
-        hex_xylim = [0, 0.7]
-        if experimental_setting["relaxed"]:
-            vmax = 30
-        else:
-            vmax = 30
+        if additional_string == 'all':
+            hex_xylim = [-0.1, 0.6]
+            if experimental_setting["relaxed"]:
+                vmax = 13
+            else:
+                vmax = 13 #12
+        elif additional_string == 'layered_rocksalt':
+            hex_xylim = [-0.15, 0.3]
+            vmax = 12
+        elif additional_string == 'energies_vs_groundstate':
+            hex_xylim = [-0.1, 0.4]
+            vmax = 70
+    elif test_set_type == "holdout_set_series":
+        if additional_string == 'all':
+            hex_xylim = [0, 0.7]
+            if experimental_setting["relaxed"]:
+                vmax = 30
+            else:
+                vmax = 30
+        elif additional_string == 'energies_vs_groundstate':
+            hex_xylim = [-0.1, 0.4]
+            vmax = 30                    
     
     hex_figsize = (4, 3.2)
             
@@ -70,10 +81,10 @@ def plot_hex(true_values, pred_values, test_set_type, experimental_setting, sigo
     plt.tight_layout()
     
     if pure_interp:
-        plt.savefig("figures/" + test_set_type + "_pure_interpolation_hexbin_" + str(comp_string) + ".pdf")
+        plt.savefig("figures/" + test_set_type + "_pure_interpolation_hexbin_" + str(additional_string) + ".pdf")
         print("Completed pure interpolation")
     else:
-        plt.savefig("figures/" + test_set_type + "_" + sigopt_name + "_" + exp_id +  "_hexbin_" + str(comp_string) + ".pdf")
+        plt.savefig("figures/" + test_set_type + "_" + sigopt_name + "_" + exp_id +  "_hexbin_" + str(additional_string) + ".pdf")
         print("Completed " + sigopt_name + " " + str(exp_id))
 
     plt.close()
@@ -137,7 +148,7 @@ def plot_violin_filter_comps(target_prop, test_set_dfs, series, column_conc, col
 def plot_violin(target_prop, experimental_setting, series, num_best_models, test_set_dfs, test_set_type, sigopt_name, j, get_true_values=False):
     column_conc = series[j][0][0] + " on A site"
     column_entry = "$E_{\mathrm{hull}}$ (eV/atom)"
-    comp_string = series[j][0][0] + "$_x$" + series[j][0][1] + "$_{1-x}$" + series[j][1][0] + "$_{0.5}$" + series[j][1][1] + "$_{0.5}$O$_3$"
+    additional_string = series[j][0][0] + "$_x$" + series[j][0][1] + "$_{1-x}$" + series[j][1][0] + "$_{0.5}$" + series[j][1][1] + "$_{0.5}$O$_3$"
 
     ylim = [-0.1, 0.8]
     sns.set(rc={'figure.figsize':(4, 2)})
@@ -147,7 +158,7 @@ def plot_violin(target_prop, experimental_setting, series, num_best_models, test
         
         true_values = temp_df[target_prop].to_numpy()
         pred_values = temp_df[target_prop + '_interp'].to_numpy()
-        plot_hex(true_values, pred_values, test_set_type, experimental_setting, None, None, pure_interp=True, comp_string=comp_string)
+        plot_hex(true_values, pred_values, test_set_type, experimental_setting, None, None, pure_interp=True, additional_string=additional_string)
 
     else:
         to_plots = []
@@ -172,7 +183,7 @@ def plot_violin(target_prop, experimental_setting, series, num_best_models, test
         to_plot_final[column_conc] = to_plots[0][column_conc]
         
         pred_values_mean = np.mean(np.vstack(temp_tuple), axis=0) 
-        plot_hex(true_values, pred_values_mean, test_set_type, experimental_setting, sigopt_name, str(experimental_setting["exp_id"]), comp_string=comp_string, mae_mean=mae_mean, mae_std=mae_std)
+        plot_hex(true_values, pred_values_mean, test_set_type, experimental_setting, sigopt_name, str(experimental_setting["exp_id"]), additional_string=additional_string, mae_mean=mae_mean, mae_std=mae_std)
 
         temp_tuple = ()
         for i in range(num_best_models):
@@ -181,14 +192,14 @@ def plot_violin(target_prop, experimental_setting, series, num_best_models, test
 
     ax = sns.violinplot(x=column_conc, y=column_entry, data=to_plot_final, inner="points", scale='width', cut=1)
     ax.set_ylim(ylim)
-    ax.set_title(comp_string)
+    ax.set_title(additional_string)
     plt.tight_layout()
     
     if get_true_values:
-        plt.savefig("figures/" + test_set_type + "_true_values_series_" + comp_string + ".pdf")
+        plt.savefig("figures/" + test_set_type + "_true_values_series_" + additional_string + ".pdf")
         print("Completed true values")
     else:
-        plt.savefig("figures/" + test_set_type + "_" + sigopt_name + "_" + str(experimental_setting["exp_id"]) +  "_series_" + comp_string + ".pdf")
+        plt.savefig("figures/" + test_set_type + "_" + sigopt_name + "_" + str(experimental_setting["exp_id"]) +  "_series_" + additional_string + ".pdf")
         print("Completed " + sigopt_name + " " + str(experimental_setting["exp_id"]))
     
     plt.close()
