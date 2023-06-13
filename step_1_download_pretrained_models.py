@@ -6,9 +6,9 @@ import tarfile
 
 def download_models(download_type):
     if download_type == 'best_models':
-        url = 'https://drive.google.com/uc?id=1H-AM-_qb9KhhxZct5mhPVtcStOWykM8L'
+        url = 'https://drive.google.com/uc?id=1NWPZXbK_hEp2OCmoHF2U5oY553x9ggIk'
     elif download_type == 'saved_models':
-        url = 'https://drive.google.com/uc?id=1r-Xk80Na4EZ50XJJ9tzjqyUospRXwhbV'
+        url = 'https://drive.google.com/uc?id=1-UkaB0H563eJ8VCX9tZF-OGYQGVSgRWa'
     
     if os.path.exists(download_type):
         shutil.rmtree(download_type)

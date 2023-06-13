@@ -32,9 +32,11 @@ def get_experiment_id(model_params):
     elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == True and model_params["relaxed"] == True:
         return 596677
     elif model_params["model_type"] == "e3nn_contrastive" and model_params["interpolation"] == True and model_params["relaxed"] == False:
+        # return 596672
         return 597227
     elif model_params["model_type"] == "e3nn_contrastive" and model_params["interpolation"] == True and model_params["relaxed"] == True:
-        return 597228
+        # return 596673
+        return 597288
     else:
         raise ValueError('These model parameters have not been studied')
     
