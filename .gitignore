@@ -1,6 +1,7 @@
-# Do not track model files
+# Do not track these directories
 saved_models/
 best_models/
+figures/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
