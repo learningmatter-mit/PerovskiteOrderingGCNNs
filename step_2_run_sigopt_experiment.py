@@ -81,10 +81,15 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
             os.makedirs(model_save_dir)
 
         ### Copy contents of tmp file
-        possible_file_names = ["best_model", "best_model.pth.tar", "best_model.torch"]
+        possible_file_names = ["best_model", "best_model.pth.tar", "best_model.torch",
+                               "final_model.torch","final_model","final_model.pth.tar",
+                               "log_human_read.csv","checkpoints/checkpoint-100.pth.tar"]
         for file_name in possible_file_names:
             if os.path.isfile(model_tmp_dir + "/" + file_name):
-                shutil.move(model_tmp_dir + "/" + file_name, model_save_dir + "/" + file_name)
+                if file_name == "checkpoints/checkpoint-100.pth.tar":
+                    shutil.move(model_tmp_dir + "/" + file_name, model_save_dir + "/" + "checkpoint-100.pth.tar")
+                else:
+                    shutil.move(model_tmp_dir + "/" + file_name, model_save_dir + "/" + file_name)
         
         ### Empty tmp file
         shutil.rmtree(model_tmp_dir)
@@ -99,7 +104,13 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
     validation_data = processed_data[1]
 
     train_loader = get_dataloader(train_data,target_prop,model_type,hyperparameters["batch_size"],interpolation)
-    val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation)
+    train_eval_loader = None
+
+    if "e3nn" in model_type:
+        train_eval_loader = get_dataloader(train_data,target_prop,"e3nn_contrastive",1,interpolation)
+        val_loader = get_dataloader(validation_data,target_prop,"e3nn_contrastive",1,interpolation)
+    else:
+        val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation)
     
     model, normalizer = create_model(model_type,train_loader,hyperparameters)
     
@@ -109,7 +120,7 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
         shutil.rmtree(model_tmp_dir)
     os.makedirs(model_tmp_dir) 
 
-    best_model,loss_fn = trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,model_tmp_dir,gpu_num)
+    best_model,loss_fn = trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,model_tmp_dir,gpu_num,train_eval_loader)
     
     _, _, best_loss = evaluate_model(best_model, normalizer, model_type, val_loader, loss_fn, gpu_num)
 

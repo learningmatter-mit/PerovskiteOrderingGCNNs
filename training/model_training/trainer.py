@@ -9,9 +9,9 @@ from torch.autograd import Variable
 from tqdm import tqdm
 import time
 
-def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
+def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num,train_eval_loader=None):
     
-    hyperparameters["MaxEpochs"] = 100 
+    hyperparameters["MaxEpochs"] = 100
     
     if not os.path.exists(OUTDIR):
         os.makedirs(OUTDIR)
@@ -24,7 +24,7 @@ def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,
     if model_type == "Painn":
         best_model = train_painn(model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num)
     else:
-        best_model = train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num)
+        best_model = train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num,train_eval_loader)
 
     return best_model, loss_fn
 
@@ -79,7 +79,7 @@ def train_painn(model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
 
     return T.get_best_model()
 
-def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
+def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num,train_eval_loader = None):
 ### Adapted from https://github.com/ninarina12/phononDoS_tutorial/blob/main/utils/utils_model.py
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
@@ -87,6 +87,9 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
 
     best_validation_error = 99999999
     model.to(device)
+
+    if train_eval_loader == None:
+        train_eval_loader = train_loader
 
     optimizer = torch.optim.Adam(model.parameters(), lr=10**hyperparameters["log_lr"])
     max_epochs = hyperparameters['MaxEpochs']
@@ -136,11 +139,20 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
         wall = end_time - start_time    
     
         model.eval()
-        predictions, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, gpu_num)
-        predictions, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_loader, loss_fn, gpu_num)
+        if "e3nn" in model_type:
+            predictions, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_eval_loader, contrastive_loss_fn, gpu_num,is_contrastive=True)
+            predictions, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, contrastive_loss_fn, gpu_num,is_contrastive=True)
 
-        validation_loss = valid_avg_loss[0]
+        else:
+            predictions, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_loader, loss_fn, gpu_num)
+            predictions, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, gpu_num)
+        
         results = record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,model_type)
+
+        if model_type == "e3nn":
+            validation_loss = valid_avg_loss[1]
+        else:
+            validation_loss = valid_avg_loss[0]
 
         if validation_loss < best_validation_error:
             best_validation_error = validation_loss
@@ -161,16 +173,17 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,train_loader,val_loader
 
 
 def record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,model_type):
-    if "contrastive" in model_type:
+    if "e3nn" in model_type:
         history.append({
             'step': epoch,
             'wall': wall,
+            'learning_rate': optimizer.param_groups[0]['lr'],
             'valid': {
                 'loss': valid_avg_loss[0],
                 'direct': valid_avg_loss[1],
                 'contrastive': valid_avg_loss[2],
             },
-            'train': {
+                'train': {
                 'loss': train_avg_loss[0],
                 'direct': train_avg_loss[1],
                 'contrastive': train_avg_loss[2],
@@ -191,11 +204,11 @@ def record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_lo
             f"val direct = {valid_avg_loss[1]:8.8f}  " + 
             f"val contrastive = {valid_avg_loss[2]:8.8f}  " + 
             f"time = {time.strftime('%H:%M:%S', time.gmtime(wall))}")
-
     else:
         history.append({
             'step': epoch,
             'wall': wall,
+            'learning_rate': optimizer.param_groups[0]['lr'],
             'valid': {
                 'loss': valid_avg_loss[0],
             },
@@ -214,5 +227,6 @@ def record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_lo
             f"train loss = {train_avg_loss[0]:8.8f}  " +
             f"val loss = {valid_avg_loss[0]:8.8f}  " + 
             f"time = {time.strftime('%H:%M:%S', time.gmtime(wall))}")
+
 
     return results
