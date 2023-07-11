@@ -69,6 +69,8 @@ def contrastive_loss(output,target,comp):
 
     if ordering_count != 0:
         ordering /= ordering_count
+
+    ordering *= 10.0
     
     return MAE + ordering, MAE, ordering
 
