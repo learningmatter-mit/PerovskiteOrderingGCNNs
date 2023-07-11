@@ -16,7 +16,7 @@ from training.model_training.trainer import *
 from training.sigopt_utils import build_sigopt_name
 from training.evaluate import *
 
-def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,gpu_num,experiment_id=None,sigopt_settings=None):
+def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,gpu_num,experiment_id,sigopt_settings,nickname):
 
     torch.manual_seed(0)
     random.seed(0)
@@ -64,7 +64,7 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
         
         suggestion = conn.experiments(experiment.id).suggestions().create()
 
-        value = sigopt_evaluate_model(suggestion.assignments,processed_data,target_prop,interpolation,model_type,experiment.id,experiment.progress.observation_count,gpu_num)    
+        value = sigopt_evaluate_model(suggestion.assignments,processed_data,target_prop,interpolation,model_type,experiment.id,experiment.progress.observation_count,gpu_num,nickname)    
 
         conn.experiments(experiment.id).observations().create(
             suggestion=suggestion.id,
@@ -75,7 +75,7 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
         observation_id = experiment.progress.observation_count - 1
 
         model_save_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment.id) + '/observ_' + str(observation_id)
-        model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment.id) + '/tmp' + str(gpu_num)
+        model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment.id) + '/' + nickname + '_tmp' + str(gpu_num)
 
         if not os.path.exists(model_save_dir):
             os.makedirs(model_save_dir)
@@ -115,14 +115,17 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
     model, normalizer = create_model(model_type,train_loader,hyperparameters)
     
     sigopt_name = build_sigopt_name(target_prop,is_relaxed,interpolation,model_type)
-    model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/tmp' + str(gpu_num)
+    model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/' + nickname + '_tmp' + str(gpu_num)
     if os.path.exists(model_tmp_dir):
         shutil.rmtree(model_tmp_dir)
     os.makedirs(model_tmp_dir) 
 
     best_model,loss_fn = trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,model_tmp_dir,gpu_num,train_eval_loader)
     
-    _, _, best_loss = evaluate_model(best_model, normalizer, model_type, val_loader, loss_fn, gpu_num)
+    is_contrastive = False
+    if "contrastive" in model_type:
+        is_contrastive = True
+    _, _, best_loss = evaluate_model(best_model, normalizer, model_type, val_loader, loss_fn, gpu_num,is_contrastive=is_contrastive)
 
     if model_type == "Painn":
         return best_loss
@@ -163,6 +166,8 @@ if __name__ == '__main__':
                         help="the neural network to use (default: CGCNN; other options: Painn, e3nn, e3nn_contrastive)")
     parser.add_argument('--gpu', default = 0, type=int, metavar='device',
                         help="the gpu to use (default: 0)")
+    parser.add_argument('--nickname', default = "", type=str, metavar='device',
+                        help="nickname for temporary folder")
     parser.add_argument('--id', default = -1, type=int, metavar='sigopt_props',
                         help="id for sigopt experiment (default: -1)")
     parser.add_argument('--parallel', default = 4, type=int, metavar='sigopt_props',
@@ -175,6 +180,7 @@ if __name__ == '__main__':
     target_prop = args.prop
     model_type = args.model
     gpu_num = args.gpu
+    nickname = args.nickname
     
     if args.relaxed == 'yes':
         is_relaxed = True
@@ -199,4 +205,4 @@ if __name__ == '__main__':
         experiment_id = args.id
         sigopt_settings = None
     
-    run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,gpu_num,experiment_id,sigopt_settings)
+    run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,gpu_num,experiment_id,sigopt_settings,nickname)
