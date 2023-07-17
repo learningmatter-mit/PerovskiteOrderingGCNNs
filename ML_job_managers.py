@@ -18,7 +18,7 @@ task_idx_to_settings = {
         "gpu": 0,
         "nickname": "test_1",
         "structure_type": "unrelaxed",
-        "interpolation": True,
+        "interpolation": False,
         "id": -1,
     },
     2: {
@@ -28,7 +28,7 @@ task_idx_to_settings = {
         "gpu": 0,
         "nickname": "test_2",
         "structure_type": "spud",
-        "interpolation": True,
+        "interpolation": False,
         "id": -1,
     },
 
@@ -39,7 +39,7 @@ task_idx_to_settings = {
         "gpu": 1,
         "nickname": "test_3",
         "structure_type": "unrelaxed",
-        "interpolation": True,
+        "interpolation": False,
         "id": -1,
     },
 
@@ -50,7 +50,7 @@ task_idx_to_settings = {
         "gpu": 1,
         "nickname": "test_4",
         "structure_type": "spud",
-        "interpolation": True,
+        "interpolation": False,
         "id": -1,
     },
 
