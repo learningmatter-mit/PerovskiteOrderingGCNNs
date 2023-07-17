@@ -8,3 +8,6 @@
 	path = models/PerovskiteOrderingGCNNs_e3nn
 	url = git@github.com:learningmatter-mit/PerovskiteOrderingGCNNs_e3nn.git
 	branch = main
+[submodule "models/PerovskiteOrderingGCNNs_alignn"]
+	path = models/PerovskiteOrderingGCNNs_alignn
+	url = git@github.com:learningmatter-mit/PerovskiteOrderingGCNNs_alignn.git
