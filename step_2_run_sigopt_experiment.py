@@ -22,7 +22,7 @@ def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_
     random.seed(0)
     np.random.seed(0)
 
-    if data_name == "data/"
+    if data_name == "data/":
 
         training_data = pd.read_json(data_name + 'training_set.json')
         validation_data = pd.read_json(data_name + 'validation_set.json')
