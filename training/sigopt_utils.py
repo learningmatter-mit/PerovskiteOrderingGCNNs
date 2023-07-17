@@ -1,12 +1,16 @@
-def build_sigopt_name(target_prop,is_relaxed,interpolation,model_type):
+def build_sigopt_name(data_source,target_prop,struct_type,interpolation,model_type):
     sigopt_name = target_prop
 
-    if is_relaxed:
+    if data_name == "data/":
         sigopt_name += "_" 
-        sigopt_name += "relaxed"
-    else:
+        sigopt_name += "htvs_data"
+
+    elif data_name == "pretrain_data/":
         sigopt_name += "_" 
-        sigopt_name += "unrelaxed"
+        sigopt_name += "pretrain_data"
+
+    sigopt_name += "_" 
+    sigopt_name += struct_type
 
     if interpolation:
         sigopt_name += "_" 

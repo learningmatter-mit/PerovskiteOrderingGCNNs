@@ -16,20 +16,30 @@ from training.model_training.trainer import *
 from training.sigopt_utils import build_sigopt_name
 from training.evaluate import *
 
-def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,gpu_num,experiment_id,sigopt_settings,nickname):
+def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,gpu_num,experiment_id,sigopt_settings,nickname):
 
     torch.manual_seed(0)
     random.seed(0)
     np.random.seed(0)
 
-    training_data = pd.read_json(data_name + 'training_set.json')
-    validation_data = pd.read_json(data_name + 'validation_set.json')
-    edge_data = pd.read_json(data_name + 'edge_dataset.json')
+    if data_name == "data/"
+
+        training_data = pd.read_json(data_name + 'training_set.json')
+        validation_data = pd.read_json(data_name + 'validation_set.json')
+        edge_data = pd.read_json(data_name + 'edge_dataset.json')
+
+        if not interpolation:
+            training_data = pd.concat((training_data,edge_data))
+
+    elif data_name == "pretrain_data/":
+
+        training_data = pd.read_json(data_name + 'training_set.json')
+        validation_data = pd.read_json(data_name + 'validation_set.json')
+
+    else:
+        print("Specified Data Directory Does Not Exist!")
 
     print("Loaded data")
-
-    if not interpolation:
-        training_data = pd.concat((training_data,edge_data))
 
     data = [training_data, validation_data]
     processed_data = []
@@ -37,10 +47,7 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
     for dataset in data:
         dataset = filter_data_by_properties(dataset,target_prop)
 
-        if is_relaxed:
-            dataset = select_structures(dataset,"relaxed")
-        else:
-            dataset = select_structures(dataset,"unrelaxed")
+        dataset = select_structures(dataset,struct_type)
 
         if interpolation:
             dataset = apply_interpolation(dataset,target_prop)
@@ -50,10 +57,10 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
     print("Completed data processing")
 
     conn = sigopt.Connection(client_token="ERZVVPFNRCSCQIJVOVCYHVFUGZCKUDPOWZJTEXZYNOMRKQLS")
-    sigopt_name = build_sigopt_name(target_prop,is_relaxed,interpolation,model_type)
+    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type)
 
     if experiment_id == None:
-        experiment = create_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,sigopt_settings,conn)
+        experiment = create_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,sigopt_settings,conn)
         print("Created a new SigOpt experiment '" + sigopt_name + "' with ID: " + str(experiment.id))
     else:
         experiment = conn.experiments(experiment_id).fetch()
@@ -64,7 +71,7 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
         
         suggestion = conn.experiments(experiment.id).suggestions().create()
 
-        value = sigopt_evaluate_model(suggestion.assignments,processed_data,target_prop,interpolation,model_type,experiment.id,experiment.progress.observation_count,gpu_num,nickname)    
+        value = sigopt_evaluate_model(data_name,suggestion.assignments,processed_data,target_prop,interpolation,model_type,experiment.id,experiment.progress.observation_count,gpu_num,nickname)    
 
         conn.experiments(experiment.id).observations().create(
             suggestion=suggestion.id,
@@ -97,7 +104,7 @@ def run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_t
         torch.cuda.empty_cache()
 
 
-def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,observation_count,gpu_num):
+def sigopt_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,observation_count,gpu_num):
     device = "cuda:" + str(gpu_num)
     
     train_data = processed_data[0]
@@ -114,7 +121,7 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
     
     model, normalizer = create_model(model_type,train_loader,hyperparameters)
     
-    sigopt_name = build_sigopt_name(target_prop,is_relaxed,interpolation,model_type)
+    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type)
     model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/' + nickname + '_tmp' + str(gpu_num)
     if os.path.exists(model_tmp_dir):
         shutil.rmtree(model_tmp_dir)
@@ -133,8 +140,8 @@ def sigopt_evaluate_model(hyperparameters,processed_data,target_prop,interpolati
         return best_loss[0]
 
 
-def create_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,sigopt_settings,conn):
-    sigopt_name = build_sigopt_name(target_prop,is_relaxed,interpolation,model_type)
+def create_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,sigopt_settings,conn):
+    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type)
 
     if model_type == "Painn":
         curr_parameters = get_painn_hyperparameter_range()
@@ -158,8 +165,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Hyperparameter optimization for perovksite ordering GCNNs')
     parser.add_argument('--prop', default = "dft_e_hull", type=str, metavar='name',
                         help="the property to predict (default: dft_e_hull)")
-    parser.add_argument('--relaxed', default = 'no', type=str, metavar='yes/no',
-                        help="using DFT-relaxed structure representation (default: no)")
+    parser.add_argument('--struct_rep', default = 'unrelaxed', type=str, metavar='struct_type',
+                        help="using which structure representation (default: unrelaxed)")
     parser.add_argument('--interpolation', default = 'yes', type=str, metavar='yes/no',
                         help="using interpolation (default: yes)")
     parser.add_argument('--model', default = "CGCNN", type=str, metavar='model',
@@ -181,13 +188,10 @@ if __name__ == '__main__':
     model_type = args.model
     gpu_num = args.gpu
     nickname = args.nickname
+    struct_type = args.struct_type
     
-    if args.relaxed == 'yes':
-        is_relaxed = True
-    elif args.relaxed == 'no':
-        is_relaxed = False
-    else:
-        raise ValueError('relaxed needs to be yes or no')
+    if struct_type not in ["unrelaxed","relaxed","spud","M3Gnet_relaxed"]:
+        raise ValueError('struct type is not available')
     
     if args.interpolation == 'yes':
         interpolation = True
@@ -205,4 +209,4 @@ if __name__ == '__main__':
         experiment_id = args.id
         sigopt_settings = None
     
-    run_sigopt_experiment(data_name,target_prop,is_relaxed,interpolation,model_type,gpu_num,experiment_id,sigopt_settings,nickname)
+    run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,gpu_num,experiment_id,sigopt_settings,nickname)
