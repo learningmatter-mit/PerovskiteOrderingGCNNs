@@ -120,3 +120,35 @@ def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_pr
     shutil.rmtree(model_tmp_dir)
 
     torch.cuda.empty_cache()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='NN training parameters')
+    parser.add_argument('--experiment_group_name', type=str,help="the name of the experiment group", required=True,)
+    parser.add_argument('--experiment_id', type=str,help="the id of the particular experiment", required=True,)
+    parser.add_argument('--obs_num',type=str,help="the observation to run", required=True,)
+
+    gpu_num = str(0)
+
+    experiment_group_name = args.experiment_group_name
+    experiment_id = args.experiment_id
+    obs_num = args.obs_num
+
+    f = open("supercloud_job_managing/experiments/" +file_name+ "/settings.json")
+    experimental_group_settings = json.load(f)
+    f.close()
+
+    f = open("supercloud_job_managing/experiments/" +file_name+ "/sigopt_info.json")
+    sigopt_info = json.load(f)
+    f.close()
+
+    data_name = experimental_group_settings[experiment_id]["data_name"]
+    target_prop = experimental_group_settings[experiment_id]["target_prop"]
+    struct_type = experimental_group_settings[experiment_id]["struct_type"]
+    interpolation = experimental_group_settings[experiment_id]["interpolation"]
+    model_type = experimental_group_settings[experiment_id]["model_type"]
+    nickname = experimental_group_settings[experiment_id]["nickname"]
+
+    hyperparameters = sigopt_info[experiment_id]["observations"][obs_num]["hyperparameters"]
+
+    supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,gpu_num,obs_num,nickname)

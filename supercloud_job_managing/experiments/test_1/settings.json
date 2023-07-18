@@ -1,0 +1,25 @@
+{
+"1":{
+    "data_name":"pretrain_data/",
+    "target_prop":"decomposition_energy",
+    "struct_type":"spud",
+    "interpolation":false,
+    "model_type":"CGCNN",
+    "nickname":"test_a",
+    "sigopt_settings": {"parallel_band":4,
+                        "obs_budget":50,
+                        }
+},
+
+"2":{
+    "data_name":"pretrain_data/",
+    "target_prop":"decomposition_energy",
+    "struct_type":"unrelaxed",
+    "interpolation":false,
+    "model_type":"CGCNN",
+    "nickname":"test_b",
+    "sigopt_settings": {"parallel_band":4,
+                        "obs_budget":50,
+                        }
+},
+}
