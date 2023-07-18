@@ -104,7 +104,7 @@ def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_
         torch.cuda.empty_cache()
 
 
-def sigopt_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,observation_count,gpu_num):
+def sigopt_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,observation_count,gpu_num,nickname):
     device = "cuda:" + str(gpu_num)
     
     train_data = processed_data[0]
