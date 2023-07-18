@@ -127,7 +127,8 @@ if __name__ == '__main__':
     parser.add_argument('--experiment_group_name', type=str,help="the name of the experiment group", required=True,)
     parser.add_argument('--experiment_id', type=str,help="the id of the particular experiment", required=True,)
     parser.add_argument('--obs_num',type=str,help="the observation to run", required=True,)
-
+    args = parser.parse_args()
+    
     gpu_num = str(0)
 
     experiment_group_name = args.experiment_group_name

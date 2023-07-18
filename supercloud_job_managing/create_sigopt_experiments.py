@@ -42,5 +42,6 @@ if __name__ == '__main__':
     parser.add_argument('--name', default = "", type=str, metavar='name',
                         help="the path of the experiment Group")
 
+    args = parser.parse_args()
     file_path = args.name
     create_sigopt_experiments_from_Group(file_path)
