@@ -21,7 +21,7 @@ def select_structures(df,structure_type):
         df_copy = df_copy.dropna(subset=["spud_struct"])
         df_copy["structure"] = df_copy.apply(lambda x: Structure.from_dict(x["spud_struct"]), axis=1)
     elif structure_type == "M3Gnet_relaxed":
-        df_copy = df_copy.dropna(subset=["M3Gnet_relaxed_struct_struct"])
+        df_copy = df_copy.dropna(subset=["M3Gnet_relaxed_struct"])
         df_copy["structure"] = df_copy.apply(lambda x: Structure.from_dict(x["M3Gnet_relaxed_struct"]), axis=1)
     else:
         raise ValueError("structure_type must be 'unrelaxed' or 'relaxed'")
