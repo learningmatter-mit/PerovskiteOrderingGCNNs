@@ -56,5 +56,6 @@ if __name__ == '__main__':
     file_path = args.name
     create = args.create
     if create == "True":
+        print("Creating Sigopt Experiments")
         create_sigopt_experiments_from_Group(file_path)
     manage_experiment(file_path)
