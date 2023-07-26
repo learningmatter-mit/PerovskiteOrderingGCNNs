@@ -36,7 +36,7 @@ def create_sigopt_experiments_from_Group(file_name):
 
         sigopt_dict[sigopt_experiment.id] = experiment_dict
 
-    with open("supercloud_job_managing/experiments/" +file_name+ "/sigopt_info.json") as outfile:
+    with open("supercloud_job_managing/experiments/" +file_name+ "/sigopt_info.json","w") as outfile:
         json.dump(sigopt_dict, outfile)
 
     for sigopt_experiment_id in sigopt_dict:
