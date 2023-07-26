@@ -2,6 +2,8 @@ import json
 import argparse
 import time
 import os
+import sys
+ sys.path.insert(0, '/home/jkdamewo/perovskites/ML_Ordering_Github/PerovskiteOrderingGCNNs')
 from supercloud_utils import *
 from write_job_file import write_job_file
 import subprocess
