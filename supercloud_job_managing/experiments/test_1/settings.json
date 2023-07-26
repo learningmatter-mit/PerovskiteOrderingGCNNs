@@ -5,7 +5,7 @@
     "struct_type":"spud",
     "interpolation":false,
     "model_type":"CGCNN",
-    "nickname":"test_a",
+    "nickname":"test_id_1",
     "sigopt_settings": {"parallel_band":4,
                         "obs_budget":50,
                         }
@@ -17,7 +17,7 @@
     "struct_type":"unrelaxed",
     "interpolation":false,
     "model_type":"CGCNN",
-    "nickname":"test_b",
+    "nickname":"test_id_2",
     "sigopt_settings": {"parallel_band":4,
                         "obs_budget":50,
                         }

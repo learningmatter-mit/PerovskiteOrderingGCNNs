@@ -1,5 +1,6 @@
 import sigopt
 import sys
+import os
 import pandas as pd
 import argparse
 import pickle as pkl
@@ -58,10 +59,10 @@ def supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpo
 
     print("Completed data processing")
 
-    supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,observation_count,gpu_num,nickname)
+    supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,gpu_num,nickname)
 
 
-def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,observation_count,gpu_num,nickname):
+def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,gpu_num,nickname):
     device = "cuda:" + str(gpu_num)
     
     train_data = processed_data[0]
@@ -99,57 +100,45 @@ def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_pr
     with open(model_tmp_dir + "/training_results.json", "w") as outfile:
         json.dump(training_results, outfile)
 
+    
 
-    model_save_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment.id) + '/observ_' + str(observation_id)
-
-    if not os.path.exists(model_save_dir):
-        os.makedirs(model_save_dir)
-
-    ### Copy contents of tmp file
-    possible_file_names = ["best_model", "best_model.pth.tar", "best_model.torch",
-                            "final_model.torch","final_model","final_model.pth.tar",
-                            "log_human_read.csv","checkpoints/checkpoint-100.pth.tar","training_results.json"]
-    for file_name in possible_file_names:
-        if os.path.isfile(model_tmp_dir + "/" + file_name):
-            if file_name == "checkpoints/checkpoint-100.pth.tar":
-                shutil.move(model_tmp_dir + "/" + file_name, model_save_dir + "/" + "checkpoint-100.pth.tar")
-            else:
-                shutil.move(model_tmp_dir + "/" + file_name, model_save_dir + "/" + file_name)
-        
-    ### Empty tmp file
-    shutil.rmtree(model_tmp_dir)
-
-    torch.cuda.empty_cache()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='NN training parameters')
     parser.add_argument('--experiment_group_name', type=str,help="the name of the experiment group", required=True,)
-    parser.add_argument('--experiment_id', type=str,help="the id of the particular experiment", required=True,)
-    parser.add_argument('--obs_num',type=str,help="the observation to run", required=True,)
+    parser.add_argument('--experiment_sigopt_id', type=str,help="the id of the particular experiment", required=True,)
+    parser.add_argument('--tmp_num',type=int,help="the temporary identification number", required=True,)
     args = parser.parse_args()
     
     gpu_num = str(0)
 
     experiment_group_name = args.experiment_group_name
     experiment_id = args.experiment_id
-    obs_num = args.obs_num
+    tmp_num = args.tmp_num
 
-    f = open("supercloud_job_managing/experiments/" +file_name+ "/settings.json")
+    f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/settings.json")
     experimental_group_settings = json.load(f)
     f.close()
 
-    f = open("supercloud_job_managing/experiments/" +file_name+ "/sigopt_info.json")
+    f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json")
     sigopt_info = json.load(f)
     f.close()
 
-    data_name = experimental_group_settings[experiment_id]["data_name"]
-    target_prop = experimental_group_settings[experiment_id]["target_prop"]
-    struct_type = experimental_group_settings[experiment_id]["struct_type"]
-    interpolation = experimental_group_settings[experiment_id]["interpolation"]
-    model_type = experimental_group_settings[experiment_id]["model_type"]
-    nickname = experimental_group_settings[experiment_id]["nickname"]
+    data_name = sigopt_info[experiment_id]["settings"]["data_name"]
+    target_prop = sigopt_info[experiment_id]["settings"]["target_prop"]
+    struct_type = sigopt_info[experiment_id]["settings"]["struct_type"]
+    interpolation = sigopt_info[experiment_id]["settings"]["interpolation"]
+    model_type = sigopt_info[experiment_id]["settings"]["model_type"]
 
-    hyperparameters = sigopt_info[experiment_id]["observations"][obs_num]["hyperparameters"]
+    hyperparameters = sigopt_info[experiment_id]["observations"]["temporary"][tmp_num]["hyperparameters"]
 
-    supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,gpu_num,obs_num,nickname)
+    nickname = str(tmp_num)
+
+    supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,gpu_num,experiment_id,nickname)
+
+    sigot_info[experiment_id]["observations"]["temporary"][tmp_num]["status"] = "completed"
+
+    f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json","w")
+    json.dump(sigopt_info, f)
+    f.close()
