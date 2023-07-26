@@ -108,14 +108,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='NN training parameters')
     parser.add_argument('--experiment_group_name', type=str,help="the name of the experiment group", required=True,)
     parser.add_argument('--experiment_sigopt_id', type=str,help="the id of the particular experiment", required=True,)
-    parser.add_argument('--tmp_num',type=int,help="the temporary identification number", required=True,)
+    parser.add_argument('--suggestion_num',type=int,help="the suggestion number", required=True,)
     args = parser.parse_args()
     
     gpu_num = str(0)
 
     experiment_group_name = args.experiment_group_name
     experiment_id = args.experiment_id
-    tmp_num = args.tmp_num
+    suggestion_num = args.suggestion_num
 
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/settings.json")
     experimental_group_settings = json.load(f)
@@ -131,13 +131,13 @@ if __name__ == '__main__':
     interpolation = sigopt_info[experiment_id]["settings"]["interpolation"]
     model_type = sigopt_info[experiment_id]["settings"]["model_type"]
 
-    hyperparameters = sigopt_info[experiment_id]["observations"]["temporary"][tmp_num]["hyperparameters"]
+    hyperparameters = sigopt_info[experiment_id]["observations"]["temporary"][suggestion_num]["hyperparameters"]
 
-    nickname = str(tmp_num)
+    nickname = str(suggestion_num)
 
     supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,gpu_num,experiment_id,nickname)
 
-    sigot_info[experiment_id]["observations"]["temporary"][tmp_num]["status"] = "completed"
+    sigot_info[experiment_id]["observations"]["temporary"][suggestion_num]["status"] = "completed"
 
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json","w")
     json.dump(sigopt_info, f)
