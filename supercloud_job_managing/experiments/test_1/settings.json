@@ -7,7 +7,7 @@
     "model_type":"CGCNN",
     "nickname":"test_id_1",
     "sigopt_settings": {"parallel_band":4,
-                        "obs_budget":50,
+                        "obs_budget":50
                         }
 },
 
@@ -19,7 +19,7 @@
     "model_type":"CGCNN",
     "nickname":"test_id_2",
     "sigopt_settings": {"parallel_band":4,
-                        "obs_budget":50,
+                        "obs_budget":50
                         }
-},
+}
 }
