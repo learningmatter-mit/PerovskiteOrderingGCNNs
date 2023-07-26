@@ -18,20 +18,20 @@ def create_sigopt_experiments_from_Group(file_name):
     ### For Experiment in Json
     for experiment_idx in experimental_group_settings:
 
-        data_name = experimental_settings[experiment_idx]["data_name"]
-        target_prop = experimental_settings[experiment_idx]["target_prop"]
-        struct_type = experimental_settings[experiment_idx]["struct_type"]
-        interpolation = experimental_settings[experiment_idx]["interpolation"]
-        model_type = experimental_settings[experiment_idx]["model_type"]
-        sigopt_settings = experimental_settings[experiment_idx]["sigopt_settings"]
+        data_name = experimental_group_settings[experiment_idx]["data_name"]
+        target_prop = experimental_group_settings[experiment_idx]["target_prop"]
+        struct_type = experimental_group_settings[experiment_idx]["struct_type"]
+        interpolation = experimental_group_settings[experiment_idx]["interpolation"]
+        model_type = experimental_group_settings[experiment_idx]["model_type"]
+        sigopt_settings = experimental_group_settings[experiment_idx]["sigopt_settings"]
 
 
         sigopt_experiment = create_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,sigopt_settings,conn)
 
         experiment_dict = {}
-        experiment_dict["sigopt_id"] = sigot_experiment.id
+        experiment_dict["sigopt_id"] = sigopt_experiment.id
         experiment_dict["original_id"] = experiment_idx
-        experiment_dict["settings"] = experimental_settings[experiment_idx]
+        experiment_dict["settings"] = experimental_group_settings[experiment_idx]
         experiment_dict["observations"] = {}
 
         sigopt_dict[sigot_experiment.id] = experiment_dict
