@@ -3,7 +3,8 @@ import json
 import subprocess
 import sigopt
 import sys
-from PerovskiteOrderingGCNNs.training.sigopt_utils import build_sigopt_name
+sys.path.insert(0, '/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs')
+from training.sigopt_utils import build_sigopt_name
 
 def check_if_experiment_ongoing(name):
 
