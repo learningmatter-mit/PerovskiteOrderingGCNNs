@@ -7,6 +7,7 @@ sys.path.insert(0, '/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs'
 from supercloud_utils import *
 from write_job_file import write_job_file
 import subprocess
+from create_sigopt_experiments import create_sigopt_experiments_from_Group
 
 
 def manage_experiment(name):
