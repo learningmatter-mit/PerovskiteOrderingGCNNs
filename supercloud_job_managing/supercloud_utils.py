@@ -2,6 +2,8 @@
 import json 
 import subprocess
 import sigopt
+import sys
+sys.path.insert(0, '/home/jkdamewo/perovskites/ML_Ordering_Github/PerovskiteOrderingGCNNs')
 from training.sigopt_utils import build_sigopt_name
 
 def check_if_experiment_ongoing(name):
