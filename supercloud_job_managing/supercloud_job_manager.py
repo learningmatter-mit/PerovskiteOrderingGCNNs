@@ -19,15 +19,15 @@ def manage_experiment(name):
 
             if experiment_id != None and experiment_id != -1:
 
-                experiment_id, count = get_next_job(name,experiment_id)
+                experiment_id, suggestion_num = get_next_job(name,experiment_id)
 
                 ### Write Job
 
-                write_job_file(name,experiment_id,count)
+                write_job_file(name,experiment_id,suggestion_num)
 
                 ### Run Job
 
-                job_name = 'job_' + str(experiment_id) + '_' + str(count) + '.sh'
+                job_name = 'job_' + str(experiment_id) + '_' + str(suggestion_num) + '.sh'
 
                 subprocess.check_call(['chmod', '+x', job_name])
 
