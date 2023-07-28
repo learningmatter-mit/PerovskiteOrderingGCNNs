@@ -32,7 +32,8 @@ def create_sigopt_experiments_from_Group(file_name):
         experiment_dict["sigopt_id"] = sigopt_experiment.id
         experiment_dict["original_id"] = experiment_idx
         experiment_dict["settings"] = experimental_group_settings[experiment_idx]
-        experiment_dict["observations"] = {}
+        experiment_dict["observations"] = {"completed":{},
+                                            "temporary":{}}
 
         sigopt_dict[sigopt_experiment.id] = experiment_dict
 
