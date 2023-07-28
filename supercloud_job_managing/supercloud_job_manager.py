@@ -15,12 +15,14 @@ def manage_experiment(name):
 
     while check_if_experiment_ongoing(name):
         time.sleep(10)
-
+        print("Checking For Job Space \n")
         if check_for_job_space():
-
+            print("Found Job Space \n")
             experiment_id = update_sigopt(name)
 
             if experiment_id != None and experiment_id != -1:
+
+                print("Submitting a job \n")
 
                 experiment_id, suggestion_num = get_next_job(name,experiment_id)
 

@@ -22,6 +22,7 @@ def check_if_experiment_ongoing(name):
 def check_for_job_space():
     current_lines = get_command_output_line_count("LLstat -p xeon-g6-volta")
     current_jobs = current_lines - 4
+    print("Number of current gpus jobs is: " + str(current_jobs) + "\n")
     if current_jobs < 8:
         return True
     return False
