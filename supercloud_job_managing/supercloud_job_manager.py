@@ -14,7 +14,7 @@ def manage_experiment(name):
 
 
     while check_if_experiment_ongoing(name):
-        time.sleep(300)
+        time.sleep(10)
 
         if check_for_job_space():
 
