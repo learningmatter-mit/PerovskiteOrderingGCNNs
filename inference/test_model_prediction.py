@@ -25,7 +25,6 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
     torch.cuda.set_device(device)
 
     interpolation = model_params["interpolation"]
-    is_relaxed = model_params["relaxed"]
     model_type = model_params["model_type"]    
     
     training_data = pd.read_json('data/' + 'training_set.json')
@@ -42,11 +41,7 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
 
     for dataset in data:
         dataset = filter_data_by_properties(dataset,target_prop)
-
-        if is_relaxed:
-            dataset = select_structures(dataset,"relaxed")
-        else:
-            dataset = select_structures(dataset,"unrelaxed")
+        dataset = select_structures(dataset,model_params["struct_type"])
 
         if interpolation:
             dataset = apply_interpolation(dataset,target_prop)
@@ -61,8 +56,8 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
     train_loader = get_dataloader(train_data,target_prop,model_type,1,interpolation)
     test_loader = get_dataloader(test_data,target_prop,model_type,1,interpolation)       
 
-    sigopt_name = build_sigopt_name(target_prop, model_params["relaxed"], model_params["interpolation"], model_params["model_type"])
-    exp_id = get_experiment_id(model_params)
+    sigopt_name = build_sigopt_name("data/", target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"])
+    exp_id = get_experiment_id(model_params, target_prop)
 
     for idx in range(num_best_models):
         directory = "./best_models/" + model_params["model_type"] + "/" + sigopt_name + "/" +str(exp_id) + "/" + "best_" + str(idx)
