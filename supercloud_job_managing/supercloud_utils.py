@@ -177,6 +177,7 @@ def get_next_job(experiment_group_name,experiment_id):
     sigopt_info = json.load(f)
     f.close()
 
+    sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id] = {}
     sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id]["hyperparameters"] = suggestion.assignments
     sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id]["status"] = "running"
     sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id]["start_time"] = time.time()
