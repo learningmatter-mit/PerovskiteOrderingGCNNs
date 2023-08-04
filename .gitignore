@@ -3,6 +3,7 @@ saved_models/
 best_models/
 figures/
 pretrain_data/
+data/
 202307_dyss_experiments.txt
 
 # Byte-compiled / optimized / DLL files
