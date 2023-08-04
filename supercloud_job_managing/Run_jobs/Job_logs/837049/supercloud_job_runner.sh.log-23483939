@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "supercloud_job_managing/supercloud_job_runner.py", line 12, in <module>
+    from processing.utils import filter_data_by_properties,select_structures
+  File "/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs/processing/utils.py", line 2, in <module>
+    from pymatgen.core import Structure
+ModuleNotFoundError: No module named 'pymatgen'

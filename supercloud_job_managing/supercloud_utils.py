@@ -1,10 +1,13 @@
-
+import time
 import json 
 import subprocess
 import sigopt
 import sys
 sys.path.insert(0, '/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs')
 from training.sigopt_utils import build_sigopt_name
+import shutil
+import os
+import torch
 
 def check_if_experiment_ongoing(name):
 
@@ -21,7 +24,7 @@ def check_if_experiment_ongoing(name):
 
 def check_for_job_space():
     current_lines = get_command_output_line_count("LLstat -p xeon-g6-volta")
-    current_jobs = current_lines - 4
+    current_jobs = current_lines - 3
     print("Number of current gpus jobs is: " + str(current_jobs) + "\n")
     if current_jobs < 8:
         return True
@@ -32,11 +35,11 @@ def get_command_output_line_count(command):
     try:
         # Run the Bash command and capture the output
         result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        
         # Check if the command executed successfully
         if result.returncode == 0:
             # Split the output by lines and count the number of lines
             line_count = len(result.stdout.strip().split('\n'))
+            #print(line_count)
             return line_count
         else:
             print("Error executing the command:")
@@ -47,6 +50,8 @@ def get_command_output_line_count(command):
         return -1  # Return -1 to indicate an error
 
 def update_sigopt(experiment_group_name):
+
+    conn = sigopt.Connection(client_token="ERZVVPFNRCSCQIJVOVCYHVFUGZCKUDPOWZJTEXZYNOMRKQLS")
 
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json")
     sigopt_info = json.load(f)
@@ -59,9 +64,22 @@ def update_sigopt(experiment_group_name):
     model_tmp_dir = None
     reported_value = None
 
+    ### Clear Broken Jobs
+
     for experiment_id in sigopt_info:
+        curr_time = time.time()
         for tmp_id in sigopt_info[experiment_id]["observations"]["temporary"]:
-            if sigopt_info[fexperiment_id]["observations"]["temporary"][tmp_id]["status"] == "completed":
+            if float(curr_time - sigopt_info[experiment_id]["observations"]["temporary"][tmp_id]["start_time"])/3600 > 12.0:
+                sigopt_info[experiment_id]["observations"]["temporary"].pop(tmp_id)
+                suggestion_deleted = conn.experiments(experiment_id).suggestions(tmp_id).delete()
+
+
+    for experiment_id in sigopt_info:
+        if len(sigopt_info[experiment_id]["observations"]["temporary"]) == 0 and len(sigopt_info[experiment_id]["observations"]["completed"]) == 0:
+            return experiment_id
+
+        for tmp_id in sigopt_info[experiment_id]["observations"]["temporary"]:
+            if sigopt_info[experiment_id]["observations"]["temporary"][tmp_id]["status"] == "completed":
 
 
                 finished_experiment_id = experiment_id
@@ -79,13 +97,14 @@ def update_sigopt(experiment_group_name):
                 reported_value = training_results["validation_loss"]
 
     if finished_experiment_id == None:
+        for experiment_id in sigopt_info:
+            sigopt_num_experiments = sigopt_info[experiment_id]["settings"]["sigopt_settings"]["obs_budget"]
+            if len(sigopt_info[experiment_id]["observations"]["temporary"]) + len(sigopt_info[experiment_id]["observations"]["completed"]) < sigopt_num_experiments and len(sigopt_info[experiment_id]["observations"]["temporary"]) < sigopt_info[experiment_id]["settings"]["sigopt_settings"]["parallel_band"]:
+                return experiment_id
+
         return -1
 
     ### Report Experiment
-
-
-
-    conn = sigopt.Connection(client_token="ERZVVPFNRCSCQIJVOVCYHVFUGZCKUDPOWZJTEXZYNOMRKQLS")
 
     conn.experiments(finished_experiment_id).observations().create(
             suggestion=finished_tmp_id,
@@ -130,8 +149,9 @@ def update_sigopt(experiment_group_name):
     shutil.rmtree(model_tmp_dir)
 
     torch.cuda.empty_cache()
+    sigopt_num_experiments = sigopt_info[finished_experiment_id]["settings"]["sigopt_settings"]["obs_budget"]
 
-    if len(sigopt_info[finished_experiment_id]["observations"]["completed"]) != sigopt_num_experiments:
+    if len(sigopt_info[finished_experiment_id]["observations"]["temporary"]) + len(sigopt_info[finished_experiment_id]["observations"]["completed"]) < sigopt_num_experiments:
         return finished_experiment_id
 
     else:
@@ -148,9 +168,11 @@ def get_next_job(experiment_group_name,experiment_id):
     sigopt_info = json.load(f)
     f.close()
 
-    sigot_info[experiment_id]["observations"]["temporary"][suggestion.id]["hyperparameters"] = suggestion.assignments
-    sigot_info[experiment_id]["observations"]["temporary"][suggestion.id]["status"] = "running"
+    sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id] = {}
 
+    sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id]["hyperparameters"] = suggestion.assignments
+    sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id]["status"] = "running"
+    sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id]["start_time"] = time.time()
 
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json","w")
     json.dump(sigopt_info, f)

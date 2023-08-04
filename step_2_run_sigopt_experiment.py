@@ -113,7 +113,7 @@ def sigopt_evaluate_model(data_name,hyperparameters,processed_data,target_prop,i
     train_loader = get_dataloader(train_data,target_prop,model_type,hyperparameters["batch_size"],interpolation)
     train_eval_loader = None
 
-    if "e3nn" in model_type:
+    if "e3nn" in model_type and "pretrain" not in data_name:
         train_eval_loader = get_dataloader(train_data,target_prop,"e3nn_contrastive",1,interpolation)
         val_loader = get_dataloader(validation_data,target_prop,"e3nn_contrastive",1,interpolation)
     else:

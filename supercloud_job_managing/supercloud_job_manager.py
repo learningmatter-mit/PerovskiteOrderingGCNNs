@@ -14,7 +14,7 @@ def manage_experiment(name):
 
 
     while check_if_experiment_ongoing(name):
-        time.sleep(10)
+        time.sleep(60)
         print("Checking For Job Space \n")
         if check_for_job_space():
             print("Found Job Space \n")
@@ -34,14 +34,14 @@ def manage_experiment(name):
 
                 job_name = 'job_' + str(experiment_id) + '_' + str(suggestion_num) + '.sh'
 
-                subprocess.check_call(['chmod', '+x', job_name])
+                subprocess.check_call(['chmod','u+x',"supercloud_job_managing/"+job_name])
 
-                subprocess.check_call(['sbatch', job_name])
+                subprocess.check_call(['sbatch',"supercloud_job_managing/"+job_name])
 
                 ### Move Job
 
-                os.rename("/supercloud_job_managing/"+job_name, "/supercloud_job_managing/Run_jobs/" + str(experiment_id) + "/" + job_name)
-
+                os.rename("supercloud_job_managing/"+job_name, "supercloud_job_managing/Run_jobs/Job_Files/" + str(experiment_id) + "/" + job_name) 
+                
 
 
 

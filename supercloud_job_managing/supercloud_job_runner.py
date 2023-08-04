@@ -1,5 +1,5 @@
-import sigopt
 import sys
+sys.path.insert(0, '/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs')
 import os
 import pandas as pd
 import argparse
@@ -63,15 +63,17 @@ def supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpo
 
 
 def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,gpu_num,nickname):
-    device = "cuda:" + str(gpu_num)
-    
+    device_name = "cuda:" + str(gpu_num)
+    device = torch.device(device_name)
+    torch.cuda.set_device(device)
+
     train_data = processed_data[0]
     validation_data = processed_data[1]
 
     train_loader = get_dataloader(train_data,target_prop,model_type,hyperparameters["batch_size"],interpolation)
     train_eval_loader = None
 
-    if "e3nn" in model_type:
+    if "e3nn" in model_type and "pretrain" not in data_name:
         train_eval_loader = get_dataloader(train_data,target_prop,"e3nn_contrastive",1,interpolation)
         val_loader = get_dataloader(validation_data,target_prop,"e3nn_contrastive",1,interpolation)
     else:
@@ -92,7 +94,7 @@ def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_pr
         is_contrastive = True
     _, _, best_loss = evaluate_model(best_model, normalizer, model_type, val_loader, loss_fn, gpu_num,is_contrastive=is_contrastive)
 
-    if model_type == "Painn":
+    if model_type != "Painn":
         best_loss = best_loss[0]
  
     training_results = {"validation_loss": best_loss}
@@ -108,13 +110,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='NN training parameters')
     parser.add_argument('--experiment_group_name', type=str,help="the name of the experiment group", required=True,)
     parser.add_argument('--experiment_sigopt_id', type=str,help="the id of the particular experiment", required=True,)
-    parser.add_argument('--suggestion_num',type=int,help="the suggestion number", required=True,)
+    parser.add_argument('--suggestion_num',type=str,help="the suggestion number", required=True,)
     args = parser.parse_args()
     
     gpu_num = str(0)
 
     experiment_group_name = args.experiment_group_name
-    experiment_id = args.experiment_id
+    experiment_id = args.experiment_sigopt_id
     suggestion_num = args.suggestion_num
 
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/settings.json")
@@ -135,9 +137,17 @@ if __name__ == '__main__':
 
     nickname = str(suggestion_num)
 
-    supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,gpu_num,experiment_id,nickname)
+    f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json","w")
+    json.dump(sigopt_info, f)
+    f.close()
 
-    sigot_info[experiment_id]["observations"]["temporary"][suggestion_num]["status"] = "completed"
+    supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,gpu_num,experiment_id,nickname)
+    
+    f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json")
+    sigopt_info = json.load(f)
+    f.close()
+
+    sigopt_info[experiment_id]["observations"]["temporary"][suggestion_num]["status"] = "completed"
 
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json","w")
     json.dump(sigopt_info, f)

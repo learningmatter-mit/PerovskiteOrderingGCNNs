@@ -88,9 +88,6 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
     best_validation_error = 99999999
     model.to(device)
 
-    if train_eval_loader == None:
-        train_eval_loader = train_loader
-
     optimizer = torch.optim.Adam(model.parameters(), lr=10**hyperparameters["log_lr"])
     max_epochs = hyperparameters['MaxEpochs']
     scheduler = ReduceLROnPlateau(
@@ -139,7 +136,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
         wall = end_time - start_time    
     
         model.eval()
-        if "e3nn" in model_type:
+        if "e3nn" in model_type and train_eval_loader != None:
             predictions, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_eval_loader, contrastive_loss_fn, gpu_num,is_contrastive=True)
             predictions, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, contrastive_loss_fn, gpu_num,is_contrastive=True)
 
@@ -147,9 +144,12 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
             predictions, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_loader, loss_fn, gpu_num)
             predictions, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, gpu_num)
         
-        results = record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,model_type)
+        if train_eval_loader == None:
+            results = record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,"standard")
+        else:
+            results = record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,"contrastive")
 
-        if model_type == "e3nn":
+        if model_type == "e3nn" and train_eval_loader != None:
             validation_loss = valid_avg_loss[1]
         else:
             validation_loss = valid_avg_loss[0]
@@ -165,15 +165,16 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
     with open(OUTDIR + '/final_model.torch', 'wb') as f:
         torch.save(results, f)
 
-    model_state = torch.load(OUTDIR + '/best_model.torch', map_location=device)['state']
+    model_state = torch.load(OUTDIR + '/best_model.torch', map_location=torch.device('cpu'))['state']
     model.load_state_dict(model_state)
+    model.to(device)
     return model
 
 
 
 
-def record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,model_type):
-    if "e3nn" in model_type:
+def record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,eval_type):
+    if "contrastive" in eval_type:
         history.append({
             'step': epoch,
             'wall': wall,

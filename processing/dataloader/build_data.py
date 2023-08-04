@@ -66,9 +66,14 @@ def build_e3nn_data(entry, prop, r_max):
     # compute edge lengths (rounded only for plotting purposes)
     edge_len = np.around(edge_vec.norm(dim=1).numpy(), decimals=2)
         
+    if "formula" in entry:
+        curr_comp = entry["formula"]
+    else:
+        curr_comp = None
+
     data = tg.data.Data(
         pos=positions, lattice=lattice, symbol=symbols,
-        comp = entry["formula"],
+        comp = curr_comp,
         x=atom_inits_cgcnn[[type_encoding[specie] for specie in symbols]], # CGCNN-type embedding (node feature)
         z=atom_inits_cgcnn[[type_encoding[specie] for specie in symbols]], # CGCNN-type embedding (node attribute)
         edge_index=torch.stack([torch.LongTensor(edge_src), torch.LongTensor(edge_dst)], dim=0),
