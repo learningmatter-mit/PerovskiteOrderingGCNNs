@@ -164,11 +164,11 @@ def create_sigopt_experiment(data_name,target_prop,struct_type,interpolation,mod
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Hyperparameter optimization for perovksite ordering GCNNs')
     parser.add_argument('--prop', default = "dft_e_hull", type=str, metavar='name',
-                        help="the property to predict (default: dft_e_hull)")
+                        help="the property to predict (default: dft_e_hull; other options: Op_band_center)")
     parser.add_argument('--struct_type', default = 'unrelaxed', type=str, metavar='struct_type',
-                        help="using which structure representation (default: unrelaxed)")
+                        help="using which structure representation (default: unrelaxed; other options: relaxed, M3Gnet_relaxed)")
     parser.add_argument('--interpolation', default = 'yes', type=str, metavar='yes/no',
-                        help="using interpolation (default: yes)")
+                        help="using interpolation (default: yes; other options: no)")
     parser.add_argument('--model', default = "CGCNN", type=str, metavar='model',
                         help="the neural network to use (default: CGCNN; other options: Painn, e3nn, e3nn_contrastive)")
     parser.add_argument('--gpu', default = 0, type=int, metavar='device',
