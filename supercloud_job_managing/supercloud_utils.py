@@ -4,7 +4,9 @@ import json
 import subprocess
 import sigopt
 import sys
-sys.path.insert(0, '..')
+import os
+parent = os.path.abspath('.')
+sys.path.insert(1, parent)
 from training.sigopt_utils import build_sigopt_name
 import shutil
 import os

@@ -1,8 +1,9 @@
 
 import sys
-sys.path.insert(0, '..')
-import sigopt
 import os
+parent = os.path.abspath('.')
+sys.path.insert(1, parent)
+import sigopt
 import pandas as pd
 import argparse
 import pickle as pkl
