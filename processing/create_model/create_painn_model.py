@@ -9,6 +9,8 @@ def get_painn_model(hyperparameters,train_loader, interpolation, prop):
 
     if interpolation:
         prop_name = prop+ "_diff"
+    else:
+        prop_name = prop
 
     training_labels = []
     
