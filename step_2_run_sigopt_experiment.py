@@ -119,7 +119,7 @@ def sigopt_evaluate_model(data_name,hyperparameters,processed_data,target_prop,i
     else:
         val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation)
     
-    model, normalizer = create_model(model_type,train_loader,hyperparameters)
+    model, normalizer = create_model(model_type,train_loader,interpolation,target_prop,hyperparameters=hyperparameters)
     
     sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type)
     model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/' + nickname + '_tmp' + str(gpu_num)

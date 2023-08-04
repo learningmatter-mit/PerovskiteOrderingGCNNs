@@ -66,7 +66,7 @@ def load_model(gpu_num, train_loader, target_prop, model_params, folder_idx, job
         model = torch.load(directory + "/best_model", map_location=device)
         normalizer = None
     else:
-        model, normalizer = create_model(model_params["model_type"], train_loader, assignments)
+        model, normalizer = create_model(model_params["model_type"], train_loader,model_params["interpolation"],target_prop,hyperparameters=assignments)
         model.to(device)
         model.load_state_dict(torch.load(directory + "/best_model.torch", map_location=device)['state'])
     
