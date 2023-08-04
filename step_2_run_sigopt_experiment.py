@@ -165,7 +165,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Hyperparameter optimization for perovksite ordering GCNNs')
     parser.add_argument('--prop', default = "dft_e_hull", type=str, metavar='name',
                         help="the property to predict (default: dft_e_hull)")
-    parser.add_argument('--struct_rep', default = 'unrelaxed', type=str, metavar='struct_type',
+    parser.add_argument('--struct_type', default = 'unrelaxed', type=str, metavar='struct_type',
                         help="using which structure representation (default: unrelaxed)")
     parser.add_argument('--interpolation', default = 'yes', type=str, metavar='yes/no',
                         help="using interpolation (default: yes)")
