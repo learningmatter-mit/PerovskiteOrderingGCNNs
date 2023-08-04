@@ -10,6 +10,7 @@ or
 
 ```
 git clone git@github.com:learningmatter-mit/PerovskiteOrderingGCNNs.git
+cd PerovskiteOrderingGCNNs
 git submodule update --init
 ```
 
