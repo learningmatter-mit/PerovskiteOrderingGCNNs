@@ -1,4 +1,5 @@
 import time
+
 import json 
 import subprocess
 import sigopt
@@ -8,6 +9,7 @@ from training.sigopt_utils import build_sigopt_name
 import shutil
 import os
 import torch
+
 
 def check_if_experiment_ongoing(name):
 
@@ -24,7 +26,9 @@ def check_if_experiment_ongoing(name):
 
 def check_for_job_space():
     current_lines = get_command_output_line_count("LLstat -p xeon-g6-volta")
+
     current_jobs = current_lines - 3
+
     print("Number of current gpus jobs is: " + str(current_jobs) + "\n")
     if current_jobs < 8:
         return True
@@ -35,6 +39,7 @@ def get_command_output_line_count(command):
     try:
         # Run the Bash command and capture the output
         result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
         # Check if the command executed successfully
         if result.returncode == 0:
             # Split the output by lines and count the number of lines
@@ -51,7 +56,9 @@ def get_command_output_line_count(command):
 
 def update_sigopt(experiment_group_name):
 
+
     conn = sigopt.Connection(client_token="ERZVVPFNRCSCQIJVOVCYHVFUGZCKUDPOWZJTEXZYNOMRKQLS")
+
 
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json")
     sigopt_info = json.load(f)
@@ -106,6 +113,7 @@ def update_sigopt(experiment_group_name):
 
     ### Report Experiment
 
+
     conn.experiments(finished_experiment_id).observations().create(
             suggestion=finished_tmp_id,
             value=reported_value,
@@ -149,6 +157,7 @@ def update_sigopt(experiment_group_name):
     shutil.rmtree(model_tmp_dir)
 
     torch.cuda.empty_cache()
+
     sigopt_num_experiments = sigopt_info[finished_experiment_id]["settings"]["sigopt_settings"]["obs_budget"]
 
     if len(sigopt_info[finished_experiment_id]["observations"]["temporary"]) + len(sigopt_info[finished_experiment_id]["observations"]["completed"]) < sigopt_num_experiments:
@@ -168,11 +177,10 @@ def get_next_job(experiment_group_name,experiment_id):
     sigopt_info = json.load(f)
     f.close()
 
-    sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id] = {}
-
     sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id]["hyperparameters"] = suggestion.assignments
     sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id]["status"] = "running"
     sigopt_info[experiment_id]["observations"]["temporary"][suggestion.id]["start_time"] = time.time()
+
 
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json","w")
     json.dump(sigopt_info, f)

@@ -14,7 +14,9 @@ def manage_experiment(name):
 
 
     while check_if_experiment_ongoing(name):
+
         time.sleep(60)
+
         print("Checking For Job Space \n")
         if check_for_job_space():
             print("Found Job Space \n")
@@ -33,6 +35,7 @@ def manage_experiment(name):
                 ### Run Job
 
                 job_name = 'job_' + str(experiment_id) + '_' + str(suggestion_num) + '.sh'
+
 
                 subprocess.check_call(['chmod','u+x',"supercloud_job_managing/"+job_name])
 
@@ -61,4 +64,6 @@ if __name__ == '__main__':
     if create == "True":
         print("Creating Sigopt Experiments")
         create_sigopt_experiments_from_Group(file_path)
+
     manage_experiment(file_path)
+

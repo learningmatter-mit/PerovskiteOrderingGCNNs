@@ -1,5 +1,7 @@
+
 import sys
 sys.path.insert(0, '/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs')
+import sigopt
 import os
 import pandas as pd
 import argparse
@@ -111,12 +113,15 @@ if __name__ == '__main__':
     parser.add_argument('--experiment_group_name', type=str,help="the name of the experiment group", required=True,)
     parser.add_argument('--experiment_sigopt_id', type=str,help="the id of the particular experiment", required=True,)
     parser.add_argument('--suggestion_num',type=str,help="the suggestion number", required=True,)
+
     args = parser.parse_args()
     
     gpu_num = str(0)
 
     experiment_group_name = args.experiment_group_name
+
     experiment_id = args.experiment_sigopt_id
+
     suggestion_num = args.suggestion_num
 
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/settings.json")
@@ -152,3 +157,4 @@ if __name__ == '__main__':
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json","w")
     json.dump(sigopt_info, f)
     f.close()
+

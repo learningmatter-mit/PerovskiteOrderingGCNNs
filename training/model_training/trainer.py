@@ -88,6 +88,9 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
     best_validation_error = 99999999
     model.to(device)
 
+    if train_eval_loader == None:
+        train_eval_loader = train_loader
+
     optimizer = torch.optim.Adam(model.parameters(), lr=10**hyperparameters["log_lr"])
     max_epochs = hyperparameters['MaxEpochs']
     scheduler = ReduceLROnPlateau(
@@ -136,6 +139,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
         wall = end_time - start_time    
     
         model.eval()
+
         if "e3nn" in model_type and train_eval_loader != None:
             predictions, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_eval_loader, contrastive_loss_fn, gpu_num,is_contrastive=True)
             predictions, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, contrastive_loss_fn, gpu_num,is_contrastive=True)
@@ -175,6 +179,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
 
 def record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,eval_type):
     if "contrastive" in eval_type:
+
         history.append({
             'step': epoch,
             'wall': wall,

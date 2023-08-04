@@ -5,7 +5,6 @@ import argparse
 
 def write_job_file(experiment_group_name,experiment_id,suggestion_num):
 
-
     f =  open('supercloud_job_managing/job_' + str(experiment_id) + '_' + str(suggestion_num) + '.sh', 'w')
 
     f.write('#!/bin/bash\n')
