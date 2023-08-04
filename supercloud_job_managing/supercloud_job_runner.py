@@ -1,6 +1,6 @@
 
 import sys
-sys.path.insert(0, '/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs')
+sys.path.insert(0, '..')
 import sigopt
 import os
 import pandas as pd

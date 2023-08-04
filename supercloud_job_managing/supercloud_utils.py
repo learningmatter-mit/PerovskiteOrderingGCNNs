@@ -4,7 +4,7 @@ import json
 import subprocess
 import sigopt
 import sys
-sys.path.insert(0, '/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs')
+sys.path.insert(0, '..')
 from training.sigopt_utils import build_sigopt_name
 import shutil
 import os

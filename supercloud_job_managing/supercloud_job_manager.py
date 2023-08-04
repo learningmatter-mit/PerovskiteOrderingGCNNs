@@ -3,7 +3,7 @@ import argparse
 import time
 import os
 import sys
-sys.path.insert(0, '/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs')
+sys.path.insert(0, '..')
 from supercloud_utils import *
 from write_job_file import write_job_file
 import subprocess
