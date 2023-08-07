@@ -6,12 +6,12 @@ import tarfile
 
 def download_models(download_type):
     if download_type == 'best_models':
-        url = 'https://drive.google.com/uc?id=1NWPZXbK_hEp2OCmoHF2U5oY553x9ggIk'
+        url = 'https://drive.google.com/uc?id=1phJkCp8FS9Huh86CV4y8Vpxze9uviv9d'
     elif download_type == 'saved_models':
-        url = 'https://drive.google.com/uc?id=1-UkaB0H563eJ8VCX9tZF-OGYQGVSgRWa'
-    
-    if os.path.exists(download_type):
-        shutil.rmtree(download_type)
+        url = 'https://drive.google.com/uc?id=1riOMfiliHsja5dlAR7ibYD4m4jfBNnVS'
+
+#     # if os.path.exists(download_type):
+#     #     shutil.rmtree(download_type)
 
     gdown.download(url, output=download_type + '.tar', quiet=False)
     with tarfile.open(download_type + '.tar') as tar:
