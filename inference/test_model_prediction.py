@@ -61,7 +61,7 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
 
     for idx in range(num_best_models):
         directory = "./best_models/" + model_params["model_type"] + "/" + sigopt_name + "/" +str(exp_id) + "/" + "best_" + str(idx)
-        model, normalizer = load_model(gpu_num, train_loader, model_params, directory)
+        model, normalizer = load_model(gpu_num, train_loader, model_params, directory, target_prop)
         prediction = evaluate_model_with_tracked_ids(model, normalizer, gpu_num, test_loader, model_params)
 
         sorted_prediction = []
@@ -82,7 +82,7 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
         infer_data.to_json(directory + '/' + test_set_type + "_predictions.json")
 
         
-def load_model(gpu_num, train_loader, model_params, directory):
+def load_model(gpu_num, train_loader, model_params, directory, target_prop):
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
 

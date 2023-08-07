@@ -17,33 +17,37 @@ from processing.create_model.create_model import create_model
 def get_experiment_id(model_params, target_prop):
     if target_prop == "dft_e_hull":
         if model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
-            return 836636
+            return 837611
         elif model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'relaxed':
-            return 836637
+            return 837612
         elif model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'M3Gnet_relaxed':
-            return 836638
+            return 837613
         elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
-            return 836629
+            return 837627
         elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'relaxed':
-            return 836630
+            return 837628
         elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'M3Gnet_relaxed':
-            return 836631
+            return 837629
+        elif model_params["model_type"] == "Painn" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
+            return 837609
         else:
             raise ValueError('These model parameters have not been studied')
     
     elif target_prop == "Op_band_center":    
         if model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
-            return 836639
+            return 837614
         elif model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'relaxed':
-            return 836640
+            return 837615
         elif model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'M3Gnet_relaxed':
-            return 836632
+            return 837616
         elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
-            return 836633
+            return 837624
         elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'relaxed':
-            return 836634
+            return 837625
         elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'M3Gnet_relaxed':
-            return 836635
+            return 837626
+        elif model_params["model_type"] == "Painn" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
+            return 837610
         else:
             raise ValueError('These model parameters have not been studied')
 
