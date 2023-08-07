@@ -9,7 +9,7 @@ from torch.autograd import Variable
 from tqdm import tqdm
 import time
 
-def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num,train_eval_loader=None):
+def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num,train_eval_loader=None,contrastive_weight=1.0):
     
     hyperparameters["MaxEpochs"] = 100
     
@@ -24,7 +24,7 @@ def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,
     if model_type == "Painn":
         best_model = train_painn(model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num)
     else:
-        best_model = train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num,train_eval_loader)
+        best_model = train_CGCNN_e3nn(model,normalizer,model_type,contrastive_weight,loss_fn,contrastive_loss,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num,train_eval_loader,contrastive_weight)
 
     return best_model, loss_fn
 
@@ -79,7 +79,7 @@ def train_painn(model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num):
 
     return T.get_best_model()
 
-def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num,train_eval_loader = None):
+def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num,train_eval_loader,contrastive_weight):
 ### Adapted from https://github.com/ninarina12/phononDoS_tutorial/blob/main/utils/utils_model.py
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
@@ -125,7 +125,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
             if model_type == "CGCNN":
                 loss = loss_fn(normalizer.denorm(output), target)
             elif model_type == "e3nn_contrastive":
-                loss, direct_loss, contrastive_loss = loss_fn(normalizer.denorm(output), d.target, d.comp)
+                loss, direct_loss, contrastive_loss = loss_fn(normalizer.denorm(output), d.target, d.comp, contrastive_weight)
             else:
                 loss = loss_fn(normalizer.denorm(output), d.target)
 
@@ -139,10 +139,10 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
         model.eval()
 
         if "e3nn" in model_type and train_eval_loader != None:
-            predictions, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_eval_loader, contrastive_loss_fn, gpu_num,is_contrastive=True)
-            predictions, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, contrastive_loss_fn, gpu_num,is_contrastive=True)
+            predictions, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_eval_loader, contrastive_loss_fn, gpu_num,is_contrastive=True,contrastive_weight=contrastive_weight)
+            predictions, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, contrastive_loss_fn, gpu_num,is_contrastive=True,contrastive_weight=contrastive_weight)
 
-            results = record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,"contrastive")
+            results = record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,"contrastive",contrastive_weight=constrastive_weight)
             
             if "contrastive" in model_type:
                 validation_loss = valid_avg_loss[0]
@@ -175,13 +175,14 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
 
 
 
-def record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,eval_type):
+def record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,eval_type,contrastive_weight=None):
     if "contrastive" in eval_type:
 
         history.append({
             'step': epoch,
             'wall': wall,
             'learning_rate': optimizer.param_groups[0]['lr'],
+            'contrastive_weight':contrastive_weight,
             'valid': {
                 'loss': valid_avg_loss[0],
                 'direct': valid_avg_loss[1],

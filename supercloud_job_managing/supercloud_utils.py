@@ -96,7 +96,7 @@ def update_sigopt(experiment_group_name):
 
                 settings = sigopt_info[finished_experiment_id]["settings"]
                 model_type = settings["model_type"]
-                sigopt_name = build_sigopt_name(settings["data_name"],settings["target_prop"],settings["struct_type"],settings["interpolation"],settings["model_type"])
+                sigopt_name = build_sigopt_name(settings["data_name"],settings["target_prop"],settings["struct_type"],settings["interpolation"],settings["model_type"],settings["contrastive_weight"],settings["training_fraction"],settings["training_seed"])
 
                 model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(finished_experiment_id) + '/' + str(tmp_id) + '_tmp' + str(0)
 
@@ -137,7 +137,7 @@ def update_sigopt(experiment_group_name):
 
     model_type = settings["model_type"]
 
-    sigopt_name = build_sigopt_name(settings["data_name"],settings["target_prop"],settings["struct_type"],settings["interpolation"],settings["model_type"])
+    sigopt_name = build_sigopt_name(settings["data_name"],settings["target_prop"],settings["struct_type"],settings["interpolation"],settings["model_type"],,settings["contrastive_weight"],settings["training_fraction"],settings["training_seed"])
 
     model_save_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(finished_experiment_id) + '/observ_' + str(observation_id)
 

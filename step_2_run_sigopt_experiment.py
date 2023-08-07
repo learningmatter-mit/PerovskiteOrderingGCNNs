@@ -16,11 +16,7 @@ from training.model_training.trainer import *
 from training.sigopt_utils import build_sigopt_name
 from training.evaluate import *
 
-def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,gpu_num,experiment_id,sigopt_settings,nickname):
-
-    torch.manual_seed(0)
-    random.seed(0)
-    np.random.seed(0)
+def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed,gpu_num,experiment_id,sigopt_settings,nickname):
 
     if data_name == "data/":
 
@@ -38,6 +34,12 @@ def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_
 
     else:
         print("Specified Data Directory Does Not Exist!")
+
+    training_data = training_data.sample(frac=training_fraction,replace=False,random_state=training_seed)
+
+    torch.manual_seed(0)
+    random.seed(0)
+    np.random.seed(0)
 
     print("Loaded data")
 
@@ -57,10 +59,10 @@ def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_
     print("Completed data processing")
 
     conn = sigopt.Connection(client_token="ERZVVPFNRCSCQIJVOVCYHVFUGZCKUDPOWZJTEXZYNOMRKQLS")
-    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type)
+    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed)
 
     if experiment_id == None:
-        experiment = create_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,sigopt_settings,conn)
+        experiment = create_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed,sigopt_settings,conn)
         print("Created a new SigOpt experiment '" + sigopt_name + "' with ID: " + str(experiment.id))
     else:
         experiment = conn.experiments(experiment_id).fetch()
@@ -71,7 +73,7 @@ def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_
         
         suggestion = conn.experiments(experiment.id).suggestions().create()
 
-        value = sigopt_evaluate_model(data_name,suggestion.assignments,processed_data,target_prop,interpolation,model_type,experiment.id,experiment.progress.observation_count,gpu_num,nickname)    
+        value = sigopt_evaluate_model(data_name,suggestion.assignments,processed_data,target_prop,interpolation,model_type,contrastive_weight,training_fraction,training_seed,experiment.id,experiment.progress.observation_count,gpu_num,nickname)    
 
         conn.experiments(experiment.id).observations().create(
             suggestion=suggestion.id,
@@ -104,7 +106,7 @@ def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_
         torch.cuda.empty_cache()
 
 
-def sigopt_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,observation_count,gpu_num,nickname):
+def sigopt_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,contrastive_weight,training_fraction,training_seed,experiment_id,observation_count,gpu_num,nickname):
     device = "cuda:" + str(gpu_num)
     
     train_data = processed_data[0]
@@ -121,18 +123,18 @@ def sigopt_evaluate_model(data_name,hyperparameters,processed_data,target_prop,i
     
     model, normalizer = create_model(model_type,train_loader,interpolation,target_prop,hyperparameters=hyperparameters)
     
-    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type)
+    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed)
     model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/' + nickname + '_tmp' + str(gpu_num)
     if os.path.exists(model_tmp_dir):
         shutil.rmtree(model_tmp_dir)
     os.makedirs(model_tmp_dir) 
 
-    best_model,loss_fn = trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,model_tmp_dir,gpu_num,train_eval_loader)
+    best_model,loss_fn = trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,model_tmp_dir,gpu_num,train_eval_loader=train_eval_loader,contrastive_weight=contrastive_weight)
     
     is_contrastive = False
     if "contrastive" in model_type:
         is_contrastive = True
-    _, _, best_loss = evaluate_model(best_model, normalizer, model_type, val_loader, loss_fn, gpu_num,is_contrastive=is_contrastive)
+    _, _, best_loss = evaluate_model(best_model, normalizer, model_type, val_loader, loss_fn, gpu_num,is_contrastive=is_contrastive, contrastive_weight=contrastive_weight)
 
     if model_type == "Painn":
         return best_loss
@@ -140,8 +142,8 @@ def sigopt_evaluate_model(data_name,hyperparameters,processed_data,target_prop,i
         return best_loss[0]
 
 
-def create_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,sigopt_settings,conn):
-    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type)
+def create_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed,sigopt_settings,conn):
+    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed)
 
     if model_type == "Painn":
         curr_parameters = get_painn_hyperparameter_range()
@@ -171,6 +173,12 @@ if __name__ == '__main__':
                         help="using interpolation (default: yes; other options: no)")
     parser.add_argument('--model', default = "CGCNN", type=str, metavar='model',
                         help="the neural network to use (default: CGCNN; other options: Painn, e3nn, e3nn_contrastive)")
+    parser.add_argument('--contrastive_weight', default = 1.0, type=float, metavar='loss_parameters',
+                        help="the weighting applied to the contrastive loss term (default: 1.0)")
+    parser.add_argument('--training_fraction', default = 1.0, type=float, metavar='training_set',
+                        help="fraction of the total training set used (default 1.0)")
+    parser.add_argument('--training_seed', default = 0, type=int, metavar='training_set',
+                        help="the random seed for selecting fraction of training set (default 0)")
     parser.add_argument('--gpu', default = 0, type=int, metavar='device',
                         help="the gpu to use (default: 0)")
     parser.add_argument('--nickname', default = "", type=str, metavar='device',
@@ -189,6 +197,9 @@ if __name__ == '__main__':
     gpu_num = args.gpu
     nickname = args.nickname
     struct_type = args.struct_type
+    contrastive_weight = args.constrastive_weight
+    training_fraction = args.training_fraction
+    training_seed = args.training_seed
     
     if struct_type not in ["unrelaxed","relaxed","spud","M3Gnet_relaxed"]:
         raise ValueError('struct type is not available')
@@ -209,4 +220,4 @@ if __name__ == '__main__':
         experiment_id = args.id
         sigopt_settings = None
     
-    run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,gpu_num,experiment_id,sigopt_settings,nickname)
+    run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed,gpu_num,experiment_id,sigopt_settings,nickname)

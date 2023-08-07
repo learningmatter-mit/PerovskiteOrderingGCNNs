@@ -22,12 +22,8 @@ from training.sigopt_utils import build_sigopt_name
 from training.evaluate import *
 
 
-def supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,gpu_num,experiment_id,nickname):
-
-    torch.manual_seed(0)
-    random.seed(0)
-    np.random.seed(0)
-
+def supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed,gpu_num,experiment_id,nickname):
+    
     if data_name == "data/":
 
         training_data = pd.read_json(data_name + 'training_set.json')
@@ -44,6 +40,13 @@ def supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpo
 
     else:
         print("Specified Data Directory Does Not Exist!")
+
+    training_data = training_data.sample(frac=training_fraction,replace=False,random_state=training_seed)
+
+
+    torch.manual_seed(0)
+    random.seed(0)
+    np.random.seed(0)
 
     print("Loaded data")
 
@@ -62,10 +65,10 @@ def supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpo
 
     print("Completed data processing")
 
-    supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,gpu_num,nickname)
+    supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,contrastive_weight,training_fraction,training_seed,experiment_id,gpu_num,nickname)
 
 
-def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,gpu_num,nickname):
+def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,contrastive_weight,training_fraction,training_seed,experiment_id,gpu_num,nickname):
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
     torch.cuda.set_device(device)
@@ -84,18 +87,18 @@ def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_pr
     
     model, normalizer = create_model(model_type,train_loader,interpolation,target_prop,hyperparameters=hyperparameters)
     
-    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type)
+    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed)
     model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/' + nickname + '_tmp' + str(gpu_num)
     if os.path.exists(model_tmp_dir):
         shutil.rmtree(model_tmp_dir)
     os.makedirs(model_tmp_dir) 
 
-    best_model,loss_fn = trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,model_tmp_dir,gpu_num,train_eval_loader)
+    best_model,loss_fn = trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,model_tmp_dir,gpu_num,train_eval_loader = train_eval_loader,contrastive_weight=contrastive_weight)
     
     is_contrastive = False
     if "contrastive" in model_type:
         is_contrastive = True
-    _, _, best_loss = evaluate_model(best_model, normalizer, model_type, val_loader, loss_fn, gpu_num,is_contrastive=is_contrastive)
+    _, _, best_loss = evaluate_model(best_model, normalizer, model_type, val_loader, loss_fn, gpu_num,is_contrastive=is_contrastive,contrastive_weight=contrastive_weight)
 
     if model_type != "Painn":
         best_loss = best_loss[0]
@@ -138,6 +141,9 @@ if __name__ == '__main__':
     struct_type = sigopt_info[experiment_id]["settings"]["struct_type"]
     interpolation = sigopt_info[experiment_id]["settings"]["interpolation"]
     model_type = sigopt_info[experiment_id]["settings"]["model_type"]
+    contrastive_weight = sigopt_info[experiment_id]["settings"]["contrastive_weight"]
+    training_fraction = sigopt_info[experiment_id]["settings"]["training_fraction"]
+    training_seed = sigopt_info[experiment_id]["settings"]["training_seed"]
 
     hyperparameters = sigopt_info[experiment_id]["observations"]["temporary"][suggestion_num]["hyperparameters"]
 
@@ -147,7 +153,7 @@ if __name__ == '__main__':
     json.dump(sigopt_info, f)
     f.close()
 
-    supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,gpu_num,experiment_id,nickname)
+    supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed,gpu_num,experiment_id,nickname)
     
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json")
     sigopt_info = json.load(f)

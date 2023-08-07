@@ -49,7 +49,7 @@ def pairwise_energies(output, target):
     return torch.sum(torch.abs(output_matrix-target_matrix))
     
 
-def contrastive_loss(output,target,comp):
+def contrastive_loss(output,target,comp,contrastive_weight):
     MAE = torch.mean(torch.abs(output-target))
     ordering = 0
     last_index = 0
@@ -69,8 +69,6 @@ def contrastive_loss(output,target,comp):
 
     if ordering_count != 0:
         ordering /= ordering_count
-
-    ordering *= 10.0
     
-    return MAE + ordering, MAE, ordering
+    return MAE + contrastive_weight*ordering, MAE, ordering
 

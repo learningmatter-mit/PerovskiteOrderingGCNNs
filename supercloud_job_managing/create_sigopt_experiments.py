@@ -23,10 +23,29 @@ def create_sigopt_experiments_from_Group(file_name):
         struct_type = experimental_group_settings[experiment_idx]["struct_type"]
         interpolation = experimental_group_settings[experiment_idx]["interpolation"]
         model_type = experimental_group_settings[experiment_idx]["model_type"]
+
+        if "contrastive_weight" in experimental_group_settings[experiment_idx]:
+            contrastive_weight = experimental_group_settings[experiment_idx]["contrastive_weight"]
+        else:
+            contrastive_weight = 1.0
+            experimental_group_settings[experiment_idx]["contrastive_weight"] = 1.0
+
+        if "training_fraction" in experimental_group_settings[experiment_idx]:
+            training_fraction = experimental_group_settings[experiment_idx]["training_fraction"]
+        else:
+            training_fraction = 1.0
+            experimental_group_settings[experiment_idx]["training_fraction"] = 1.0
+
+        if "training_seed" in experimental_group_settings[experiment_idx]:
+            training_seed = experimental_group_settings[experiment_idx]["training_seed"]
+        else:
+            training_seed = 0
+            experimental_group_settings[experiment_idx]["training_seed"] = 0
+
         sigopt_settings = experimental_group_settings[experiment_idx]["sigopt_settings"]
 
 
-        sigopt_experiment = create_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,sigopt_settings,conn)
+        sigopt_experiment = create_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed,sigopt_settings,conn)
 
         experiment_dict = {}
         experiment_dict["sigopt_id"] = sigopt_experiment.id

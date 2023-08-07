@@ -6,7 +6,7 @@ import torch
 from torch.autograd import Variable
 
 
-def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num, is_contrastive=False):
+def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num, is_contrastive=False, contrastive_weight=1.0):
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
 
@@ -47,7 +47,7 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num, 
                     loss = loss_fn(normalizer.denorm(output), target)
                     loss_cumulative = loss_cumulative + loss.detach().item()*target.shape[0]
                 elif is_contrastive:
-                    loss, direct_loss, contrastive_loss = loss_fn(normalizer.denorm(output), d.target, d.comp)
+                    loss, direct_loss, contrastive_loss = loss_fn(normalizer.denorm(output), d.target, d.comp, contrastive_weight)
                     loss_cumulative = loss_cumulative + loss.detach().item()
                     loss_direct_cumulative = loss_direct_cumulative + direct_loss.detach().item()*target.shape[0]
                     curr_contrastive_count = count_contastive_terms(d.comp)
@@ -60,7 +60,7 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num, 
                 total_count += target.shape[0]
         
             if is_contrastive:
-                loss_output = [loss_direct_cumulative/total_count+loss_contrastive_cumulative/contrastive_term_count,loss_direct_cumulative/total_count,loss_contrastive_cumulative/contrastive_term_count]
+                loss_output = [loss_direct_cumulative/total_count+contrastive_weight*(loss_contrastive_cumulative/contrastive_term_count),loss_direct_cumulative/total_count,loss_contrastive_cumulative/contrastive_term_count]
             else:
                 loss_output = [loss_cumulative/total_count]
     
