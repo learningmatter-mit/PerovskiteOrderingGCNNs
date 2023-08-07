@@ -142,7 +142,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
             predictions, targets, train_avg_loss = evaluate_model(model, normalizer, model_type, train_eval_loader, contrastive_loss_fn, gpu_num,is_contrastive=True,contrastive_weight=contrastive_weight)
             predictions, targets, valid_avg_loss = evaluate_model(model, normalizer, model_type, val_loader, contrastive_loss_fn, gpu_num,is_contrastive=True,contrastive_weight=contrastive_weight)
 
-            results = record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,"contrastive",contrastive_weight=constrastive_weight)
+            results = record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,"contrastive",contrastive_weight=contrastive_weight)
             
             if "contrastive" in model_type:
                 validation_loss = valid_avg_loss[0]
