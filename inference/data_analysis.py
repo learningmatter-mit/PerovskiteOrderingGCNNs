@@ -32,23 +32,34 @@ def plot_hex(target_prop, true_values, pred_values, test_set_type, experimental_
         elif test_set_type == "holdout_set_B_sites":
             if additional_string == 'all':
                 hex_xylim = [-0.1, 0.4]
-                vmax = 13
-            elif additional_string == 'layered_rocksalt':
-                hex_xylim = [-0.15, 0.3]
-                vmax = 12
+                vmax = 15
+            # elif additional_string == 'layered_rocksalt':
+            #     hex_xylim = [-0.15, 0.3]
+            #     vmax = 15
             elif additional_string == 'energies_vs_groundstate':
                 hex_xylim = [-0.02, 0.18]
                 vmax = 15
         elif test_set_type == "holdout_set_series":
             if additional_string == 'all':
                 hex_xylim = [0, 0.4]
-                vmax = 35
+                vmax = 15
             elif additional_string == 'energies_vs_groundstate':
                 hex_xylim = [-0.02, 0.12]
-                vmax = 30                    
+                vmax = 15                    
     elif target_prop == "Op_band_center":
-        hex_xylim = [-5, 0]
-        vmax = 50
+        if test_set_type == "test_set":
+            hex_xylim = [-7, 0]
+            vmax = 15
+        elif test_set_type == "holdout_set_B_sites":
+            if additional_string == 'all':
+                hex_xylim = [-4.5, -0.5]
+                vmax = 15
+            elif additional_string == 'energies_vs_groundstate':
+                hex_xylim = [-0.2, 2.2]
+                vmax = 15
+        elif test_set_type == "holdout_set_series":
+            hex_xylim = [-4.5, -0.5]
+            vmax = 15
 
     # hex_figsize = (4, 3.2)
     hex_figsize = (3, 2.2)
@@ -60,13 +71,17 @@ def plot_hex(target_prop, true_values, pred_values, test_set_type, experimental_
         # ax.set_ylabel("ML $E_{\mathrm{hull}}$ (eV/atom)")
         ax.set_xlabel("DFT")
         ax.set_ylabel("ML")
-        ax.set_xticks([0.05, 0.15])
-        ax.set_yticks([0.05, 0.15])
+        # ax.set_xticks([0.05, 0.15])
+        # ax.set_yticks([0.05, 0.15])
         plt.xticks(size=12)
         plt.yticks(size=12)
     else:
-        ax.set_xlabel("DFT O 2p band center (eV)")
-        ax.set_ylabel("ML O 2p band center (eV)")
+        # ax.set_xlabel("DFT O 2p band center (eV)")
+        # ax.set_ylabel("ML O 2p band center (eV)")
+        ax.set_xlabel("DFT")
+        ax.set_ylabel("ML")
+        plt.xticks(size=12)
+        plt.yticks(size=12)
     
     ax.axline((hex_xylim[0], hex_xylim[0]), (hex_xylim[1], hex_xylim[1]), color='black', linestyle='--', linewidth=1)
 
@@ -82,8 +97,8 @@ def plot_hex(target_prop, true_values, pred_values, test_set_type, experimental_
         mae = mean_absolute_error(true_values, pred_values)
         ax.annotate("MAE = %.3f" % (mae), xy=(0.05, 0.95), xycoords='axes fraction', ha='left', va='top', size=12)
     else:
-        # ax.annotate("MAE = %.3f\nr = %.2f" % (mae_mean, r), xy=(0.05, 0.95), xycoords='axes fraction', ha='left', va='top', size=12)
-        ax.annotate("$r$ = %.2f" % (r), xy=(0.05, 0.95), xycoords='axes fraction', ha='left', va='top', size=14)
+        ax.annotate("MAE = %.3f\nr = %.2f" % (mae_mean, r), xy=(0.05, 0.95), xycoords='axes fraction', ha='left', va='top', size=10)
+        # ax.annotate("$r$ = %.2f" % (r), xy=(0.05, 0.95), xycoords='axes fraction', ha='left', va='top', size=14)
 
     cb = fig.colorbar(hb)
     cb.set_label('Count', size=12)
@@ -157,13 +172,14 @@ def plot_violin_filter_comps(target_prop, test_set_dfs, series, column_conc, col
 
 def plot_violin(target_prop, experimental_setting, series, num_best_models, test_set_dfs, test_set_type, sigopt_name, j, get_true_values=False):
     column_conc = series[j][0][0] + " on A site"
-    column_entry = "$E_{\mathrm{hull}}$ (eV/atom)"
     additional_string = series[j][0][0] + "$_x$" + series[j][0][1] + "$_{1-x}$" + series[j][1][0] + "$_{0.5}$" + series[j][1][1] + "$_{0.5}$O$_3$"
 
     if target_prop == "dft_e_hull":
-        ylim = [0.05, 0.3]
+        ylim = [0, 0.3]
+        column_entry = "$E_{\mathrm{hull}}$ (eV/atom)"
     elif target_prop == "Op_band_center":
-        ylim = [-3, 0.5]
+        ylim = [-4, -1]
+        column_entry = "O 2p band center (eV)"
     
     sns.set(rc={'figure.figsize':(4, 2)})
 
