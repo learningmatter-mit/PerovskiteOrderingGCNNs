@@ -197,7 +197,7 @@ if __name__ == '__main__':
     gpu_num = args.gpu
     nickname = args.nickname
     struct_type = args.struct_type
-    contrastive_weight = args.constrastive_weight
+    contrastive_weight = args.contrastive_weight
     training_fraction = args.training_fraction
     training_seed = args.training_seed
     
