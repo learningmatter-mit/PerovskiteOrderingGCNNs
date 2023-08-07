@@ -24,7 +24,7 @@ def trainer(model,normalizer,model_type,train_loader,val_loader,hyperparameters,
     if model_type == "Painn":
         best_model = train_painn(model,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num)
     else:
-        best_model = train_CGCNN_e3nn(model,normalizer,model_type,contrastive_weight,loss_fn,contrastive_loss,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num,train_eval_loader,contrastive_weight)
+        best_model = train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss,train_loader,val_loader,hyperparameters,OUTDIR,gpu_num,train_eval_loader,contrastive_weight)
 
     return best_model, loss_fn
 
