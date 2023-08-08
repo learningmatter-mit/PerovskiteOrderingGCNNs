@@ -80,7 +80,7 @@ def interpolator(df, prop, Pure_ref):
             Difference.append(row[prop] - curr_interpolation)
         else:
             Difference.append(None)
-            raise Warning("Cannot find all binary edges for an composition")
+#            raise Warning("Cannot find all binary edges for an composition")
 
     return Interpolation, Difference
 
