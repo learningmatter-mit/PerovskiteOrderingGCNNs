@@ -169,8 +169,8 @@ if __name__ == '__main__':
                         help="the property to predict (default: dft_e_hull; other options: Op_band_center)")
     parser.add_argument('--struct_type', default = 'unrelaxed', type=str, metavar='struct_type',
                         help="using which structure representation (default: unrelaxed; other options: relaxed, M3Gnet_relaxed)")
-    parser.add_argument('--interpolation', default = 'yes', type=str, metavar='yes/no',
-                        help="using interpolation (default: yes; other options: no)")
+    parser.add_argument('--interpolation', default = 'no', type=str, metavar='yes/no',
+                        help="using interpolation (default: no; other options: yes)")
     parser.add_argument('--model', default = "CGCNN", type=str, metavar='model',
                         help="the neural network to use (default: CGCNN; other options: Painn, e3nn, e3nn_contrastive)")
     parser.add_argument('--contrastive_weight', default = 1.0, type=float, metavar='loss_parameters',
