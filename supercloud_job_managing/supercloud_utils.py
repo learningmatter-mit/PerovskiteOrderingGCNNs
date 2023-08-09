@@ -3,6 +3,7 @@ import time
 import json 
 import subprocess
 import sigopt
+from sigopt.exception import ApiException
 import sys
 import os
 parent = os.path.abspath('.')
@@ -80,8 +81,18 @@ def update_sigopt(experiment_group_name):
         for tmp_id in list(sigopt_info[experiment_id]["observations"]["temporary"]):
             if float(curr_time - sigopt_info[experiment_id]["observations"]["temporary"][tmp_id]["start_time"])/3600 > 12.0:
                 sigopt_info[experiment_id]["observations"]["temporary"].pop(tmp_id)
-                suggestion_deleted = conn.experiments(experiment_id).suggestions(tmp_id).delete()
+                try:
+                    suggestion_deleted = conn.experiments(experiment_id).suggestions(tmp_id).delete()
+                except (ApiException):
+                    print("Suggestion Already Deleted")
 
+    f = open("supercloud_job_managing/experiments/" + experiment_group_name + "/sigopt_info.json","w")
+    json.dump(sigopt_info, f)
+    f.close()
+
+    f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json")
+    sigopt_info = json.load(f)
+    f.close()
 
     for experiment_id in sigopt_info:
         if len(sigopt_info[experiment_id]["observations"]["temporary"]) == 0 and len(sigopt_info[experiment_id]["observations"]["completed"]) == 0:
