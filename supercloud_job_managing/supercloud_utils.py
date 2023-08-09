@@ -77,7 +77,7 @@ def update_sigopt(experiment_group_name):
 
     for experiment_id in sigopt_info:
         curr_time = time.time()
-        for tmp_id in sigopt_info[experiment_id]["observations"]["temporary"]:
+        for tmp_id in list(sigopt_info[experiment_id]["observations"]["temporary"]):
             if float(curr_time - sigopt_info[experiment_id]["observations"]["temporary"][tmp_id]["start_time"])/3600 > 12.0:
                 sigopt_info[experiment_id]["observations"]["temporary"].pop(tmp_id)
                 suggestion_deleted = conn.experiments(experiment_id).suggestions(tmp_id).delete()
