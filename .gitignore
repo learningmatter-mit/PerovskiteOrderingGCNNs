@@ -1,9 +1,8 @@
 # Do not track these directories
 saved_models/
 best_models/
+best_models_ver_Aug04/
 figures/
-pretrain_data/
-data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

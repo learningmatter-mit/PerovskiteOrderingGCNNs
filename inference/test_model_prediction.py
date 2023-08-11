@@ -100,7 +100,7 @@ def load_model(gpu_num, train_loader, model_params, directory, target_prop):
     return model, normalizer
 
 
-def evaluate_model_with_tracked_ids(model, normalizer, gpu_num, test_loader, model_params):
+def evaluate_model_with_tracked_ids(model, normalizer, gpu_num, test_loader, model_params,return_ids = False):
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
     predictions = {}
@@ -119,10 +119,13 @@ def evaluate_model_with_tracked_ids(model, normalizer, gpu_num, test_loader, mod
         for i in range(len(ids)):
             predictions[ids[i]] = out[i]
 
+        if return_ids:
+            return predictions, ids
         return predictions
 
     else:
         model.eval()    
+        all_crys_ids = []
         with torch.no_grad():
             for j, d in enumerate(test_loader):
                 if model_params["model_type"] == "CGCNN":
@@ -148,5 +151,9 @@ def evaluate_model_with_tracked_ids(model, normalizer, gpu_num, test_loader, mod
 
                 for i in range(crys_idx.shape[0]):
                     predictions[int(crys_idx[i])] = predictions_iter[i]
+                    all_crys_ids.append(int(crys_idx[i]))
+
+        if return_ids:
+            return predictions, all_crys_ids
 
         return predictions
