@@ -3,6 +3,7 @@ saved_models/
 best_models/
 best_models_ver_Aug04/
 figures/
+pretrain_data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
