@@ -35,7 +35,7 @@ def get_atom_encoding():
     return type_encoding, atom_inits_cgcnn, atom_inits_atomic_mass
 
 
-def build_e3nn_data(entry, prop, r_max):
+def build_e3nn_data(entry, prop, r_max, per_site = False):
     #### TAKEN FROM https://github.com/ninarina12/phononDoS_tutorial/blob/main/phononDoS.ipynb
     torch.set_default_dtype(default_dtype)
     type_encoding, atom_inits_cgcnn, atom_inits_atomic_mass = get_atom_encoding()
@@ -71,6 +71,11 @@ def build_e3nn_data(entry, prop, r_max):
     else:
         curr_comp = None
 
+    if per_site:
+        target_data = torch.tensor(entry[prop]).unsqueeze(0)
+    else:
+        target_data = torch.tensor([entry[prop]]).unsqueeze(0)
+
     data = tg.data.Data(
         pos=positions, lattice=lattice, symbol=symbols,
         comp = curr_comp,
@@ -80,7 +85,7 @@ def build_e3nn_data(entry, prop, r_max):
         edge_shift=torch.tensor(edge_shift, dtype=default_dtype),
         edge_vec=edge_vec,
         edge_len=edge_len,
-        target=torch.tensor([entry[prop]]).unsqueeze(0),
+        target=target_data,
         idx=torch.tensor([entry['idx']]).unsqueeze(0)
     )
         

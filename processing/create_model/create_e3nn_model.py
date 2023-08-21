@@ -10,12 +10,14 @@ import numpy as np
 import torch_geometric as tg
 
 class PeriodicNetwork(Network):
-    def __init__(self, in_dim, em_dim, out_dim, hid_dim, n_hid, **kwargs):            
+    def __init__(self, in_dim, em_dim, out_dim, hid_dim, n_hid, per_site = per_site, **kwargs):            
         # override the `reduce_output` keyword to instead perform an averge over atom contributions    
         self.pool = False
         if kwargs['reduce_output'] == True:
             kwargs['reduce_output'] = False
             self.pool = True
+
+        self.per_site = per_site
             
         super().__init__(**kwargs)
 
@@ -40,7 +42,10 @@ class PeriodicNetwork(Network):
         data.z = F.relu(self.em(data.z))
         atom_fea = torch.nn.functional.relu(super().forward(data))
         #assert self.pool == True
-        crys_fea = torch_scatter.scatter_mean(atom_fea, data.batch, dim=0)       
+        if self.per_site:
+            crys_fea = atom_fea
+        else:
+            crys_fea = torch_scatter.scatter_mean(atom_fea, data.batch, dim=0)       
                
         if hasattr(self, 'conv_to_fc') and hasattr(self, 'conv_to_fc_relu'):
             crys_fea = self.conv_to_fc_relu(self.conv_to_fc(crys_fea))
@@ -50,10 +55,12 @@ class PeriodicNetwork(Network):
                     crys_fea = relu(fc(crys_fea))        
         
         output =  self.fc_out(crys_fea)
+
+        output = output.view(data.num_graphs,-1)
         
         return output
 
-def get_e3nn_model(hyperparameters, train_loader):
+def get_e3nn_model(hyperparameters, train_loader, per_site = False):
 
     if hyperparameters == "default":
         hyperparameters = get_default_e3nn_hyperparameters()
@@ -71,6 +78,7 @@ def get_e3nn_model(hyperparameters, train_loader):
         out_dim=out_dim,                                     # dimension of the embedding after covolution and pooling
         hid_dim = hyperparameters['num_hidden_feature'],         # number of features in each hidden layer
         n_hid = hyperparameters['num_hidden_layer'],             # number of hidden layers after covolution and pooling
+        per_site = per_site,
         irreps_in=str(em_dim)+"x0e",                         # em_dim scalars (L=0 and even parity) on each atom to represent atom type
         irreps_out=str(out_dim)+"x0e",                       # out_dim scalars (L=0 and even parity) to output
         irreps_node_attr=str(em_dim)+"x0e",                  # em_dim scalars (L=0 and even parity) on each atom to represent atom type
