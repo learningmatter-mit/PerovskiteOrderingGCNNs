@@ -112,16 +112,20 @@ def sigopt_evaluate_model(data_name,hyperparameters,processed_data,target_prop,i
     train_data = processed_data[0]
     validation_data = processed_data[1]
 
-    train_loader = get_dataloader(train_data,target_prop,model_type,hyperparameters["batch_size"],interpolation)
+    per_site = False
+    if "per_site" in target_prop:
+        per_site = True
+
+    train_loader = get_dataloader(train_data,target_prop,model_type,hyperparameters["batch_size"],interpolation,per_site=per_site)
     train_eval_loader = None
 
-    if "e3nn" in model_type and "pretrain" not in data_name:
-        train_eval_loader = get_dataloader(train_data,target_prop,"e3nn_contrastive",1,interpolation)
-        val_loader = get_dataloader(validation_data,target_prop,"e3nn_contrastive",1,interpolation)
+    if "e3nn" in model_type and "pretrain" not in data_name and "per_site" not in target_prop:
+        train_eval_loader = get_dataloader(train_data,target_prop,"e3nn_contrastive",1,interpolation,per_site=per_site)
+        val_loader = get_dataloader(validation_data,target_prop,"e3nn_contrastive",1,interpolation,per_site=per_site)
     else:
-        val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation)
+        val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation,per_site=per_site)
     
-    model, normalizer = create_model(model_type,train_loader,interpolation,target_prop,hyperparameters=hyperparameters)
+    model, normalizer = create_model(model_type,train_loader,interpolation,target_prop,hyperparameters=hyperparameters,per_site=per_site)
     
     sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed)
     model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/' + nickname + '_tmp' + str(gpu_num)

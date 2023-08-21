@@ -14,7 +14,7 @@ sys.path.append('models/PerovskiteOrderingGCNNs_painn/')
 from nff.data import Dataset, collate_dicts
 
 
-def get_dataloader(data, prop="dft_e_hull", model_type="CGCNN", batch_size=10, interpolation=True):
+def get_dataloader(data, prop="dft_e_hull", model_type="CGCNN", batch_size=10, interpolation=True, per_site=False):
     tqdm.pandas()
     pd.options.mode.chained_assignment = None # Disable the SettingWithCopy warning (due to pandas.apply as new column)
     
@@ -25,11 +25,11 @@ def get_dataloader(data, prop="dft_e_hull", model_type="CGCNN", batch_size=10, i
         prop += "_diff"
 
     if model_type == "CGCNN":
-        data_loader = get_cgcnn_loader(data,prop,batch_size)
+        data_loader = get_cgcnn_loader(data,prop,batch_size,per_site=per_site)
     elif model_type == "Painn":
         data_loader = get_painn_dataloader(data,prop,batch_size)
     elif model_type == "e3nn":
-        data_loader = get_e3nn_dataloader(data,prop,batch_size)
+        data_loader = get_e3nn_dataloader(data,prop,batch_size,per_site=per_site)
     elif model_type == "e3nn_contrastive":
         data_loader = get_e3nn_contrastive_dataloader(data,prop,batch_size)
     else:
@@ -55,8 +55,8 @@ def get_painn_dataloader(data,prop,batch_size):
     return data_loader
 
 
-def get_e3nn_dataloader(data,prop,batch_size):
-    data['datapoint'] = data.progress_apply(lambda x: build_e3nn_data(x, prop, r_max=5.0), axis=1)
+def get_e3nn_dataloader(data,prop,batch_size,per_site):
+    data['datapoint'] = data.progress_apply(lambda x: build_e3nn_data(x, prop, r_max=5.0,per_site), axis=1)
     data_loader = tg.loader.DataLoader(data['datapoint'].values, batch_size=batch_size, shuffle=True)
 
     return data_loader
