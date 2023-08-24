@@ -10,7 +10,7 @@ import numpy as np
 import torch_geometric as tg
 
 class PeriodicNetwork(Network):
-    def __init__(self, in_dim, em_dim, out_dim, hid_dim, n_hid, per_site = per_site, **kwargs):            
+    def __init__(self, in_dim, em_dim, out_dim, hid_dim, n_hid, per_site = False, **kwargs):            
         # override the `reduce_output` keyword to instead perform an averge over atom contributions    
         self.pool = False
         if kwargs['reduce_output'] == True:
