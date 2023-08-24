@@ -11,7 +11,7 @@ def write_job_file(experiment_group_name,experiment_id,suggestion_num):
     f.write('#SBATCH -o supercloud_job_managing/Run_jobs/Job_logs/' + str(experiment_id) + '/supercloud_job_runner.sh.log-%j'
     '''
 #SBATCH -N 1
-#SBATCH -c 20
+#SBATCH -c 10
 #SBATCH --gres=gpu:volta:1
 
 source activate Perovskite_ML_Environment\n'''

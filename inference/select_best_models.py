@@ -15,50 +15,23 @@ from processing.create_model.create_model import create_model
 
 
 def get_experiment_id(model_params, target_prop):
-    if target_prop == "dft_e_hull":
-        if model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
-            return 837611
-        elif model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'relaxed':
-            return 837612
-        elif model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'M3Gnet_relaxed':
-            return 837613
-        elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
-            return 837627
-        elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'relaxed':
-            return 837628
-        elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'M3Gnet_relaxed':
-            return 837629
-        elif model_params["model_type"] == "Painn" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
-            return 837609
-        else:
-            raise ValueError('These model parameters have not been studied')
     
-    elif target_prop == "Op_band_center":    
-        if model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
-            return 837614
-        elif model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'relaxed':
-            return 837615
-        elif model_params["model_type"] == "CGCNN" and model_params["interpolation"] == False and model_params["struct_type"] == 'M3Gnet_relaxed':
-            return 837616
-        elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
-            return 837624
-        elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'relaxed':
-            return 837625
-        elif model_params["model_type"] == "e3nn" and model_params["interpolation"] == False and model_params["struct_type"] == 'M3Gnet_relaxed':
-            return 837626
-        elif model_params["model_type"] == "Painn" and model_params["interpolation"] == False and model_params["struct_type"] == 'unrelaxed':
-            return 837610
-        else:
-            raise ValueError('These model parameters have not been studied')
+    f = open('experiment_ids.json')
+    settings_to_id = json.load(f)
+    f.close()
 
+    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
+
+    if sigopt_name in settings_to_id:
+        return settings_to_id[settings]
     else:
-        raise ValueError('This target property has not been studied')
+        raise ValueError('These model parameters have not been studied')
 
 def load_model(gpu_num, train_loader, target_prop, model_params, folder_idx, job_idx):
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
     
-    sigopt_name = build_sigopt_name("data/", target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"])
+    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
     exp_id = get_experiment_id(model_params, target_prop)
     directory = "./saved_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)+"/" + "observ_" + str(folder_idx)
     
@@ -84,22 +57,40 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
     
     interpolation = model_params["interpolation"]
     model_type = model_params["model_type"]    
-    
-    training_data = pd.read_json('data/' + 'training_set.json')
-    validation_data = pd.read_json('data/' + 'validation_set.json')
-    edge_data = pd.read_json('data/' + 'edge_dataset.json')    
+    data_name = model_params["data"]
+
+    if data_name == "data/":
+
+        training_data = pd.read_json(data_name + 'training_set.json')
+        validation_data = pd.read_json(data_name + 'validation_set.json')
+        edge_data = pd.read_json(data_name + 'edge_dataset.json')
+
+        if not interpolation:
+            training_data = pd.concat((training_data,edge_data))
+
+    elif data_name == "pretrain_data/":
+
+        training_data = pd.read_json(data_name + 'training_set.json')
+        validation_data = pd.read_json(data_name + 'validation_set.json')
+
+    else:
+        print("Specified Data Directory Does Not Exist!")
+
+    training_data = training_data.sample(frac=training_fraction,replace=False,random_state=training_seed)
+
+    torch.manual_seed(0)
+    random.seed(0)
+    np.random.seed(0)
 
     print("Loaded data")
-
-    if not interpolation:
-        training_data = pd.concat((training_data,edge_data))
 
     data = [training_data, validation_data]
     processed_data = []
 
     for dataset in data:
         dataset = filter_data_by_properties(dataset,target_prop)
-        dataset = select_structures(dataset,model_params["struct_type"])
+
+        dataset = select_structures(dataset,struct_type)
 
         if interpolation:
             dataset = apply_interpolation(dataset,target_prop)
@@ -127,7 +118,7 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
         sigopt_loss = all_observations.data[job_idx].value
         
         hyperparameters = all_observations.data[job_idx].assignments
-        sigopt_name = build_sigopt_name("data/", target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"])
+        sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
         directory = "./saved_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)+"/" + "observ_" + str(folder_idx)
         with open(directory + '/hyperparameters.json', 'w') as file:
             json.dump(hyperparameters, file)
@@ -153,14 +144,14 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
             new_row
         ], ignore_index=True)
 
-    sigopt_name = build_sigopt_name("data/", target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"])
+    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
     exp_id = get_experiment_id(model_params, target_prop)
     save_directory = "./saved_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
     reverify_sigopt_models_results.to_csv(save_directory + "/reverify_sigopt_models_results.csv")
 
 
 def keep_the_best_few_models(model_params, target_prop, num_best_models=3):
-    sigopt_name = build_sigopt_name("data/", target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"])
+    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
     exp_id = get_experiment_id(model_params, target_prop)
     old_directory_prefix = "./saved_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
     new_directory_prefix = "./best_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)

@@ -21,6 +21,7 @@ def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_
     if data_name == "data/":
 
         training_data = pd.read_json(data_name + 'training_set.json')
+        training_data = training_data.sample(frac=training_fraction,replace=False,random_state=training_seed)
         validation_data = pd.read_json(data_name + 'validation_set.json')
         edge_data = pd.read_json(data_name + 'edge_dataset.json')
 
@@ -34,8 +35,6 @@ def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_
 
     else:
         print("Specified Data Directory Does Not Exist!")
-
-    training_data = training_data.sample(frac=training_fraction,replace=False,random_state=training_seed)
 
     torch.manual_seed(0)
     random.seed(0)

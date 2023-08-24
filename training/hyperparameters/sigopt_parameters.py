@@ -49,7 +49,7 @@ def get_e3nn_hyperparameter_range():
 def get_retrain_hyperparameter_range():
     parameters=[
         # dict(name='MaxEpochs', bounds=dict(min=100, max=100), type="int"), 
-        dict(name="batch_size", bounds=dict(min=4, max=12), type="int"),
+        dict(name="batch_size", bounds=dict(min=4, max=16), type="int"),
         dict(name="log_lr", bounds=dict(min=-5, max=-2), type="int"), 
         dict(name="reduceLR_patience", bounds=dict(min=10, max=30), type="int"), 
     ]
