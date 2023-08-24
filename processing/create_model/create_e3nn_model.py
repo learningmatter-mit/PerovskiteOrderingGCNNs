@@ -56,7 +56,8 @@ class PeriodicNetwork(Network):
         
         output =  self.fc_out(crys_fea)
 
-        output = output.view(data.num_graphs,-1)
+        if self.per_site:
+            output = output.view(data.num_graphs,-1)
         
         return output
 
