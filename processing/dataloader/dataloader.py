@@ -56,7 +56,7 @@ def get_painn_dataloader(data,prop,batch_size):
 
 
 def get_e3nn_dataloader(data,prop,batch_size,per_site):
-    data['datapoint'] = data.progress_apply(lambda x: build_e3nn_data(x, prop, r_max=5.0,per_site), axis=1)
+    data['datapoint'] = data.progress_apply(lambda x: build_e3nn_data(x, prop, r_max=5.0,per_site=per_site), axis=1)
     data_loader = tg.loader.DataLoader(data['datapoint'].values, batch_size=batch_size, shuffle=True)
 
     return data_loader
