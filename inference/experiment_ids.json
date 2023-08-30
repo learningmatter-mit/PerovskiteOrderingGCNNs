@@ -18,73 +18,66 @@
     "Op_band_center_htvs_data_relaxed_e3nn":837625,
     "Op_band_center_htvs_data_M3Gnet_relaxed_e3nn":837626,
 
-    "dft_e_hull_htvs_data_unrelaxed_CGCNN_TrainingFraction0.5":837840,
-    "dft_e_hull_htvs_data_unrelaxed_CGCNN_TrainingFraction0.25":837841,
-    "dft_e_hull_htvs_data_unrelaxed_CGCNN_TrainingFraction0.125":837842,
+    "dft_e_hull_htvs_data_relaxed_CGCNN_TrainingFraction0.5":838966,
+    "dft_e_hull_htvs_data_relaxed_CGCNN_TrainingFraction0.25":838967,
+    "dft_e_hull_htvs_data_relaxed_CGCNN_TrainingFraction0.125":838968,
 
-    "Op_band_center_htvs_data_unrelaxed_CGCNN_TrainingFraction0.5":837843,
-    "Op_band_center_htvs_data_unrelaxed_CGCNN_TrainingFraction0.25":837844,
-    "Op_band_center_htvs_data_unrelaxed_CGCNN_TrainingFraction0.125":837845,
+    "dft_e_hull_htvs_data_relaxed_e3nn_TrainingFraction0.5":838969,
+    "dft_e_hull_htvs_data_relaxed_e3nn_TrainingFraction0.25":838970,
+    "dft_e_hull_htvs_data_relaxed_e3nn_TrainingFraction0.125":838971,
 
-    "dft_e_hull_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.5":837886,
-    "dft_e_hull_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.25":837887,
-    "dft_e_hull_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.125":837888,
+    "dft_e_hull_htvs_data_unrelaxed_CGCNN_TrainingFraction0.5":838960,
+    "dft_e_hull_htvs_data_unrelaxed_CGCNN_TrainingFraction0.25":838961,
 
-    "Op_band_center_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.5":837889,
-    "Op_band_center_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.25":837890,
-    "Op_band_center_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.125":837891,
+    "dft_e_hull_htvs_data_unrelaxed_e3nn_TrainingFraction0.5":838963,
+    "dft_e_hull_htvs_data_unrelaxed_e3nn_TrainingFraction0.25":838964,
+    "dft_e_hull_htvs_data_unrelaxed_e3nn_TrainingFraction0.125":838965,
 
+    "Op_band_center_htvs_data_relaxed_CGCNN_TrainingFraction0.5":839021,
+    "Op_band_center_htvs_data_relaxed_CGCNN_TrainingFraction0.25":839022,
+    "Op_band_center_htvs_data_relaxed_CGCNN_TrainingFraction0.125":839023,
 
-    "dft_e_hull_htvs_data_relaxed_CGCNN_TrainingFraction0.5":837897,
-    "dft_e_hull_htvs_data_relaxed_CGCNN_TrainingFraction0.25":838020,
-    "dft_e_hull_htvs_data_relaxed_CGCNN_TrainingFraction0.125":837899,
+    "Op_band_center_htvs_data_relaxed_e3nn_TrainingFraction0.5":839024,
+    "Op_band_center_htvs_data_relaxed_e3nn_TrainingFraction0.25":839025,
+    "Op_band_center_htvs_data_relaxed_e3nn_TrainingFraction0.125":839026,
 
-    "Op_band_center_htvs_data_relaxed_CGCNN_TrainingFraction0.5":837896,
-    "Op_band_center_htvs_data_relaxed_CGCNN_TrainingFraction0.25":837898,
-    "Op_band_center_htvs_data_relaxed_CGCNN_TrainingFraction0.125":837894,
-    
+    "Op_band_center_htvs_data_unrelaxed_CGCNN_TrainingFraction0.5":839015,
+    "Op_band_center_htvs_data_unrelaxed_CGCNN_TrainingFraction0.25":839016,
+
+    "Op_band_center_htvs_data_unrelaxed_e3nn_TrainingFraction0.5":839018,
+    "Op_band_center_htvs_data_unrelaxed_e3nn_TrainingFraction0.25":839019,
+    "Op_band_center_htvs_data_unrelaxed_e3nn_TrainingFraction0.125":839020,
+
     "dft_e_hull_htvs_data_relaxed_interpolation_CGCNN_TrainingFraction0.5":837940,
     "dft_e_hull_htvs_data_relaxed_interpolation_CGCNN_TrainingFraction0.25":837941,
     "dft_e_hull_htvs_data_relaxed_interpolation_CGCNN_TrainingFraction0.125":837942,
-
-    "Op_band_center_htvs_data_relaxed_interpolation_CGCNN_TrainingFraction0.5":837939,
-    "Op_band_center_htvs_data_relaxed_interpolation_CGCNN_TrainingFraction0.25":837938,
-    "Op_band_center_htvs_data_relaxed_interpolation_CGCNN_TrainingFraction0.125":837937,
-
-
-    "dft_e_hull_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.5":837970,
-    "dft_e_hull_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.25":837971,
-    "dft_e_hull_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.125":837969,
-
-    "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.5":837968,
-    "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.25":837967,
-    "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.125":837966,
-
-
-    "dft_e_hull_htvs_data_unrelaxed_e3nn_TrainingFraction0.5":837837,
-    "dft_e_hull_htvs_data_unrelaxed_e3nn_TrainingFraction0.25":837838,
-    "dft_e_hull_htvs_data_unrelaxed_e3nn_TrainingFraction0.125":837839,
-
-    "Op_band_center_htvs_data_unrelaxed_e3nn_TrainingFraction0.5":837834,
-    "Op_band_center_htvs_data_unrelaxed_e3nn_TrainingFraction0.25":837835,
-    "Op_band_center_htvs_data_unrelaxed_e3nn_TrainingFraction0.125":837836,
-
-
-    "dft_e_hull_htvs_data_relaxed_e3nn_TrainingFraction0.5":837960,
-    "dft_e_hull_htvs_data_relaxed_e3nn_TrainingFraction0.25":837961,
-    "dft_e_hull_htvs_data_relaxed_e3nn_TrainingFraction0.125":837962,
 
     "dft_e_hull_htvs_data_relaxed_interpolation_e3nn_TrainingFraction0.5":837963,
     "dft_e_hull_htvs_data_relaxed_interpolation_e3nn_TrainingFraction0.25":837964,
     "dft_e_hull_htvs_data_relaxed_interpolation_e3nn_TrainingFraction0.125":837965,
 
-    "Op_band_center_htvs_data_relaxed_e3nn_TrainingFraction0.5":837975,
-    "Op_band_center_htvs_data_relaxed_e3nn_TrainingFraction0.25":837976,
-    "Op_band_center_htvs_data_relaxed_e3nn_TrainingFraction0.125":837977,
+    "dft_e_hull_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.5":837886,
+    "dft_e_hull_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.25":837887,
+    "dft_e_hull_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.125":837888,
+
+    "dft_e_hull_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.5":837970,
+    "dft_e_hull_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.25":837971,
+    "dft_e_hull_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.125":837969,
+
+    "Op_band_center_htvs_data_relaxed_interpolation_CGCNN_TrainingFraction0.5":837939,
+    "Op_band_center_htvs_data_relaxed_interpolation_CGCNN_TrainingFraction0.25":837938,
+    "Op_band_center_htvs_data_relaxed_interpolation_CGCNN_TrainingFraction0.125":837937,
 
     "Op_band_center_htvs_data_relaxed_interpolation_e3nn_TrainingFraction0.5":837978,
     "Op_band_center_htvs_data_relaxed_interpolation_e3nn_TrainingFraction0.25":837979,
     "Op_band_center_htvs_data_relaxed_interpolation_e3nn_TrainingFraction0.125":837980,
 
-}
+    "Op_band_center_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.5":837889,
+    "Op_band_center_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.25":837890,
+    "Op_band_center_htvs_data_unrelaxed_interpolation_CGCNN_TrainingFraction0.125":839017,
 
+    "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.5":837968,
+    "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.25":837967,
+    "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.125":837966
+
+}

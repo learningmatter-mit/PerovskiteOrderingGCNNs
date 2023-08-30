@@ -13,6 +13,7 @@ from training.loss import contrastive_loss
 from training.sigopt_utils import build_sigopt_name
 from processing.create_model.create_model import create_model
 
+saved_models_path = "/data/jypeng/PerovskiteOrderingGCNNs/saved_models_ver_Aug_23/saved_models/"
 
 def get_experiment_id(model_params, target_prop):
     
@@ -33,7 +34,7 @@ def load_model(gpu_num, train_loader, target_prop, model_params, folder_idx, job
     
     sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
     exp_id = get_experiment_id(model_params, target_prop)
-    directory = "./saved_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)+"/" + "observ_" + str(folder_idx)
+    directory = saved_models_path + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)+"/" + "observ_" + str(folder_idx)
     
     conn = sigopt.Connection(client_token="ERZVVPFNRCSCQIJVOVCYHVFUGZCKUDPOWZJTEXZYNOMRKQLS")
     all_observations = conn.experiments(exp_id).observations().fetch()
@@ -62,6 +63,7 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
     if data_name == "data/":
 
         training_data = pd.read_json(data_name + 'training_set.json')
+        training_data = training_data.sample(frac=training_fraction,replace=False,random_state=training_seed)
         validation_data = pd.read_json(data_name + 'validation_set.json')
         edge_data = pd.read_json(data_name + 'edge_dataset.json')
 
@@ -76,7 +78,6 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
     else:
         print("Specified Data Directory Does Not Exist!")
 
-    training_data = training_data.sample(frac=training_fraction,replace=False,random_state=training_seed)
 
     torch.manual_seed(0)
     random.seed(0)
@@ -119,7 +120,7 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
         
         hyperparameters = all_observations.data[job_idx].assignments
         sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
-        directory = "./saved_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)+"/" + "observ_" + str(folder_idx)
+        directory = saved_models_path + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)+"/" + "observ_" + str(folder_idx)
         with open(directory + '/hyperparameters.json', 'w') as file:
             json.dump(hyperparameters, file)
 
@@ -146,14 +147,14 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
 
     sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
     exp_id = get_experiment_id(model_params, target_prop)
-    save_directory = "./saved_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
+    save_directory = saved_models_path + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
     reverify_sigopt_models_results.to_csv(save_directory + "/reverify_sigopt_models_results.csv")
 
 
 def keep_the_best_few_models(model_params, target_prop, num_best_models=3):
     sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
     exp_id = get_experiment_id(model_params, target_prop)
-    old_directory_prefix = "./saved_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
+    old_directory_prefix = saved_models_path + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
     new_directory_prefix = "./best_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
 
     reverify_sigopt_models_results = pd.read_csv(old_directory_prefix + '/reverify_sigopt_models_results.csv', index_col=0)
