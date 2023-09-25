@@ -28,6 +28,15 @@ def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_
         if not interpolation:
             training_data = pd.concat((training_data,edge_data))
 
+    elif data_name == "data_per_site/":
+        training_data = pd.read_json(data_name + 'training_set.json')
+        training_data = training_data.sample(frac=training_fraction,replace=False,random_state=training_seed)
+        validation_data = pd.read_json(data_name + 'validation_set.json')
+        edge_data = pd.read_json(data_name + 'edge_dataset.json')
+
+        if not interpolation:
+            training_data = pd.concat((training_data,edge_data))
+
     elif data_name == "pretrain_data/":
 
         training_data = pd.read_json(data_name + 'training_set.json')
