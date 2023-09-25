@@ -17,6 +17,16 @@
     "Op_band_center_htvs_data_unrelaxed_e3nn":837624,
     "Op_band_center_htvs_data_relaxed_e3nn":837625,
     "Op_band_center_htvs_data_M3Gnet_relaxed_e3nn":837626,
+    
+    "dft_e_hull_htvs_data_unrelaxed_interpolation_CGCNN":839396,
+    "dft_e_hull_htvs_data_relaxed_interpolation_CGCNN":839397,
+    "dft_e_hull_htvs_data_unrelaxed_interpolation_e3nn":839398,
+    "dft_e_hull_htvs_data_relaxed_interpolation_e3nn":839399,
+    
+    "Op_band_center_htvs_data_unrelaxed_interpolation_CGCNN":839306,
+    "Op_band_center_htvs_data_relaxed_interpolation_CGCNN":839307,
+    "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn":839308,
+    "Op_band_center_htvs_data_relaxed_interpolation_e3nn":839309,
 
     "dft_e_hull_htvs_data_relaxed_CGCNN_TrainingFraction0.5":838966,
     "dft_e_hull_htvs_data_relaxed_CGCNN_TrainingFraction0.25":838967,
@@ -28,6 +38,7 @@
 
     "dft_e_hull_htvs_data_unrelaxed_CGCNN_TrainingFraction0.5":838960,
     "dft_e_hull_htvs_data_unrelaxed_CGCNN_TrainingFraction0.25":838961,
+    "dft_e_hull_htvs_data_unrelaxed_CGCNN_TrainingFraction0.125":839395,
 
     "dft_e_hull_htvs_data_unrelaxed_e3nn_TrainingFraction0.5":838963,
     "dft_e_hull_htvs_data_unrelaxed_e3nn_TrainingFraction0.25":838964,
@@ -43,6 +54,7 @@
 
     "Op_band_center_htvs_data_unrelaxed_CGCNN_TrainingFraction0.5":839015,
     "Op_band_center_htvs_data_unrelaxed_CGCNN_TrainingFraction0.25":839016,
+    "Op_band_center_htvs_data_unrelaxed_CGCNN_TrainingFraction0.125":839305,
 
     "Op_band_center_htvs_data_unrelaxed_e3nn_TrainingFraction0.5":839018,
     "Op_band_center_htvs_data_unrelaxed_e3nn_TrainingFraction0.25":839019,

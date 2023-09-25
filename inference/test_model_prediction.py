@@ -2,6 +2,7 @@ import json
 import torch
 import pandas as pd
 import numpy as np
+import random
 from processing.dataloader.dataloader import get_dataloader
 from processing.utils import filter_data_by_properties,select_structures
 from processing.interpolation.Interpolation import *
@@ -25,16 +26,34 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
     torch.cuda.set_device(device)
 
     interpolation = model_params["interpolation"]
-    model_type = model_params["model_type"]    
+    model_type = model_params["model_type"]
+    data_name = model_params["data"]
+    struct_type = model_params["struct_type"]
     
-    training_data = pd.read_json('data/' + 'training_set.json')
-    test_data = pd.read_json('data/' + test_set_type + '.json')
-    edge_data = pd.read_json('data/' + 'edge_dataset.json')    
+    if data_name == "data/":
+
+        training_data = pd.read_json(data_name + 'training_set.json')
+        training_data = training_data.sample(frac=model_params["training_fraction"],replace=False,random_state=0)
+        test_data = pd.read_json(data_name + test_set_type + '.json')
+        edge_data = pd.read_json(data_name + 'edge_dataset.json')
+
+        if not interpolation:
+            training_data = pd.concat((training_data,edge_data))
+
+    elif data_name == "pretrain_data/":
+
+        training_data = pd.read_json(data_name + 'training_set.json')
+        test_data = pd.read_json(data_name + 'test_set.json')
+
+    else:
+        print("Specified Data Directory Does Not Exist!")
+   
 
     print("Loaded data")
 
-    if not interpolation:
-        training_data = pd.concat((training_data,edge_data))
+    torch.manual_seed(0)
+    random.seed(0)
+    np.random.seed(0)
 
     data = [training_data, test_data]
     processed_data = []
@@ -56,7 +75,7 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
     train_loader = get_dataloader(train_data,target_prop,model_type,1,interpolation)
     test_loader = get_dataloader(test_data,target_prop,model_type,1,interpolation)       
 
-    sigopt_name = build_sigopt_name("data/", target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"])
+    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
     exp_id = get_experiment_id(model_params, target_prop)
 
     for idx in range(num_best_models):

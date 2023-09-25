@@ -4,6 +4,8 @@ import json
 import sigopt
 import math
 import torch
+import random
+import numpy as np
 import pandas as pd
 from processing.dataloader.dataloader import get_dataloader
 from processing.utils import filter_data_by_properties,select_structures
@@ -17,14 +19,14 @@ saved_models_path = "/data/jypeng/PerovskiteOrderingGCNNs/saved_models_ver_Aug_2
 
 def get_experiment_id(model_params, target_prop):
     
-    f = open('experiment_ids.json')
+    f = open('inference/experiment_ids.json')
     settings_to_id = json.load(f)
     f.close()
 
     sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
 
     if sigopt_name in settings_to_id:
-        return settings_to_id[settings]
+        return settings_to_id[sigopt_name]
     else:
         raise ValueError('These model parameters have not been studied')
 
@@ -59,11 +61,12 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
     interpolation = model_params["interpolation"]
     model_type = model_params["model_type"]    
     data_name = model_params["data"]
+    struct_type = model_params["struct_type"]
 
     if data_name == "data/":
 
         training_data = pd.read_json(data_name + 'training_set.json')
-        training_data = training_data.sample(frac=training_fraction,replace=False,random_state=training_seed)
+        training_data = training_data.sample(frac=model_params["training_fraction"],replace=False,random_state=0)
         validation_data = pd.read_json(data_name + 'validation_set.json')
         edge_data = pd.read_json(data_name + 'edge_dataset.json')
 
