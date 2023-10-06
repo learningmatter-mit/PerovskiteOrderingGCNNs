@@ -30,7 +30,7 @@ def get_experiment_id(model_params, target_prop):
     else:
         raise ValueError('These model parameters have not been studied')
 
-def load_model(gpu_num, train_loader, target_prop, model_params, folder_idx, job_idx):
+def load_model(gpu_num, train_loader, target_prop, model_params, folder_idx, job_idx,per_site):
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
     
@@ -46,7 +46,7 @@ def load_model(gpu_num, train_loader, target_prop, model_params, folder_idx, job
         model = torch.load(directory + "/best_model", map_location=device)
         normalizer = None
     else:
-        model, normalizer = create_model(model_params["model_type"], train_loader,model_params["interpolation"],target_prop,hyperparameters=assignments)
+        model, normalizer = create_model(model_params["model_type"], train_loader,model_params["interpolation"],target_prop,hyperparameters=assignments,per_site=per_site)
         model.to(device)
         model.load_state_dict(torch.load(directory + "/best_model.torch", map_location=device)['state'])
     
@@ -67,6 +67,15 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
 
         training_data = pd.read_json(data_name + 'training_set.json')
         training_data = training_data.sample(frac=model_params["training_fraction"],replace=False,random_state=0)
+        validation_data = pd.read_json(data_name + 'validation_set.json')
+        edge_data = pd.read_json(data_name + 'edge_dataset.json')
+
+        if not interpolation:
+            training_data = pd.concat((training_data,edge_data))
+            
+    elif data_name == "data_per_site/":
+        training_data = pd.read_json(data_name + 'training_set.json')
+        training_data = training_data.sample(frac=training_fraction,replace=False,random_state=training_seed)
         validation_data = pd.read_json(data_name + 'validation_set.json')
         edge_data = pd.read_json(data_name + 'edge_dataset.json')
 
@@ -105,9 +114,13 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
     
     train_data = processed_data[0]
     validation_data = processed_data[1]
+    
+    per_site = False
+    if "per_site" in target_prop:
+        per_site = True
 
-    train_loader = get_dataloader(train_data,target_prop,model_type,1,interpolation)
-    val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation)       
+    train_loader = get_dataloader(train_data,target_prop,model_type,1,interpolation,per_site=per_site)
+    val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation,per_site=per_site)       
 
     reverify_sigopt_models_results = pd.DataFrame(columns=['sigopt_loss', 'reverified_loss'])
 
@@ -127,7 +140,7 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
         with open(directory + '/hyperparameters.json', 'w') as file:
             json.dump(hyperparameters, file)
 
-        model, normalizer = load_model(gpu_num, train_loader, target_prop, model_params, folder_idx, job_idx)
+        model, normalizer = load_model(gpu_num, train_loader, target_prop, model_params, folder_idx, job_idx,per_site=per_site)
         
         if "contrastive" in model_type:
             loss_fn = contrastive_loss 

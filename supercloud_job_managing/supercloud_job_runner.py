@@ -22,7 +22,7 @@ from training.sigopt_utils import build_sigopt_name
 from training.evaluate import *
 
 
-def supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed,gpu_num,experiment_id,nickname):
+def supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,long_range,contrastive_weight,training_fraction,training_seed,gpu_num,experiment_id,nickname):
     
     if data_name == "data/":
 
@@ -64,10 +64,10 @@ def supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpo
 
     print("Completed data processing")
 
-    supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,contrastive_weight,training_fraction,training_seed,experiment_id,gpu_num,nickname)
+    supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,long_range,contrastive_weight,training_fraction,training_seed,experiment_id,gpu_num,nickname)
 
 
-def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,contrastive_weight,training_fraction,training_seed,experiment_id,gpu_num,nickname):
+def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,long_range,contrastive_weight,training_fraction,training_seed,experiment_id,gpu_num,nickname):
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
     torch.cuda.set_device(device)
@@ -75,18 +75,18 @@ def supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_pr
     train_data = processed_data[0]
     validation_data = processed_data[1]
 
-    train_loader = get_dataloader(train_data,target_prop,model_type,hyperparameters["batch_size"],interpolation)
+    train_loader = get_dataloader(train_data,target_prop,model_type,hyperparameters["batch_size"],interpolation,long_range=long_range)
     train_eval_loader = None
 
     if "e3nn" in model_type and "pretrain" not in data_name:
         train_eval_loader = get_dataloader(train_data,target_prop,"e3nn_contrastive",1,interpolation)
         val_loader = get_dataloader(validation_data,target_prop,"e3nn_contrastive",1,interpolation)
     else:
-        val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation)
+        val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation,long_range=long_range)
     
     model, normalizer = create_model(model_type,train_loader,interpolation,target_prop,hyperparameters=hyperparameters)
     
-    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed)
+    sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed,long_range)
     model_tmp_dir = './saved_models/'+ model_type + '/' + sigopt_name + '/' + str(experiment_id) + '/' + nickname + '_tmp' + str(gpu_num)
     if os.path.exists(model_tmp_dir):
         shutil.rmtree(model_tmp_dir)
@@ -140,6 +140,7 @@ if __name__ == '__main__':
     struct_type = sigopt_info[experiment_id]["settings"]["struct_type"]
     interpolation = sigopt_info[experiment_id]["settings"]["interpolation"]
     model_type = sigopt_info[experiment_id]["settings"]["model_type"]
+    long_range = sigopt_info[experiment_id]["settings"]["long_range"]
     contrastive_weight = sigopt_info[experiment_id]["settings"]["contrastive_weight"]
     training_fraction = sigopt_info[experiment_id]["settings"]["training_fraction"]
     training_seed = sigopt_info[experiment_id]["settings"]["training_seed"]
@@ -152,7 +153,7 @@ if __name__ == '__main__':
     json.dump(sigopt_info, f)
     f.close()
 
-    supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed,gpu_num,experiment_id,nickname)
+    supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,long_range,contrastive_weight,training_fraction,training_seed,gpu_num,experiment_id,nickname)
     
     f = open("supercloud_job_managing/experiments/" +experiment_group_name+ "/sigopt_info.json")
     sigopt_info = json.load(f)

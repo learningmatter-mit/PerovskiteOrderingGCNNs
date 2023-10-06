@@ -44,7 +44,7 @@ def evaluate_model(model, normalizer, model_type, dataloader, loss_fn, gpu_num, 
                 predictions.append(prediction)
                 targets.append(target)
                 if model_type == "CGCNN":
-                    loss = loss_fn(normalizer.denorm(output), target)
+                    loss = loss_fn(normalizer.denorm(output).view(target.shape), target)
                     loss_cumulative = loss_cumulative + loss.detach().item()*target.shape[0]
                 elif is_contrastive:
                     loss, direct_loss, contrastive_loss = loss_fn(normalizer.denorm(output), d.target, d.comp, contrastive_weight)

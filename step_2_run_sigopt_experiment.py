@@ -177,6 +177,8 @@ def create_sigopt_experiment(data_name,target_prop,struct_type,interpolation,mod
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Hyperparameter optimization for perovksite ordering GCNNs')
+    parser.add_argument('--data_name', default = "data/", type=str, metavar='name',
+                        help="the source of the data")
     parser.add_argument('--prop', default = "dft_e_hull", type=str, metavar='name',
                         help="the property to predict (default: dft_e_hull; other options: Op_band_center)")
     parser.add_argument('--struct_type', default = 'unrelaxed', type=str, metavar='struct_type',
@@ -203,7 +205,7 @@ if __name__ == '__main__':
                         help="budget of sigopt (default: 50)")
     args = parser.parse_args()
 
-    data_name = "data/"
+    data_name = args.data_name
     target_prop = args.prop
     model_type = args.model
     gpu_num = args.gpu

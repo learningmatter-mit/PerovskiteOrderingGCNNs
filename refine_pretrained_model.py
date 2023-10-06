@@ -141,7 +141,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_path', required=True, type=str, metavar='device',
                         help="path to the model to retrain")
     parser.add_argument('--retrain_name', required=True, type=str, metavar='device',
-                        help="path to the model to retrain")
+                        help="sigopt name of the model to retrain")
     parser.add_argument('--prop', default = "dft_e_hull", type=str, metavar='name',
                         help="the property to predict (default: dft_e_hull; other options: Op_band_center)")
     parser.add_argument('--struct_type', default = 'unrelaxed', type=str, metavar='struct_type',

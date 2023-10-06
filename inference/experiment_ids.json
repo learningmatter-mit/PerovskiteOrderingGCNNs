@@ -90,6 +90,10 @@
 
     "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.5":837968,
     "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.25":837967,
-    "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.125":837966
+    "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.125":837966,
+    
+    
+    "per_site_p_band_data_per_site_unrelaxed_e3nn":1021456,
+    "per_site_p_band_data_per_site_unrelaxed_CGCNN":1021459
 
 }

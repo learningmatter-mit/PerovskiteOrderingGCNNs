@@ -123,7 +123,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
 
 
             if model_type == "CGCNN":
-                loss = loss_fn(normalizer.denorm(output), target)
+                loss = loss_fn(normalizer.denorm(output).view(target.shape), target)
             elif model_type == "e3nn_contrastive":
                 loss, direct_loss, contrastive_loss = loss_fn(normalizer.denorm(output), d.target, d.comp, contrastive_weight)
             else:

@@ -1,4 +1,4 @@
-def build_sigopt_name(data_source,target_prop,struct_type,interpolation,model_type,contrastive_weight=1.0,training_fraction=1.0,training_seed=0):
+def build_sigopt_name(data_source,target_prop,struct_type,interpolation,model_type,contrastive_weight=1.0,training_fraction=1.0,training_seed=0,long_range=False):
     sigopt_name = target_prop
 
     if data_source == "data/":
@@ -9,6 +9,10 @@ def build_sigopt_name(data_source,target_prop,struct_type,interpolation,model_ty
         sigopt_name += "_" 
         sigopt_name += "pretrain_data"
 
+    elif data_source == "data_per_site/":
+        sigopt_name += "_" 
+        sigopt_name += "data_per_site"
+
     sigopt_name += "_" 
     sigopt_name += struct_type
 
@@ -17,6 +21,10 @@ def build_sigopt_name(data_source,target_prop,struct_type,interpolation,model_ty
         sigopt_name += "interpolation"
 
     sigopt_name = sigopt_name + "_" + model_type
+
+    if long_range:
+        sigopt_name += "_" 
+        sigopt_name += "Long_Range"
 
     if contrastive_weight != 1.0:
         sigopt_name += "_" 
