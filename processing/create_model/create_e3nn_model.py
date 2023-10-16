@@ -58,6 +58,7 @@ class PeriodicNetwork(Network):
 
         if self.per_site:
             output = output.view(data.num_graphs,-1)
+            output = output[:,16:]
         
         return output
 
