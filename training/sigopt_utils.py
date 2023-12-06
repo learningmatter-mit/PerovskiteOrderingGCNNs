@@ -8,6 +8,10 @@ def build_sigopt_name(data_source,target_prop,struct_type,interpolation,model_ty
     elif data_source == "pretrain_data/":
         sigopt_name += "_" 
         sigopt_name += "pretrain_data"
+        
+    elif data_source == "data_per_site/":
+        sigopt_name += "_" 
+        sigopt_name += "data_per_site"
 
     elif data_source == "data_per_site/":
         sigopt_name += "_" 
@@ -21,6 +25,10 @@ def build_sigopt_name(data_source,target_prop,struct_type,interpolation,model_ty
         sigopt_name += "interpolation"
 
     sigopt_name = sigopt_name + "_" + model_type
+    
+    if long_range:
+        sigopt_name += "_"
+        sigopt_name += "Long_Range"
 
     if long_range:
         sigopt_name += "_" 

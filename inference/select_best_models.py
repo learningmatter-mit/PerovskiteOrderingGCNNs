@@ -75,7 +75,8 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
             
     elif data_name == "data_per_site/":
         training_data = pd.read_json(data_name + 'training_set.json')
-        training_data = training_data.sample(frac=training_fraction,replace=False,random_state=training_seed)
+        training_data = training_data.sample(frac=training_fraction,replace=False,random_state=0)
+        training_data = training_data.sample(frac=model_params["training_fraction"],replace=False,random_state=0)
         validation_data = pd.read_json(data_name + 'validation_set.json')
         edge_data = pd.read_json(data_name + 'edge_dataset.json')
 

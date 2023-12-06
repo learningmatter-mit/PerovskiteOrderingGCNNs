@@ -39,6 +39,15 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
 
         if not interpolation:
             training_data = pd.concat((training_data,edge_data))
+            
+    elif data_name == "data_per_site/":
+        training_data = pd.read_json(data_name + 'training_set.json')
+        training_data = training_data.sample(frac=model_params["training_fraction"],replace=False,random_state=0)
+        test_data = pd.read_json(data_name + test_set_type + '.json')
+        edge_data = pd.read_json(data_name + 'edge_dataset.json')
+
+        if not interpolation:
+            training_data = pd.concat((training_data,edge_data))
 
     elif data_name == "pretrain_data/":
 
@@ -71,16 +80,20 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
 
     train_data = processed_data[0]
     test_data = processed_data[1]
+    
+    per_site = False
+    if "per_site" in target_prop:
+        per_site = True
 
-    train_loader = get_dataloader(train_data,target_prop,model_type,1,interpolation)
-    test_loader = get_dataloader(test_data,target_prop,model_type,1,interpolation)       
+    train_loader = get_dataloader(train_data,target_prop,model_type,1,interpolation,per_site=per_site)
+    test_loader = get_dataloader(test_data,target_prop,model_type,1,interpolation,per_site=per_site)       
 
     sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
     exp_id = get_experiment_id(model_params, target_prop)
 
     for idx in range(num_best_models):
         directory = "./best_models/" + model_params["model_type"] + "/" + sigopt_name + "/" +str(exp_id) + "/" + "best_" + str(idx)
-        model, normalizer = load_model(gpu_num, train_loader, model_params, directory, target_prop)
+        model, normalizer = load_model(gpu_num, train_loader, model_params, directory, target_prop,per_site=per_site)
         prediction = evaluate_model_with_tracked_ids(model, normalizer, gpu_num, test_loader, model_params)
 
         sorted_prediction = []
@@ -101,7 +114,7 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
         infer_data.to_json(directory + '/' + test_set_type + "_predictions.json")
 
         
-def load_model(gpu_num, train_loader, model_params, directory, target_prop):
+def load_model(gpu_num, train_loader, model_params, directory, target_prop,per_site):
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
 
@@ -112,7 +125,7 @@ def load_model(gpu_num, train_loader, model_params, directory, target_prop):
         model = torch.load(directory + "/best_model", map_location=device)
         normalizer = None
     else:
-        model, normalizer = create_model(model_params["model_type"], train_loader,model_params["interpolation"],target_prop,hyperparameters=assignments)
+        model, normalizer = create_model(model_params["model_type"], train_loader,model_params["interpolation"],target_prop,hyperparameters=assignments,per_site=per_site)
         model.to(device)
         model.load_state_dict(torch.load(directory + "/best_model.torch", map_location=device)['state'])
     
@@ -161,12 +174,14 @@ def evaluate_model_with_tracked_ids(model, normalizer, gpu_num, test_loader, mod
                     d.to(device)
                     output = model(d)
                     crys_idx = d.idx
-
-                predictions_iter = normalizer.denorm(output).detach().cpu().numpy().reshape(-1)
+                    
                 try:
                     crys_idx = crys_idx.detach().cpu().numpy().reshape(-1)
                 except:
                     crys_idx = np.array(crys_idx)
+
+                predictions_iter = normalizer.denorm(output).detach().cpu().numpy().reshape(crys_idx.shape[0],-1)
+                
 
                 for i in range(crys_idx.shape[0]):
                     predictions[int(crys_idx[i])] = predictions_iter[i]
