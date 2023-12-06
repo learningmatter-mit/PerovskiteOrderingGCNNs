@@ -23,7 +23,8 @@ def get_experiment_id(model_params, target_prop):
     settings_to_id = json.load(f)
     f.close()
 
-    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
+    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"],long_range=model_params["long_range"])
+    print(sigopt_name)
 
     if sigopt_name in settings_to_id:
         return settings_to_id[sigopt_name]
@@ -34,7 +35,7 @@ def load_model(gpu_num, train_loader, target_prop, model_params, folder_idx, job
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
     
-    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
+    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"],long_range=model_params["long_range"])
     exp_id = get_experiment_id(model_params, target_prop)
     directory = saved_models_path + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)+"/" + "observ_" + str(folder_idx)
     
@@ -75,7 +76,6 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
             
     elif data_name == "data_per_site/":
         training_data = pd.read_json(data_name + 'training_set.json')
-        training_data = training_data.sample(frac=training_fraction,replace=False,random_state=0)
         training_data = training_data.sample(frac=model_params["training_fraction"],replace=False,random_state=0)
         validation_data = pd.read_json(data_name + 'validation_set.json')
         edge_data = pd.read_json(data_name + 'edge_dataset.json')
@@ -120,8 +120,8 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
     if "per_site" in target_prop:
         per_site = True
 
-    train_loader = get_dataloader(train_data,target_prop,model_type,1,interpolation,per_site=per_site)
-    val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation,per_site=per_site)       
+    train_loader = get_dataloader(train_data,target_prop,model_type,1,interpolation,per_site=per_site,long_range=model_params["long_range"])
+    val_loader = get_dataloader(validation_data,target_prop,model_type,1,interpolation,per_site=per_site,long_range=model_params["long_range"])       
 
     reverify_sigopt_models_results = pd.DataFrame(columns=['sigopt_loss', 'reverified_loss'])
 
@@ -136,19 +136,24 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
         sigopt_loss = all_observations.data[job_idx].value
         
         hyperparameters = all_observations.data[job_idx].assignments
-        sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
+        sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"],long_range=model_params["long_range"])
         directory = saved_models_path + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)+"/" + "observ_" + str(folder_idx)
         with open(directory + '/hyperparameters.json', 'w') as file:
             json.dump(hyperparameters, file)
 
         model, normalizer = load_model(gpu_num, train_loader, target_prop, model_params, folder_idx, job_idx,per_site=per_site)
         
+        
         if "contrastive" in model_type:
             loss_fn = contrastive_loss 
+            is_contrast = True
+            
         else:
             loss_fn = torch.nn.L1Loss()
+            is_contrast = False
+            
+        _, _, best_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, gpu_num,is_contrastive=is_contrast,contrastive_weight=model_params["contrastive_weight"])
 
-        _, _, best_loss = evaluate_model(model, normalizer, model_type, val_loader, loss_fn, gpu_num) 
 
         if model_type == "Painn":
             reverified_loss = best_loss
@@ -162,14 +167,14 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
             new_row
         ], ignore_index=True)
 
-    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
+    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"],long_range=model_params["long_range"])
     exp_id = get_experiment_id(model_params, target_prop)
     save_directory = saved_models_path + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
     reverify_sigopt_models_results.to_csv(save_directory + "/reverify_sigopt_models_results.csv")
 
 
 def keep_the_best_few_models(model_params, target_prop, num_best_models=3):
-    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
+    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"],long_range=model_params["long_range"])
     exp_id = get_experiment_id(model_params, target_prop)
     old_directory_prefix = saved_models_path + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)
     new_directory_prefix = "./best_models/" + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)

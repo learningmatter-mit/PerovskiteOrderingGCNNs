@@ -92,9 +92,18 @@
     "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.25":837967,
     "Op_band_center_htvs_data_unrelaxed_interpolation_e3nn_TrainingFraction0.125":837966,
     
-    "per_site_p_band_data_per_site_unrelaxed_e3nn":1021456,
-    "per_site_p_band_data_per_site_unrelaxed_CGCNN":1021459,
+    "per_site_p_band_data_per_site_unrelaxed_e3nn":1022854,
+    "per_site_p_band_data_per_site_unrelaxed_CGCNN":1022855,
     
-    "dft_e_hull_htvs_data_unrelaxed_CGCNN_Long_Range":1022026
+    "dft_e_hull_htvs_data_unrelaxed_CGCNN_Long_Range":1022026,
+    
+    "dft_e_hull_htvs_data_relaxed_e3nn_contrastive_ContrastiveWeight0.1":838155,
+    "dft_e_hull_htvs_data_relaxed_e3nn_contrastive":838154,
+    "dft_e_hull_htvs_data_unrelaxed_e3nn_contrastive_ContrastiveWeight0.1":838149,
+    "dft_e_hull_htvs_data_unrelaxed_e3nn_contrastive":838148,
+    "dft_e_hull_htvs_data_unrelaxed_e3nn_contrastive_ContrastiveWeight10.0":838147,
+    "dft_e_hull_htvs_data_unrelaxed_e3nn_contrastive_ContrastiveWeight100.0":838156
+    
+    
 
 }

@@ -25,10 +25,6 @@ def build_sigopt_name(data_source,target_prop,struct_type,interpolation,model_ty
         sigopt_name += "interpolation"
 
     sigopt_name = sigopt_name + "_" + model_type
-    
-    if long_range:
-        sigopt_name += "_"
-        sigopt_name += "Long_Range"
 
     if long_range:
         sigopt_name += "_" 

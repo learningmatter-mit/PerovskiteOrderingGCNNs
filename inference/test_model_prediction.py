@@ -85,10 +85,10 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
     if "per_site" in target_prop:
         per_site = True
 
-    train_loader = get_dataloader(train_data,target_prop,model_type,1,interpolation,per_site=per_site)
-    test_loader = get_dataloader(test_data,target_prop,model_type,1,interpolation,per_site=per_site)       
+    train_loader = get_dataloader(train_data,target_prop,model_type,1,interpolation,per_site=per_site,long_range=model_params["long_range"])
+    test_loader = get_dataloader(test_data,target_prop,model_type,1,interpolation,per_site=per_site,long_range=model_params["long_range"])       
 
-    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"])
+    sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"],long_range=model_params["long_range"])
     exp_id = get_experiment_id(model_params, target_prop)
 
     for idx in range(num_best_models):
