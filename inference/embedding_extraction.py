@@ -81,7 +81,7 @@ def get_model_embedding(test_set_type, model_params, gpu_num, target_prop, num_b
 
     for idx in range(num_best_models):
         directory = "./best_models/" + model_params["model_type"] + "/" + sigopt_name + "/" +str(exp_id) + "/" + "best_" + str(idx)
-        model, normalizer = load_model(gpu_num, train_loader, model_params, directory, target_prop)
+        model, normalizer = load_model(gpu_num, train_loader, model_params, directory, target_prop,per_site=False)
 
         activation = {}
 

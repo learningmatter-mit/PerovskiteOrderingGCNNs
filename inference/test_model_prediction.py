@@ -3,6 +3,7 @@ import torch
 import pandas as pd
 import numpy as np
 import random
+import time
 from processing.dataloader.dataloader import get_dataloader
 from processing.utils import filter_data_by_properties,select_structures
 from processing.interpolation.Interpolation import *
@@ -24,6 +25,8 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
     device_name = "cuda:" + str(gpu_num)
     device = torch.device(device_name)
     torch.cuda.set_device(device)
+    
+    start = time.time()
 
     interpolation = model_params["interpolation"]
     model_type = model_params["model_type"]
@@ -86,15 +89,23 @@ def get_model_prediction(test_set_type, model_params, gpu_num, target_prop, num_
         per_site = True
 
     train_loader = get_dataloader(train_data,target_prop,model_type,1,interpolation,per_site=per_site,long_range=model_params["long_range"])
+    
+    start_2 = time.time()
     test_loader = get_dataloader(test_data,target_prop,model_type,1,interpolation,per_site=per_site,long_range=model_params["long_range"])       
-
+    end_2 = time.time()
+    
     sigopt_name = build_sigopt_name(model_params["data"], target_prop, model_params["struct_type"], model_params["interpolation"], model_params["model_type"],contrastive_weight=model_params["contrastive_weight"],training_fraction=model_params["training_fraction"],long_range=model_params["long_range"])
     exp_id = get_experiment_id(model_params, target_prop)
 
     for idx in range(num_best_models):
         directory = "./best_models/" + model_params["model_type"] + "/" + sigopt_name + "/" +str(exp_id) + "/" + "best_" + str(idx)
         model, normalizer = load_model(gpu_num, train_loader, model_params, directory, target_prop,per_site=per_site)
+        start_3 = time.time()
         prediction = evaluate_model_with_tracked_ids(model, normalizer, gpu_num, test_loader, model_params)
+        end_3 = time.time()
+        print("Timing...")
+        print(end_3-start_3)
+        print(end_3-start_3 + (end_2-start_2))
 
         sorted_prediction = []
         infer_data = test_data.copy()
