@@ -42,7 +42,7 @@ torchvision       0.14.1
 torchaudio        0.13.1
 pyg               2.3.0
 e3nn              0.5.1
-sigopt            8.8.0
+sigopt            8.8.2
 gdown             4.7.1
 mscorefonts       0.0.1
 boken             3.3.4
