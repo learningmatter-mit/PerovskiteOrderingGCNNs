@@ -5,7 +5,8 @@ best_models_ver_Aug04/
 figures/
 pretrain_data/
 archived/Chgnet_parsing/
-inference/James_Scrap/Long_M3Gnet_data/
+inference/James_Scrap/
+data/*.npy
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
