@@ -64,11 +64,11 @@ python step_1_download_pretrained_models.py --download_the_best_models yes --dow
 To run a completely new sigopt experiment:
 
 ```
-python step_2_run_sigopt_experiment.py --prop [default: "dft_e_hull"] --relaxed [default: "no"] --interpolation [default: "no"] --model [default: "CGCNN"] --gpu [default: 0] --parallel [default: 1] --budget [default: 50]
+python step_2_run_sigopt_experiment.py --prop [default: "dft_e_hull"] --struct_type [default: "unrelaxed"] --interpolation [default: "no"] --model [default: "CGCNN"] --gpu [default: 0] --parallel [default: 1] --budget [default: 50]
 ```
 
 To continue an existing sigopt experiment:
 
 ```
-python step_2_run_sigopt_experiment.py --prop [default: "dft_e_hull"] --relaxed [default: "no"] --interpolation [default: "no"] --model [default: "CGCNN"] --gpu [default: 0] --id [default: -1]
+python step_2_run_sigopt_experiment.py --prop [default: "dft_e_hull"] --struct_type [default: "unrelaxed"] --interpolation [default: "no"] --model [default: "CGCNN"] --gpu [default: 0] --id [default: -1]
 ```
