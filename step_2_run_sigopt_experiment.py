@@ -66,7 +66,7 @@ def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_
 
     print("Completed data processing")
 
-    conn = sigopt.Connection(client_token="ERZVVPFNRCSCQIJVOVCYHVFUGZCKUDPOWZJTEXZYNOMRKQLS")
+    conn = sigopt.Connection(driver="lite")
     sigopt_name = build_sigopt_name(data_name,target_prop,struct_type,interpolation,model_type,contrastive_weight,training_fraction,training_seed)
 
     if experiment_id == None:
@@ -199,8 +199,8 @@ if __name__ == '__main__':
                         help="nickname for temporary folder")
     parser.add_argument('--id', default = -1, type=int, metavar='sigopt_props',
                         help="id for sigopt experiment (default: -1)")
-    parser.add_argument('--parallel', default = 4, type=int, metavar='sigopt_props',
-                        help="bandwidth of sigopt (default: 4)")
+    parser.add_argument('--parallel', default = 1, type=int, metavar='sigopt_props',
+                        help="bandwidth of sigopt (default: 1)")
     parser.add_argument('--budget', default = 50, type=int, metavar='sigopt_props',
                         help="budget of sigopt (default: 50)")
     args = parser.parse_args()
