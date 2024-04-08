@@ -85,7 +85,7 @@ def run_sigopt_experiment(data_name,target_prop,struct_type,interpolation,model_
 
         conn.experiments(experiment.id).observations().create(
             suggestion=suggestion.id,
-            value=value,
+            values=[{"name": "error", "value": value}],
         )
 
         experiment = conn.experiments(experiment.id).fetch()
