@@ -156,7 +156,7 @@ def train_CGCNN_e3nn(model,normalizer,model_type,loss_fn,contrastive_loss_fn,tra
             results = record_keep(history,results,epoch,wall,optimizer,valid_avg_loss,train_avg_loss,model,"standard")
             validation_loss = valid_avg_loss[0]
 
-        if validation_loss < best_validation_error:
+        if (epoch == 0) or (validation_loss < best_validation_error):
             best_validation_error = validation_loss
             with open(OUTDIR + '/best_model.torch', 'wb') as f:
                 torch.save(results, f)

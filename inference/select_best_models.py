@@ -39,7 +39,7 @@ def load_model(gpu_num, train_loader, target_prop, model_params, folder_idx, job
     exp_id = get_experiment_id(model_params, target_prop)
     directory = saved_models_path + model_params["model_type"] + "/"+ sigopt_name + "/" +str(exp_id)+"/" + "observ_" + str(folder_idx)
     
-    conn = sigopt.Connection(client_token="ERZVVPFNRCSCQIJVOVCYHVFUGZCKUDPOWZJTEXZYNOMRKQLS")
+    conn = sigopt.Connection(driver="lite")
     all_observations = conn.experiments(exp_id).observations().fetch()
     assignments = all_observations.data[job_idx].assignments
 
@@ -125,7 +125,7 @@ def reverify_sigopt_models(model_params, gpu_num, target_prop):
 
     reverify_sigopt_models_results = pd.DataFrame(columns=['sigopt_loss', 'reverified_loss'])
 
-    conn = sigopt.Connection(client_token="ERZVVPFNRCSCQIJVOVCYHVFUGZCKUDPOWZJTEXZYNOMRKQLS")
+    conn = sigopt.Connection(driver="lite")
     exp_id = get_experiment_id(model_params, target_prop)
     all_observations = conn.experiments(exp_id).observations().fetch()
     
