@@ -1,5 +1,5 @@
 # Do not track these directories
-all_data/*.json
+data/*.json
 saved_models/CGCNN/
 saved_models/e3nn/
 saved_models/Painn/
