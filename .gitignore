@@ -6,8 +6,7 @@ saved_models/Painn/
 best_models/CGCNN/
 best_models/e3nn/
 best_models/Painn/
-old_ver_files_archived/
-codes/models/
+archived/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
