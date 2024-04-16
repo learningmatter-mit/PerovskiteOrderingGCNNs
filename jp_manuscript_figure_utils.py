@@ -357,7 +357,7 @@ def plot_pca_embedding_additional(ax, model_type, struct_type, formula_to_entrop
         
     idx = find_ind(model_entropy, 0.163151599+(1.0-0.163151599)*(1+rank)/17.0)
     selected_forms = [stored_comps[idx]]
-    # print(selected_forms)
+    print(selected_forms)
 
     projection_featured = []        
     for i in range(len(selected_forms)):
