@@ -1,50 +1,0 @@
-/var/spool/slurmd/job23537024/slurm_script: line 7: activate: No such file or directory
-Loaded data
-Completed data processing
-  0%|          | 0/53057 [00:00<?, ?it/s]  1%|          | 290/53057 [00:00<00:18, 2896.27it/s]  2%|▏         | 905/53057 [00:00<00:10, 4808.57it/s]  3%|▎         | 1537/53057 [00:00<00:09, 5496.44it/s]  4%|▍         | 2184/53057 [00:00<00:08, 5878.30it/s]  5%|▌         | 2834/53057 [00:00<00:08, 6101.90it/s]  7%|▋         | 3482/53057 [00:00<00:07, 6230.16it/s]  8%|▊         | 4119/53057 [00:00<00:07, 6274.15it/s]  9%|▉         | 4761/53057 [00:00<00:07, 6318.29it/s] 10%|█         | 5408/53057 [00:00<00:07, 6363.35it/s] 11%|█▏        | 6049/53057 [00:01<00:07, 6377.20it/s] 13%|█▎        | 6691/53057 [00:01<00:07, 6387.82it/s] 14%|█▍        | 7336/53057 [00:01<00:07, 6404.82it/s] 15%|█▌        | 7977/53057 [00:01<00:07, 6405.56it/s] 16%|█▌        | 8618/53057 [00:01<00:07, 6324.74it/s] 17%|█▋        | 9256/53057 [00:01<00:06, 6322.26it/s] 19%|█▊        | 9898/53057 [00:01<00:06, 6351.26it/s] 20%|█▉        | 10534/53057 [00:01<00:06, 6335.12it/s] 21%|██        | 11168/53057 [00:01<00:07, 5744.31it/s] 22%|██▏       | 11753/53057 [00:01<00:07, 5444.92it/s] 23%|██▎       | 12307/53057 [00:02<00:07, 5247.94it/s] 24%|██▍       | 12839/53057 [00:02<00:07, 5126.17it/s] 25%|██▌       | 13356/53057 [00:02<00:07, 5026.99it/s] 26%|██▌       | 13862/53057 [00:02<00:07, 4970.84it/s] 27%|██▋       | 14365/53057 [00:02<00:07, 4986.86it/s] 28%|██▊       | 14876/53057 [00:02<00:07, 5021.16it/s] 29%|██▉       | 15387/53057 [00:02<00:07, 5045.98it/s] 30%|██▉       | 15898/53057 [00:02<00:07, 5063.74it/s] 31%|███       | 16410/53057 [00:02<00:07, 5079.64it/s] 32%|███▏      | 16923/53057 [00:03<00:07, 5093.33it/s] 33%|███▎      | 17443/53057 [00:03<00:06, 5123.40it/s] 34%|███▍      | 17956/53057 [00:03<00:06, 5113.04it/s] 35%|███▍      | 18472/53057 [00:03<00:06, 5126.22it/s] 36%|███▌      | 19018/53057 [00:03<00:06, 5224.90it/s] 37%|███▋      | 19632/53057 [00:03<00:06, 5497.48it/s] 38%|███▊      | 20266/53057 [00:03<00:05, 5747.17it/s] 39%|███▉      | 20905/53057 [00:03<00:05, 5939.57it/s] 41%|████      | 21548/53057 [00:03<00:05, 6085.10it/s] 42%|████▏     | 22199/53057 [00:03<00:04, 6211.75it/s] 43%|████▎     | 22848/53057 [00:04<00:04, 6294.39it/s] 44%|████▍     | 23497/53057 [00:04<00:04, 6352.27it/s] 45%|████▌     | 24137/53057 [00:04<00:04, 6366.37it/s] 47%|████▋     | 24787/53057 [00:04<00:04, 6404.25it/s] 48%|████▊     | 25436/53057 [00:04<00:04, 6428.06it/s] 49%|████▉     | 26079/53057 [00:04<00:04, 6385.22it/s] 50%|█████     | 26728/53057 [00:04<00:04, 6415.21it/s] 52%|█████▏    | 27377/53057 [00:04<00:03, 6434.73it/s] 53%|█████▎    | 28021/53057 [00:04<00:03, 6429.02it/s] 54%|█████▍    | 28664/53057 [00:04<00:03, 6426.74it/s] 55%|█████▌    | 29310/53057 [00:05<00:03, 6435.14it/s] 56%|█████▋    | 29954/53057 [00:05<00:03, 6424.11it/s] 58%|█████▊    | 30602/53057 [00:05<00:03, 6440.70it/s] 59%|█████▉    | 31247/53057 [00:05<00:03, 6431.44it/s] 60%|██████    | 31898/53057 [00:05<00:03, 6453.69it/s] 61%|██████▏   | 32544/53057 [00:05<00:03, 6409.73it/s] 63%|██████▎   | 33186/53057 [00:05<00:03, 6361.70it/s] 64%|██████▍   | 33831/53057 [00:05<00:03, 6386.02it/s] 65%|██████▍   | 34473/53057 [00:05<00:02, 6395.76it/s] 66%|██████▌   | 35113/53057 [00:05<00:02, 6388.12it/s] 67%|██████▋   | 35755/53057 [00:06<00:02, 6396.26it/s] 69%|██████▊   | 36395/53057 [00:06<00:02, 6373.71it/s] 70%|██████▉   | 37034/53057 [00:06<00:02, 6376.21it/s] 71%|███████   | 37676/53057 [00:06<00:02, 6386.29it/s] 72%|███████▏  | 38320/53057 [00:06<00:02, 6401.21it/s] 73%|███████▎  | 38961/53057 [00:06<00:02, 6403.82it/s] 75%|███████▍  | 39602/53057 [00:06<00:02, 6388.09it/s] 76%|███████▌  | 40248/53057 [00:06<00:01, 6408.73it/s] 77%|███████▋  | 40889/53057 [00:06<00:01, 6406.93it/s] 78%|███████▊  | 41530/53057 [00:06<00:01, 6386.12it/s] 79%|███████▉  | 42169/53057 [00:07<00:01, 6386.05it/s] 81%|████████  | 42808/53057 [00:07<00:01, 6379.89it/s] 82%|████████▏ | 43448/53057 [00:07<00:01, 6384.83it/s] 83%|████████▎ | 44087/53057 [00:07<00:01, 6348.10it/s] 84%|████████▍ | 44722/53057 [00:07<00:01, 6284.10it/s] 85%|████████▌ | 45351/53057 [00:07<00:01, 6284.68it/s] 87%|████████▋ | 45980/53057 [00:07<00:01, 6248.77it/s] 88%|████████▊ | 46622/53057 [00:07<00:01, 6298.43it/s] 89%|████████▉ | 47263/53057 [00:07<00:00, 6330.94it/s] 90%|█████████ | 47902/53057 [00:07<00:00, 6346.89it/s] 91%|█████████▏| 48543/53057 [00:08<00:00, 6364.15it/s] 93%|█████████▎| 49180/53057 [00:08<00:00, 6363.21it/s] 94%|█████████▍| 49820/53057 [00:08<00:00, 6373.10it/s] 95%|█████████▌| 50469/53057 [00:08<00:00, 6407.30it/s] 96%|█████████▋| 51115/53057 [00:08<00:00, 6422.26it/s] 98%|█████████▊| 51760/53057 [00:08<00:00, 6429.76it/s] 99%|█████████▉| 52403/53057 [00:08<00:00, 6390.32it/s]100%|█████████▉| 53047/53057 [00:08<00:00, 6402.44it/s]100%|██████████| 53057/53057 [00:08<00:00, 6007.12it/s]
-  0%|          | 0/53057 [00:00<?, ?it/s]  0%|          | 1/53057 [00:00<1:03:23, 13.95it/s]
-Traceback (most recent call last):
-  File "/home/gridsan/jdamewood/.conda/envs/Perovskite_ML_Environment/lib/python3.10/site-packages/pandas/core/indexes/base.py", line 3802, in get_loc
-    return self._engine.get_loc(casted_key)
-  File "pandas/_libs/index.pyx", line 138, in pandas._libs.index.IndexEngine.get_loc
-  File "pandas/_libs/index.pyx", line 165, in pandas._libs.index.IndexEngine.get_loc
-  File "pandas/_libs/hashtable_class_helper.pxi", line 5745, in pandas._libs.hashtable.PyObjectHashTable.get_item
-  File "pandas/_libs/hashtable_class_helper.pxi", line 5753, in pandas._libs.hashtable.PyObjectHashTable.get_item
-KeyError: 'formula'
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs/supercloud_job_managing/supercloud_job_runner.py", line 144, in <module>
-    supercloud_run_job(data_name,hyperparameters,target_prop,struct_type,interpolation,model_type,gpu_num,experiment_id,nickname)
-  File "/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs/supercloud_job_managing/supercloud_job_runner.py", line 62, in supercloud_run_job
-    supercloud_evaluate_model(data_name,hyperparameters,processed_data,target_prop,interpolation,model_type,experiment_id,gpu_num,nickname)
-  File "/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs/supercloud_job_managing/supercloud_job_runner.py", line 73, in supercloud_evaluate_model
-    train_loader = get_dataloader(train_data,target_prop,model_type,hyperparameters["batch_size"],interpolation)
-  File "/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs/processing/dataloader/dataloader.py", line 32, in get_dataloader
-    data_loader = get_e3nn_dataloader(data,prop,batch_size)
-  File "/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs/processing/dataloader/dataloader.py", line 59, in get_e3nn_dataloader
-    data['datapoint'] = data.progress_apply(lambda x: build_e3nn_data(x, prop, r_max=5.0), axis=1)
-  File "/home/gridsan/jdamewood/.conda/envs/Perovskite_ML_Environment/lib/python3.10/site-packages/tqdm/std.py", line 805, in inner
-    return getattr(df, df_function)(wrapper, **kwargs)
-  File "/home/gridsan/jdamewood/.conda/envs/Perovskite_ML_Environment/lib/python3.10/site-packages/pandas/core/frame.py", line 9568, in apply
-    return op.apply().__finalize__(self, method="apply")
-  File "/home/gridsan/jdamewood/.conda/envs/Perovskite_ML_Environment/lib/python3.10/site-packages/pandas/core/apply.py", line 764, in apply
-    return self.apply_standard()
-  File "/home/gridsan/jdamewood/.conda/envs/Perovskite_ML_Environment/lib/python3.10/site-packages/pandas/core/apply.py", line 891, in apply_standard
-    results, res_index = self.apply_series_generator()
-  File "/home/gridsan/jdamewood/.conda/envs/Perovskite_ML_Environment/lib/python3.10/site-packages/pandas/core/apply.py", line 907, in apply_series_generator
-    results[i] = self.f(v)
-  File "/home/gridsan/jdamewood/.conda/envs/Perovskite_ML_Environment/lib/python3.10/site-packages/tqdm/std.py", line 800, in wrapper
-    return func(*args, **kwargs)
-  File "/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs/processing/dataloader/dataloader.py", line 59, in <lambda>
-    data['datapoint'] = data.progress_apply(lambda x: build_e3nn_data(x, prop, r_max=5.0), axis=1)
-  File "/home/gridsan/jdamewood/perovskites/PerovskiteOrderingGCNNs/processing/dataloader/build_data.py", line 71, in build_e3nn_data
-    comp = entry["formula"],
-  File "/home/gridsan/jdamewood/.conda/envs/Perovskite_ML_Environment/lib/python3.10/site-packages/pandas/core/series.py", line 981, in __getitem__
-    return self._get_value(key)
-  File "/home/gridsan/jdamewood/.conda/envs/Perovskite_ML_Environment/lib/python3.10/site-packages/pandas/core/series.py", line 1089, in _get_value
-    loc = self.index.get_loc(label)
-  File "/home/gridsan/jdamewood/.conda/envs/Perovskite_ML_Environment/lib/python3.10/site-packages/pandas/core/indexes/base.py", line 3804, in get_loc
-    raise KeyError(key) from err
-KeyError: 'formula'

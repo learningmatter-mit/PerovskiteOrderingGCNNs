@@ -1,3 +1,0 @@
-activate does not accept more than one argument:
-['Perovskite_ML_Environmentpython', 'supercloud_job_runner.py', '--experiment_group_name', 'test_1', '--experiment_id', '837046', '--suggestion_num', '59659424']
-

@@ -1,12 +1,13 @@
 # Do not track these directories
-saved_models/
-best_models/
-best_models_ver_Aug04/
-figures/
-pretrain_data/
-archived/Chgnet_parsing/
-inference/James_Scrap/
-data/*.npy
+data/*.json
+saved_models/CGCNN/
+saved_models/e3nn/
+saved_models/Painn/
+best_models/CGCNN/
+best_models/e3nn/
+best_models/Painn/
+old_ver_files_archived/
+codes/models/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
