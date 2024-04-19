@@ -1,0 +1,24 @@
+{
+    "dft_e_hull_htvs_data_unrelaxed_CGCNN":837611,
+    "dft_e_hull_htvs_data_unrelaxed_CGCNN_TrainingFraction0.5":838960,
+    "dft_e_hull_htvs_data_unrelaxed_CGCNN_TrainingFraction0.25":838961,
+    "dft_e_hull_htvs_data_unrelaxed_CGCNN_TrainingFraction0.125":839395,
+    "dft_e_hull_htvs_data_relaxed_CGCNN":837612,
+    "dft_e_hull_htvs_data_relaxed_CGCNN_TrainingFraction0.5":838966,
+    "dft_e_hull_htvs_data_relaxed_CGCNN_TrainingFraction0.25":838967,
+    "dft_e_hull_htvs_data_relaxed_CGCNN_TrainingFraction0.125":838968,
+    "dft_e_hull_htvs_data_M3Gnet_relaxed_CGCNN":837613,
+
+    "dft_e_hull_htvs_data_unrelaxed_e3nn":837627,
+    "dft_e_hull_htvs_data_unrelaxed_e3nn_TrainingFraction0.5":838963,
+    "dft_e_hull_htvs_data_unrelaxed_e3nn_TrainingFraction0.25":838964,
+    "dft_e_hull_htvs_data_unrelaxed_e3nn_TrainingFraction0.125":838965,
+    "dft_e_hull_htvs_data_relaxed_e3nn":837628,
+    "dft_e_hull_htvs_data_relaxed_e3nn_TrainingFraction0.5":838969,
+    "dft_e_hull_htvs_data_relaxed_e3nn_TrainingFraction0.25":838970,
+    "dft_e_hull_htvs_data_relaxed_e3nn_TrainingFraction0.125":838971,
+    "dft_e_hull_htvs_data_M3Gnet_relaxed_e3nn":837629, 
+
+    "dft_e_hull_htvs_data_unrelaxed_Painn":837609,    
+    "dft_e_hull_htvs_data_relaxed_Painn":3
+}
