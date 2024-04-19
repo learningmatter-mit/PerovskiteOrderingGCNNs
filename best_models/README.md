@@ -1,1 +1,1 @@
-TBD
+The file size of the best models for the repo is too big to be archived here, and thus, the best models will be archived on [Zenodo](https://zenodo.org/). Please place all best model files in this directory to use them for evaluating GCNNs.

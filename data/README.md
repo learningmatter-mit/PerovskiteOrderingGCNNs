@@ -1,1 +1,1 @@
-TBD
+The file size of the data for the repo is too big to be archived here, and thus, the data will be archived on [Zenodo](https://zenodo.org/) and [Materials Data Facility](https://connect.materialsdatafacility.org/). Please place all data files in this directory to use them for training and evaluating GCNNs.
