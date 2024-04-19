@@ -1,6 +1,10 @@
 # PerovskiteOrderingGCNNs
 
-To clone this repo and all submodules:
+Repo for our paper "Learning Orderings in Crystalline Materials with Symmetry-Aware Graph Neural Networks".
+
+## Setup
+
+To start, clone this repo and all its submodules to your local directory or a workstation:
 
 ```
 git clone --recurse-submodules git@github.com:learningmatter-mit/PerovskiteOrderingGCNNs.git
@@ -14,7 +18,7 @@ cd PerovskiteOrderingGCNNs
 git submodule update --init
 ```
 
-To only update the submodules:
+Our codes are built upon previous implementations of [CGCNN](https://github.com/learningmatter-mit/PerovskiteOrderingGCNNs_cgcnn/tree/af4c0bf6606da1b46887ed8c29521d199d5e2798), [e3nn](https://github.com/learningmatter-mit/PerovskiteOrderingGCNNs_e3nn/tree/408b90e922a2a9c7bae2ad95433aae97d1a58494), and [PaiNN](https://github.com/learningmatter-mit/PerovskiteOrderingGCNNs_painn/tree/e7980a52af4936addc5fb03dbc50d4fc74fe98fc), which are included as submodules in this repo. If there are any changes in their corresponding GitHub repos, the following command will update the submodules in this repo:
 
 ```
 git submodule update --remote --merge
@@ -56,20 +60,8 @@ conda env create -f environment.yml
 conda activate Perovskite_ML_Environment
 ```
 
-To just download and analyze the pre-training models:
-
+## Citation
+If you use our codes, data, and/or models, please cite the following paper:
 ```
-python step_1_download_pretrained_models.py --download_the_best_models yes --download_all_saved_models yes
-```
-
-To run a completely new sigopt experiment:
-
-```
-python step_2_run_sigopt_experiment.py --prop [default: "dft_e_hull"] --struct_type [default: "unrelaxed"] --interpolation [default: "no"] --model [default: "CGCNN"] --gpu [default: 0] --parallel [default: 1] --budget [default: 50]
-```
-
-To continue an existing sigopt experiment:
-
-```
-python step_2_run_sigopt_experiment.py --prop [default: "dft_e_hull"] --struct_type [default: "unrelaxed"] --interpolation [default: "no"] --model [default: "CGCNN"] --gpu [default: 0] --id [default: -1]
+TBD
 ```
