@@ -1,1 +1,1 @@
-The file size of the best models for the repo is too big to be archived here, and thus, the best models are archived on Zenodo ([DOI: 10.5281/zenodo.11099803](https://doi.org/10.5281/zenodo.11099803)). Please place all best model files in this directory to use them for evaluating GCNNs.
+All pretrained best models are archived on Zenodo ([DOI: 10.5281/zenodo.11099803](https://doi.org/10.5281/zenodo.11099803)). Please place all best model files in this directory to use them for evaluating GCNNs.
