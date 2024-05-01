@@ -1,6 +1,6 @@
 # PerovskiteOrderingGCNNs
 
-Repo for our paper "Learning Orderings in Crystalline Materials with Symmetry-Aware Graph Neural Networks".
+Repo for our paper "Learning Orderings in Crystalline Materials with Symmetry-Aware Graph Neural Networks". This repo is currently under construction.
 
 ## Setup
 
@@ -59,6 +59,14 @@ All these packages can be installed using the [environment.yml](environment.yml)
 conda env create -f environment.yml
 conda activate Perovskite_ML_Environment
 ```
+
+## Usage
+
+All our data and trained models are archived on Zenodo ([DOI: 10.5281/zenodo.11099803](https://doi.org/10.5281/zenodo.11099803)) and Materials Data Facility ([DOI: 10.18126/3hyv-5a38](https://doi.org/10.18126/3hyv-5a38)). Please place all data and model files in the corresponding directories and then refer to the following Jupyter notebooks to reproduce the results of our paper:
+
+- [1_model_training.ipynb](1_model_training.ipynb): This notebook provides examples of how to train GCNNs on the training dataset and conduct hyperparameter optimization based on the loss on the validation set.
+- [2_model_inference.ipynb](2_model_inference.ipynb): This notebook provides examples of how to verify the performance of GCNNs on the validation set, select the top-performing models accordingly, compute the prediction on the test and holdout sets, and extract the latent embeddings of CGCNN and e3nn after all message passing and graph convolution layers.
+- [3_model_analysis.ipynb](3_model_analysis.ipynb): This notebook provides examples of how to reproduce all major figures in this manuscript.
 
 ## Citation
 If you use our codes, data, and/or models, please cite the following paper:

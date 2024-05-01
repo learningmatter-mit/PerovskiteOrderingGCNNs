@@ -1,1 +1,1 @@
-The file size of the saved models for the repo is too big to be archived here, and thus, the saved models will be archived on [Zenodo](https://zenodo.org/). Please place all saved model files in this directory to use them for evaluating GCNNs.
+The file size of the saved models for the repo is too big to be archived here, and thus, the saved models are archived on Zenodo ([DOI: 10.5281/zenodo.11099803](https://doi.org/10.5281/zenodo.11099803)). Please place all saved model files in this directory to use them for evaluating GCNNs.
