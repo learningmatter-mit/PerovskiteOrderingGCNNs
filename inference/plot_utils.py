@@ -6,6 +6,7 @@ from pymatgen.core import Structure
 
 from training.sigopt_utils import build_sigopt_name
 from inference.select_best_models import get_experiment_id
+from matplotlib.patches import FancyArrowPatch
 
 
 def get_datapoint(target_prop, model, interp, training_fraction, struct):
@@ -199,15 +200,13 @@ def get_rs_vec(embeddings, pca):
         curr_embeddings = embeddings[embeddings["formula"] == form]
         np_embedding = get_np_embedding(curr_embeddings)
         projection = pca.transform(np_embedding)        
-        ref = np.zeros((2))
-        
+        ref = projection.mean(axis=0)
+
         for i in range(len(curr_embeddings)):
             if curr_embeddings.iloc[i].is_rocksalt:
                 rs_pos = projection[i,:]
-            else:
-                ref += projection[i,:]
-        
-        curr_dist = rs_pos - ref/5.0
+
+        curr_dist = rs_pos - ref
         rs_vec.append(curr_dist)
         
     rs_vec = np.asarray(rs_vec)
@@ -223,15 +222,13 @@ def get_layered_vec(embeddings, pca):
         curr_embeddings = embeddings[embeddings["formula"] == form]
         np_embedding = get_np_embedding(curr_embeddings)
         projection = pca.transform(np_embedding)
-        ref = np.zeros((2))
+        ref = projection.mean(axis=0)
         
         for i in range(len(curr_embeddings)):
             if curr_embeddings.iloc[i].is_layered:
                 lay_pos = projection[i,:]
-            else:
-                ref += projection[i,:]
-        
-        curr_dist = lay_pos - ref/5.0
+
+        curr_dist = lay_pos - ref
         lay_vec.append(curr_dist)
    
     lay_vec = np.asarray(lay_vec)
@@ -247,15 +244,13 @@ def get_col_vec(embeddings, pca):
         curr_embeddings = embeddings[embeddings["formula"] == form]
         np_embedding = get_np_embedding(curr_embeddings)
         projection = pca.transform(np_embedding)
-        ref = np.zeros((2))
+        ref = projection.mean(axis=0)
         
         for i in range(len(curr_embeddings)):
             if curr_embeddings.iloc[i].is_column:
                 col_pos = projection[i,:]
-            else:
-                ref += projection[i,:]
-            
-        curr_dist = col_pos - ref/5.0
+
+        curr_dist = col_pos - ref
         col_vec.append(curr_dist)
 
     col_vec = np.asarray(col_vec)
@@ -311,6 +306,22 @@ def plot_pca_embedding(ax, model_type, struct_type, highlight=False):
         highlight_colors = ['orangered', 'crimson', 'darkgoldenrod', 'olivedrab']
         for i in range(len(projection_featured)):
             ax.scatter(-projection_featured[i][:,0], -projection_featured[i][:,1], s=600, color=highlight_colors[i], alpha=0.8, linewidth=1, edgecolors='black', marker='*')
+            pass
+
+    avg_rs_vec = get_rs_vec(embeddings, pca).mean(axis=0)
+    avg_lay_vec = get_layered_vec(embeddings, pca).mean(axis=0)
+
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+    xrange = xlim[1] - xlim[0]
+    yrange = ylim[1] - ylim[0]
+
+    initial_pos = (xlim[0] + 0.3*xrange, ylim[0] + 0.3*yrange)
+    arrow_rs_vec = FancyArrowPatch(initial_pos, initial_pos + avg_rs_vec*2, color='black', arrowstyle='->', mutation_scale=15, linewidth=2)
+    arrow_lay_vec = FancyArrowPatch(initial_pos, initial_pos + avg_lay_vec*2, color='black', arrowstyle='->', mutation_scale=15, linewidth=2)
+
+    ax.add_patch(arrow_rs_vec)
+    ax.add_patch(arrow_lay_vec)
 
     return pca_spread
 

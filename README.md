@@ -1,10 +1,11 @@
 # PerovskiteOrderingGCNNs
+
 [![arXiv](https://img.shields.io/badge/arXiv-TBD-red.svg)]()
 [![Zenodo](https://img.shields.io/badge/Zenodo-10.5281/zenodo.11099803-blue.svg)](https://doi.org/10.5281/zenodo.11099803)
 [![MDF](https://img.shields.io/badge/Materials_Data_Facility-10.18126/3hyv--5a38-purple.svg)](https://doi.org/10.18126/3hyv-5a38)
 [![MIT](https://img.shields.io/badge/License-MIT-black.svg)](https://opensource.org/license/mit)
 
-Repo for our paper "Learning Orderings in Crystalline Materials with Symmetry-Aware Graph Neural Networks". This repo is currently under construction.
+Repo for our paper "Learning Ordering in Crystalline Materials with Symmetry-Aware Graph Neural Networks". This repo is currently under construction.
 
 ## Setup
 
@@ -73,7 +74,9 @@ All our data and trained models are archived on Zenodo ([DOI: 10.5281/zenodo.110
 - [3_model_analysis.ipynb](3_model_analysis.ipynb): This notebook provides examples of how to reproduce all major figures in this manuscript.
 
 ## Citation
+
 If you use our codes, data, and/or models, please cite the following paper:
+
 ```
 TBD
 ```
