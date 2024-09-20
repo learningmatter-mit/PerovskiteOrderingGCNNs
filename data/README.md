@@ -1,1 +1,1 @@
-All data are archived on Zenodo ([DOI: 10.5281/zenodo.11099803](https://doi.org/10.5281/zenodo.11099803)) and Materials Data Facility ([DOI: 10.18126/3hyv-5a38](https://doi.org/10.18126/3hyv-5a38)). Please place all data files in this directory to use them for training and evaluating GCNNs.
+All data are archived on Zenodo and Materials Data Facility (see the links in this repo's main [README.md](../README.md)). Please place all data files in this directory to use them for training and evaluating GCNNs.
