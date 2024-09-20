@@ -2,7 +2,7 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-TBD-red.svg)]()
 [![Zenodo](https://img.shields.io/badge/Zenodo-10.5281/zenodo.11099803-blue.svg)](https://doi.org/10.5281/zenodo.11099803)
-[![MDF](https://img.shields.io/badge/Materials_Data_Facility-10.18126/3hyv--5a38-purple.svg)](https://doi.org/10.18126/3hyv-5a38)
+[![MDF](https://img.shields.io/badge/Materials_Data_Facility-10.18126/ncqt--rh18-purple.svg)](https://doi.org/10.18126/ncqt-rh18)
 [![MIT](https://img.shields.io/badge/License-MIT-black.svg)](https://opensource.org/license/mit)
 
 Repo for our paper "Learning Ordering in Crystalline Materials with Symmetry-Aware Graph Neural Networks". This repo is currently under construction.
