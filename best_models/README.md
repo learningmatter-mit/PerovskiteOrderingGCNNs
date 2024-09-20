@@ -1,1 +1,1 @@
-All trained best models are archived on Zenodo ([DOI: 10.5281/zenodo.11099803](https://doi.org/10.5281/zenodo.11099803)). Please place all best model files in this directory to use them for evaluating GCNNs.
+All trained best models are archived on Zenodo (see the link in this repo's main [README.md](../README.md)). Please place all best model files in this directory to use them for evaluating GCNNs.
