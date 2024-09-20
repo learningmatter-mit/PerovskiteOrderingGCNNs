@@ -1,7 +1,7 @@
 # PerovskiteOrderingGCNNs
 
 [![arXiv](https://img.shields.io/badge/arXiv-TBD-red.svg)]()
-[![Zenodo](https://img.shields.io/badge/Zenodo-10.5281/zenodo.11099803-blue.svg)](https://doi.org/10.5281/zenodo.11099803)
+[![Zenodo](https://img.shields.io/badge/Zenodo-10.5281/zenodo.13820311-blue.svg)](https://doi.org/10.5281/zenodo.13820311)
 [![MDF](https://img.shields.io/badge/Materials_Data_Facility-10.18126/ncqt--rh18-purple.svg)](https://doi.org/10.18126/ncqt-rh18)
 [![MIT](https://img.shields.io/badge/License-MIT-black.svg)](https://opensource.org/license/mit)
 
@@ -67,7 +67,7 @@ conda activate Perovskite_ML_Environment
 
 ## Usage
 
-All our data and trained models are archived on Zenodo ([DOI: 10.5281/zenodo.11099803](https://doi.org/10.5281/zenodo.11099803)) and Materials Data Facility ([DOI: 10.18126/3hyv-5a38](https://doi.org/10.18126/3hyv-5a38)). Please place all data and model files in the corresponding directories and then refer to the following Jupyter notebooks to reproduce the results of our paper:
+All our data and trained models are archived on Zenodo ([DOI: 10.5281/zenodo.13820311](https://doi.org/10.5281/zenodo.13820311)) and Materials Data Facility ([DOI: 10.18126/3hyv-5a38](https://doi.org/10.18126/3hyv-5a38)). Please place all data and model files in the corresponding directories and then refer to the following Jupyter notebooks to reproduce the results of our paper:
 
 - [1_model_training.ipynb](1_model_training.ipynb): This notebook provides examples of how to train GCNNs on the training dataset and conduct hyperparameter optimization based on the loss on the validation set.
 - [2_model_inference.ipynb](2_model_inference.ipynb): This notebook provides examples of how to verify the performance of GCNNs on the validation set, select the top-performing models accordingly, compute the prediction on the test and holdout sets, and extract the latent embeddings of CGCNN and e3nn after all message passing and graph convolution layers.
