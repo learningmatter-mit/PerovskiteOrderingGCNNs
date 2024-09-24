@@ -1,11 +1,11 @@
 # PerovskiteOrderingGCNNs
 
-[![arXiv](https://img.shields.io/badge/arXiv-TBD-red.svg)]()
+[![arXiv](https://img.shields.io/badge/arXiv-2409.13851-red.svg)](https://arxiv.org/abs/2409.13851)
 [![Zenodo](https://img.shields.io/badge/Zenodo-10.5281/zenodo.13820311-blue.svg)](https://doi.org/10.5281/zenodo.13820311)
 [![MDF](https://img.shields.io/badge/Materials_Data_Facility-10.18126/ncqt--rh18-purple.svg)](https://doi.org/10.18126/ncqt-rh18)
 [![MIT](https://img.shields.io/badge/License-MIT-black.svg)](https://opensource.org/license/mit)
 
-Repo for our paper "Learning Ordering in Crystalline Materials with Symmetry-Aware Graph Neural Networks". This repo is currently under construction.
+Repo for our paper "Learning Ordering in Crystalline Materials with Symmetry-Aware Graph Neural Networks" ([preprint on arXiv](https://arxiv.org/abs/2409.13851)).
 
 ## Setup
 
@@ -78,5 +78,10 @@ All our data and trained models are archived on Zenodo ([DOI: 10.5281/zenodo.138
 If you use our codes, data, and/or models, please cite the following paper:
 
 ```
-TBD
+@article{peng2024learning,
+  title={Learning Ordering in Crystalline Materials with Symmetry-Aware Graph Neural Networks},
+  author={Jiayu Peng and James Damewood and Jessica Karaguesian and Jaclyn R. Lunger and Rafael Gómez-Bombarelli},
+  journal={arXiv:2409.13851},
+  url = {https://arxiv.org/abs/2409.13851},
+  year={2024}
 ```
